@@ -1,0 +1,67 @@
+package com.dashaasavel.userservice.rowmappers
+
+import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
+import com.dashaasavel.userservice.user.UserDTO
+import org.springframework.jdbc.core.ResultSetExtractor
+import org.springframework.jdbc.core.RowMapper
+import java.sql.ResultSet
+
+object UserResultSetExtractor: ResultSetExtractor<UserDTO> {
+    override fun extractData(rs: ResultSet): UserDTO {
+        rs.next()
+        val id = rs.getInt("id")
+        val username = rs.getString("username")
+        val password = rs.getString("password")
+        val confirmed = rs.getBoolean("confirmed")
+        return UserDTO().apply {
+            this.id = id
+            this.username = username
+            this.password = password
+            this.confirmed = confirmed
+        }
+    }
+}
+
+object ConfirmationTokenExtractor: ResultSetExtractor<ConfirmationTokenDTO> {
+    override fun extractData(rs: ResultSet): ConfirmationTokenDTO {
+        rs.next()
+        return ConfirmationTokenDTO().apply {
+            this.token = rs.getString("token")
+            this.creationDate = rs.getTimestamp("creationDate").toLocalDateTime()
+            this.confirmationDate = rs.getTimestamp("confirmationDate")?.toLocalDateTime()
+            this.expirationDate = rs.getTimestamp("expirationDate").toLocalDateTime()
+        }
+    }
+}
+
+object UsersRowMapper: RowMapper<UserDTO> {
+    override fun mapRow(rs: ResultSet, rowNum: Int): UserDTO {
+        val username = rs.getString("username")
+        val id = rs.getInt("id")
+        val confirmed = rs.getBoolean("confirmed")
+        return UserDTO().apply {
+            this.id = id
+            this.username = username
+            this.confirmed = confirmed
+        }
+    }
+}
+
+object ExistsRowExtractor: ResultSetExtractor<Boolean> {
+    override fun extractData(rs: ResultSet): Boolean {
+        return rs.next()
+    }
+}
+
+object IntIdResultSetExtractor: ResultSetExtractor<Int> {
+    override fun extractData(rs: ResultSet): Int {
+        rs.next()
+        return rs.getInt("id")
+    }
+}
+
+object IntListRowMapper: RowMapper<Int> {
+    override fun mapRow(rs: ResultSet, rowNum: Int): Int {
+        return rs.getInt("id")
+    }
+}
