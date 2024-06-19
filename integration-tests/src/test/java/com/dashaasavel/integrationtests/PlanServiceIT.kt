@@ -10,7 +10,7 @@ import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class PlanServiceTest : BaseServiceTest() {
+class PlanServiceIT : BaseServiceTest() {
     @Autowired
     private lateinit var planService: PlanServiceGrpc.PlanServiceBlockingStub
 

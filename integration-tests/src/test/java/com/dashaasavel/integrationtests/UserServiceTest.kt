@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 /**
  * надо сделать обертку над вызовами во внешний сервис по grpc
  */
-class UserServiceTest : BaseServiceTest() {
+class UserServiceIT : BaseServiceTest() {
     @Autowired
     private lateinit var userServiceBlockingStub: UserServiceBlockingStub
 

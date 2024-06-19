@@ -63,14 +63,27 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<artifactId>maven-failsafe-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>integration-test</id>
+						<id>failsafe-integration-tests</id>
 						<phase>integration-test</phase>
-<!--						<goals>integration-test</goals>-->
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>failsafe-verify</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>verify</goal>
+						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.jetbrains.kotlin</groupId>
