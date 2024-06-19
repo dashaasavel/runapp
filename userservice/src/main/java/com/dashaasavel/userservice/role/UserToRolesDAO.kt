@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 class UserToRolesDAO(
     private val jdbcTemplate: JdbcTemplate
 ) {
-    private val tableName = "user_to_roles"
+    private val tableName = "users_to_roles"
 
     fun addRoleToUser(userId: Int, roleId: Int) {
         val sql = "insert into $tableName (userId, roleId) values(?,?)"
