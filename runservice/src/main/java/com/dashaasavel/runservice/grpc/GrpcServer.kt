@@ -21,9 +21,7 @@ class GrpcServer(
         return ServerBuilder
             .forPort(config.port)
             .fallbackHandlerRegistry(handlerRegistry)
-//            .addService(userService)
             .intercept(LogServerInterceptor())
-//            .intercept(GlobalGrpcInterceptor())
             .maxInboundMessageSize(config.maxInboundMessageSize)
             .build()
     }

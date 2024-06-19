@@ -32,10 +32,7 @@ message SavePlan {
 
 message GetPlan {
   message Request {
-    oneof request {
-      string planId = 1;
-      PlanIdentifier planIdentifier = 2;
-    }
+    optional PlanIdentifier planIdentifier = 1;
   }
   message Response {
     optional Plan plan = 1;
@@ -44,10 +41,7 @@ message GetPlan {
 
 message DeletePlan {
   message Request {
-    oneof request{
-      string planId = 1;
-      PlanIdentifier planIdentifier = 2;
-    }
+    optional PlanIdentifier planIdentifier = 1;
   }
 }
 

@@ -11,20 +11,18 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class RemoteConfig {
     @Bean
-    open fun userService(): UserServiceGrpc.UserServiceBlockingStub {
+    open fun userService(userServiceProperties: GrpcServiceProperties): UserServiceGrpc.UserServiceBlockingStub {
         val channel = ManagedChannelBuilder
-//            .forTarget(userServiceProperties().hostAndPort)
-            .forTarget("localhost:9091")
+            .forTarget(userServiceProperties.hostAndPort)
             .usePlaintext()
             .build()
         return UserServiceGrpc.newBlockingStub(channel)
     }
 
     @Bean
-    open fun runService(): PlanServiceGrpc.PlanServiceBlockingStub {
+    open fun runService(runServiceProperties: GrpcServiceProperties): PlanServiceGrpc.PlanServiceBlockingStub {
         val channel = ManagedChannelBuilder
-//            .forTarget(userServiceProperties().hostAndPort)
-            .forTarget("localhost:9092")
+            .forTarget(runServiceProperties.hostAndPort)
             .usePlaintext()
             .build()
         return PlanServiceGrpc.newBlockingStub(channel)
@@ -33,4 +31,8 @@ open class RemoteConfig {
     @Bean
     @ConfigurationProperties("remotegrpc.user-service")
     open fun userServiceProperties() = GrpcServiceProperties()
+
+    @Bean
+    @ConfigurationProperties("remotegrpc.run-service")
+    open fun runServiceProperties() = GrpcServiceProperties()
 }

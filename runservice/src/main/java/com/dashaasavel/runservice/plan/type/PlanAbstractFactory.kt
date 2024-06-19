@@ -33,20 +33,6 @@ abstract class PlanAbstractFactory {
         return dist
     }
 
-    /*fun createLastWeek(
-        trainingNumber: Int,
-        weekNumber: Int,
-        startWeek: LocalDate,
-        competitionDate: LocalDate
-    ): List<Training> {
-        val lastWeek = ArrayList<Training>(3)
-        val dates = datesForAWeek(startWeek, listOf(MONDAY, THURSDAY, competitionDate.dayOfWeek)) // ыыыыыы
-        lastWeek += Training.regularRunning(7, trainingNumber + 1, weekNumber, dates[0])
-        lastWeek += Training.regularRunning(5, trainingNumber + 2, weekNumber, dates[1])
-        lastWeek += Training.finalRunning(trainingNumber + 3, weekNumber, dates[2], getCompetitionRunType())
-        return lastWeek
-    }*/
-
     fun createLastWeek(
         trainingNumber: Int,
         weekNumber: Int,

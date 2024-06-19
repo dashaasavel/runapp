@@ -1,6 +1,7 @@
 package com.dashaasavel.runservice.plan
 
 import com.dashaasavel.runservice.Training
+import com.dashaasavel.runservice.TrainingsDAO
 import com.dashaasavel.runservice.plan.training.CompetitionRunType
 import com.dashaasavel.runservice.plan.training.Ratio
 import com.dashaasavel.runservice.plan.type.MarathonPlanFactory
@@ -12,18 +13,17 @@ import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 
 open class PlanService(
-    private val trainingDAO: TrainingDAO,
+    private val trainingsDAO: TrainingsDAO,
     private val planInfoDAO: PlanInfoDAO
 ) {
     private val plans = ConcurrentHashMap<Int, Plan>()
     fun createPlan(
-        userId: Int,
-        type: CompetitionRunType,
-        competitionDate: LocalDate,
-        daysOfWeek: List<DayOfWeek>,
-        longRunDistance: Int
+        userId: Int, type: CompetitionRunType, competitionDate: LocalDate,
+        daysOfWeek: List<DayOfWeek>, longRunDistance: Int
     ): List<Training> {
-        val planInfo = PlanInfo(id = null, trainingListId = null, userId, type, competitionDate, daysOfWeek, longRunDistance)
+        checkIfPlanExists(userId, type)
+        val planInfo =
+            PlanInfo(id = null, trainingsId = null, userId, type, competitionDate, daysOfWeek, longRunDistance)
         val weeks = DateUtils.countOfWeeks(LocalDate.now(), competitionDate)
         val ratio = Ratio.ratio(weeks, longRunDistance)
         val factory: PlanAbstractFactory = when (type) {
@@ -41,27 +41,32 @@ open class PlanService(
         return trainings
     }
 
-    //    @Transactional
+    // TODO make transactional
     open fun savePlan(userId: Int, type: CompetitionRunType) {
         val plan = plans[userId] ?: error("User doesn't have a plan")
-        val savedTrainingListId = trainingDAO.save(TrainingList(id = null, plan.trainings)).id!!
-        plan.info.trainingListId = savedTrainingListId
+        val savedTrainingsIds = trainingsDAO.save(Trainings(id = null, plan.trainings))
+        plan.info.trainingsId = savedTrainingsIds
         planInfoDAO.insertPlan(plan.info)
     }
 
-    fun getPlanFromRepo(trainingListId: String): Plan {
-        val planInfo = planInfoDAO.getPlanInfo(trainingListId)?: error("PlanNotFound")
-        val trainingList = trainingDAO.findById(trainingListId)
-            .orElseThrow { IllegalStateException("Plan $trainingListId not found") }.trainings
+    fun getPlanFromRepo(userId: Int, competitionRunType: CompetitionRunType): Plan {
+        val planInfo =
+            planInfoDAO.getPlanInfo(userId, competitionRunType) ?: throw IllegalStateException("Plan not found")
+        val trainings = trainingsDAO.findById(planInfo.trainingsId!!)?.trainings
+            ?: throw IllegalStateException("Plan ${planInfo.trainingsId} not found")
 
-        return Plan(planInfo, trainingList)
+        return Plan(planInfo, trainings)
     }
 
-    fun deletePlan(userId: Int?, planId: String?, type: CompetitionRunType?) {
-        if (planId != null) {
-            planInfoDAO.deletePlan(planId)
-        } else if (userId != null && type != null) {
-            planInfoDAO.deletePlan(userId, type)
-        } else throw IllegalStateException() // hype
+    // TODO make transactional
+    fun deletePlan(userId: Int, type: CompetitionRunType) {
+        val trainingsId = planInfoDAO.deletePlan(userId, type)
+        trainingsDAO.deleteById(trainingsId)
+    }
+
+    private fun checkIfPlanExists(userId: Int, competitionRunType: CompetitionRunType) {
+        if (planInfoDAO.isPlanExists(userId, competitionRunType)) {
+            throw IllegalArgumentException(CreatingPlanError.PLAN_ALREADY_EXISTS.name)
+        }
     }
 }

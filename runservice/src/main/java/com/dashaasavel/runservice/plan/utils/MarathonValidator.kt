@@ -1,7 +1,5 @@
 package com.dashaasavel.runservice.plan.utils
 
-import com.dashaasavel.runservice.plan.training.CompetitionRunType
-
 private const val MINIMUM_WEEKS = 16
 
 object MarathonValidator {

@@ -3,13 +3,11 @@ package com.dashaasavel.runservice.plan
 import com.dashaasavel.runservice.Training
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.jdbc.core.JdbcTemplate
 
-interface TrainingDAO: MongoRepository<TrainingList, String>
+const val TRAININGS_COLLECTION_NAME = "trainings"
 
-@Document
-class TrainingList(
+@Document(collection = TRAININGS_COLLECTION_NAME)
+class Trainings(
     @Id
     var id: String? = null,
     var trainings: List<Training>? = null

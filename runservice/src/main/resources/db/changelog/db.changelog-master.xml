@@ -9,7 +9,7 @@
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
-                 path="db/users_to_plans.sql"
+                 path="db/plan_info.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>

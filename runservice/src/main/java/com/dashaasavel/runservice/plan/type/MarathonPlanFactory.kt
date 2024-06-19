@@ -20,7 +20,7 @@ class MarathonPlanFactory : PlanAbstractFactory() {
     override fun createForThreeTimesAWeek(weeks: Int, planInfo: PlanInfo, ratio: IntArray): List<Training> {
         validate(planInfo)
         val trainings = mutableListOf<Training>()
-        var startWeek = DateUtils.getNextMondayFromNow()
+        var startWeek = DateUtils.getNextOrSameMonday()
 
         val timesAWeek = planInfo.daysOfWeek
         for (week in 1 until weeks) {
@@ -39,7 +39,7 @@ class MarathonPlanFactory : PlanAbstractFactory() {
     override fun createForFourTimesAWeek(weeks: Int, planInfo: PlanInfo, ratio: IntArray): List<Training> {
         validate(planInfo)
         val trainings = mutableListOf<Training>()
-        var startWeek = DateUtils.getNextMondayFromNow()
+        var startWeek = DateUtils.getNextOrSameMonday()
         val timesAWeek = planInfo.daysOfWeek
         var level = 1
         for (week in 1 until weeks) {
@@ -65,7 +65,7 @@ class MarathonPlanFactory : PlanAbstractFactory() {
     override fun createForFiveTimesAWeek(weeks: Int, planInfo: PlanInfo, ratio: IntArray): List<Training> {
         validate(planInfo)
         val trainings = mutableListOf<Training>()
-        var startWeek = DateUtils.getNextMondayFromNow()
+        var startWeek = DateUtils.getNextOrSameMonday()
         val timesAWeek = planInfo.daysOfWeek
         var level = 1
         for (week in 1 until weeks) {

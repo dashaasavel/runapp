@@ -6,11 +6,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 
 object DateUtils {
-    fun getNextMonday(date: LocalDate): LocalDate {
-        return date.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY))
-    }
-
-    fun getNextMondayFromNow(): LocalDate {
+    fun getNextOrSameMonday(): LocalDate {
         return LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY))
     }
 

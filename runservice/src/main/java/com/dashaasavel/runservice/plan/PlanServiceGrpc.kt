@@ -4,8 +4,6 @@ import com.dashaasavel.runapplib.grpc.core.reply
 import com.dashaasavel.runapplib.grpc.register.GrpcService
 import com.dashaasavel.runservice.api.Runservice
 import com.dashaasavel.runservice.api.Runservice.CreatePlan.Response
-import com.dashaasavel.runservice.api.Runservice.PlanIdentifier
-import com.dashaasavel.runservice.plan.training.CompetitionRunType
 import com.dashaasavel.runservice.toGrpc
 import com.dashaasavel.runservice.toLocalEnum
 import com.dashaasavel.userserviceapi.utils.DateUtils.convertToDayOfWeek
@@ -43,6 +41,7 @@ class PlanServiceGrpc(
         val planIdentifier = request.planIdentifier
         val userId = planIdentifier.userId
         val type = planIdentifier.type.toLocalEnum()
+
         responseObserver.reply {
             planService.savePlan(userId, type)
             Empty.getDefaultInstance()
@@ -53,10 +52,12 @@ class PlanServiceGrpc(
         request: Runservice.GetPlan.Request,
         responseObserver: StreamObserver<Runservice.GetPlan.Response>
     ) {
-        val planId = request.planId
+        val planIdentifier = request.planIdentifier
+        val userId = planIdentifier.userId
+        val type = planIdentifier.type.toLocalEnum()
 
         responseObserver.reply {
-            val plan = planService.getPlanFromRepo(planId)
+            val plan = planService.getPlanFromRepo(userId, type)
             val planInfo = plan.info.toGrpc()
             val trainings = plan.trainings!!.map { it.toGrpc() }
             val grpcPlan = Runservice.Plan.newBuilder().apply {
@@ -71,13 +72,12 @@ class PlanServiceGrpc(
         request: Runservice.DeletePlan.Request,
         responseObserver: StreamObserver<Empty>
     ) {
-        val planIdentifier: PlanIdentifier? = request.planIdentifier
-        val planId: String? = request.planId
-        val type: CompetitionRunType? = planIdentifier?.type?.toLocalEnum()
-        val userId = planIdentifier?.userId
+        val planIdentifier = request.planIdentifier
+        val type = planIdentifier.type.toLocalEnum()
+        val userId = planIdentifier.userId
 
         responseObserver.reply {
-            planService.deletePlan(userId, planId, type)
+            planService.deletePlan(userId, type)
             Empty.getDefaultInstance()
         }
     }
