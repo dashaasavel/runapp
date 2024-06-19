@@ -20,7 +20,7 @@ class ConfirmationTokenService(
     }
 
     fun confirmToken(token: String, confirmedTime: LocalDateTime) {
-        confirmationTokenDAO.setConfirmed(token,confirmedTime)
+        confirmationTokenDAO.setConfirmed(token, confirmedTime)
     }
 
     fun getLastConfirmationToken(userId: Int): ConfirmationTokenDTO {
@@ -28,7 +28,7 @@ class ConfirmationTokenService(
     }
 
     fun checkTokenAndGetUserId(token: String): Int {
-        val userId =  confirmationTokenDAO.getUserIdByToken(token)
+        val userId = confirmationTokenDAO.getUserIdByToken(token)
         val lastToken = confirmationTokenDAO.getLastConfirmationTokenByUserId(userId).token
         if (lastToken != token) {
             throw IllegalStateException(" существует другой токен")

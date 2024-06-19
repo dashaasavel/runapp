@@ -1,24 +1,25 @@
 package com.dashaasavel.userservice.rowmappers
 
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
-import com.dashaasavel.userservice.user.UserDTO
+import com.dashaasavel.userservice.user.User
 import org.springframework.jdbc.core.ResultSetExtractor
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 
-object UserResultSetExtractor: ResultSetExtractor<UserDTO> {
-    override fun extractData(rs: ResultSet): UserDTO {
-        rs.next()
-        val id = rs.getInt("id")
-        val username = rs.getString("username")
-        val password = rs.getString("password")
-        val confirmed = rs.getBoolean("confirmed")
-        return UserDTO().apply {
-            this.id = id
-            this.username = username
-            this.password = password
-            this.confirmed = confirmed
-        }
+object UserResultSetExtractor: ResultSetExtractor<User> {
+    override fun extractData(rs: ResultSet): User? {
+        return if (rs.next()) {
+            val id = rs.getInt("id")
+            val username = rs.getString("username")
+            val password = rs.getString("password")
+            val confirmed = rs.getBoolean("confirmed")
+            User().apply {
+                this.id = id
+                this.username = username
+                this.password = password
+                this.confirmed = confirmed
+            }
+        } else null
     }
 }
 
@@ -34,12 +35,12 @@ object ConfirmationTokenExtractor: ResultSetExtractor<ConfirmationTokenDTO> {
     }
 }
 
-object UsersRowMapper: RowMapper<UserDTO> {
-    override fun mapRow(rs: ResultSet, rowNum: Int): UserDTO {
+object UsersRowMapper: RowMapper<User> {
+    override fun mapRow(rs: ResultSet, rowNum: Int): User {
         val username = rs.getString("username")
         val id = rs.getInt("id")
         val confirmed = rs.getBoolean("confirmed")
-        return UserDTO().apply {
+        return User().apply {
             this.id = id
             this.username = username
             this.confirmed = confirmed

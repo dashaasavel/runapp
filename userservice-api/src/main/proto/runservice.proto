@@ -1,0 +1,128 @@
+syntax = "proto2";
+
+package com.dashaasavel.runservice.api;
+
+import "google/protobuf/empty.proto";
+
+service PlanService {
+  // создает, отдает на фронт, сохраняет в кэш (пока что просто мапу)
+  rpc CreatePlan(CreatePlan.Request) returns (CreatePlan.Response);
+  // сохраняет план из мапы
+  rpc SavePlan(SavePlan.Request) returns (google.protobuf.Empty);
+  // получает из базы(mongoDB + postgreSQL) план
+  rpc GetPlan(GetPlan.Request) returns (GetPlan.Response);
+  // удаляет план из базы
+  rpc DeletePlan(DeletePlan.Request) returns (google.protobuf.Empty);
+}
+
+message CreatePlan {
+  message Request {
+    optional PlanInfo planInfo = 1;
+  }
+  message Response {
+    repeated Training trainings = 1;
+  }
+}
+
+message SavePlan {
+  message Request {
+    optional PlanIdentifier planIdentifier = 1;
+  }
+}
+
+message GetPlan {
+  message Request {
+    oneof request {
+      string planId = 1;
+      PlanIdentifier planIdentifier = 2;
+    }
+  }
+  message Response {
+    optional Plan plan = 1;
+  }
+}
+
+message DeletePlan {
+  message Request {
+    oneof request{
+      string planId = 1;
+      PlanIdentifier planIdentifier = 2;
+    }
+  }
+}
+
+message Plan {
+  optional PlanInfo planInfo = 1;
+  repeated Training trainings = 2;
+}
+message PlanInfo {
+  optional int32 userId = 1;
+  optional CompetitionRunType type = 2;
+  optional Date date = 3;
+  repeated DayOfWeek daysOfWeek = 4;
+  optional int32 longRunDistance = 5;
+}
+
+message Training {
+  optional int32 trainingNumber = 1;
+  optional int32 weekNumber = 2;
+  optional TrainingType type = 3;
+  optional int32 distance = 4;
+  optional SpeedRunningInfo speedRunningInfo = 5;
+  optional Date date = 6;
+}
+
+enum TrainingType {
+    LONG_DISTANCE = 0;
+    REGULAR_RUN = 1;
+    GYM = 2;
+    SPEED_RUNNING = 3;
+    COMPETITION = 4;
+}
+
+enum CompetitionRunType {
+  MARATHON = 0;
+  HALF_MARATHON = 1;
+  TEN_KILOMETERS = 2;
+}
+
+message Date {
+  // Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+  // a year.
+  optional int32 year = 1;
+
+  // Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+  // month and day.
+  optional int32 month = 2;
+
+  // Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+  // to specify a year by itself or a year and month where the day isn't
+  // significant.
+  optional int32 day = 3;
+}
+
+enum CreatingPlanError {
+  MORE_TIME_IS_NEEDED = 0;
+  COMPETITION_TYPE_NOT_SUPPORTED_NOW = 1;
+  NOT_SUPPORTED_COUNT_TIMES_A_WEEK = 2;
+}
+
+message SpeedRunningInfo {
+  optional int32 repetition = 1;
+  optional int32 distanceInMeters = 2;
+}
+
+enum DayOfWeek {
+  MONDAY = 0;
+  TUESDAY = 1;
+  WEDNESDAY = 2;
+  THURSDAY = 3;
+  FRIDAY = 4;
+  SATURDAY = 5;
+  SUNDAY = 6;
+}
+
+message PlanIdentifier {
+  optional int32 userId = 1;
+  optional CompetitionRunType type = 2;
+}

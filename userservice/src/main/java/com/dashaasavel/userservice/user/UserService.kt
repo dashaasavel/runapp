@@ -1,5 +1,6 @@
 package com.dashaasavel.userservice.user
 
+import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.role.RolesDAO
 import com.dashaasavel.userservice.role.UserToRolesDAO
 
@@ -8,30 +9,37 @@ class UserService(
     private val userToRolesDAO: UserToRolesDAO,
     private val rolesDAO: RolesDAO
 ) {
-    fun addUser(userDTO: UserDTO) {
-        userDAO.addUser(userDTO)
-        val userId = userDAO.getUserByUsername(userDTO.username!!).id
-        for (role in userDTO.roles!!) {
+    /**
+     * @return userId or null
+     */
+    fun addUser(user: User): Int? {
+        val userId = userDAO.insertUser(user) ?: return null
+        for (role in user.roles!!) {
             val roleId = rolesDAO.getIdByRole(role) // TODO caching
             userToRolesDAO.addRoleToUser(userId, roleId)
         }
+        return userId
     }
 
-    fun setConfirmed(userId: Int, confirmed: Boolean) {
-        userDAO.setConfirmed(userId, confirmed)
+    fun updateConfirmed(userId: Int, confirmed: Boolean) {
+        userDAO.updateConfirmed(userId, confirmed)
     }
 
-    fun getUser(id: Long): UserDTO {
-        return userDAO.getUser(id)
+    fun getUser(id: Int): User? {
+        val user = userDAO.getUser(id) ?: return null
+        val roles = getUserRoles(user.id!!)
+        return user.apply { this.roles = roles }
     }
-
-    fun getAllUsers(): List<UserDTO> = userDAO.getAllUsers()
 
     fun isUserExists(username: String) = userDAO.isUserExists(username)
 
-    fun getUserByUsername(username: String): UserDTO {
-        val userDTO = userDAO.getUserByUsername(username)
-        userDTO.roles = userToRolesDAO.getUserRoles(userDTO.id).map { rolesDAO.getRoleById(it) }
+    fun getUserByUsername(username: String): User? {
+        val userDTO = userDAO.getUserByUsername(username) ?: return null
+        userDTO.roles = getUserRoles(userDTO.id!!)
         return userDTO
+    }
+
+    private fun getUserRoles(userId: Int): List<Roles> {
+        return userToRolesDAO.getUserRoles(userId).map { rolesDAO.getRoleById(it) }
     }
 }

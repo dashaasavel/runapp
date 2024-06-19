@@ -13,14 +13,35 @@ services:
 #    network_mode: host
 
   mongodb:
-    image: mongo:latest
+    image: mongo
+#    container_name: mongo-dev
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: dasha
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=runapp
     ports:
-      - 27017:27017
-    hostname: mongodb
-#    network_mode: host
+      - '27017:27017'
+    healthcheck:
+      test:  echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+    ports:
+      - '8081:8081'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
   userservice:
     build: userservice/
 #    networks:
@@ -29,7 +50,7 @@ services:
 #          - userservice.local.own
 #    network_mode: host
     ports:
-      - 8081:8080
+      - 8091:8080
     hostname: userservice
     depends_on:
       - postgres
@@ -42,11 +63,13 @@ services:
 #          - runservice.local.own
 #    network_mode: host
     ports:
-      - 8082:8080
+      - 8092:8080
     hostname: runservice
     depends_on:
       - mongodb
 
-networks:
-  host:
-    external: true
+volumes:
+  data: {}
+#networks:
+#  host:
+#    external: true

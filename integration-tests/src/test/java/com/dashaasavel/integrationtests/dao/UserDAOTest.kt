@@ -1,4 +1,4 @@
-package java.com.dashaasavel.integrationtests.dao
+package com.dashaasavel.integrationtests.dao
 
 class UserDAOTest {
 }

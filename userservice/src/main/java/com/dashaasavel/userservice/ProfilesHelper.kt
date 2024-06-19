@@ -12,6 +12,6 @@ class ProfilesHelper(
 
     @PostConstruct
     fun postConstruct() {
-        println()
+        println("ACTIVE PROFILES: $activeProfiles")
     }
 }

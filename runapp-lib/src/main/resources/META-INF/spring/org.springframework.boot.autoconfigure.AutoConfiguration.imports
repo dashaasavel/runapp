@@ -1,0 +1,2 @@
+com.dashaasavel.runapplib.healthcheck.HealthCheckAutoConfiguration
+com.dashaasavel.runapplib.grpc.register.GrpcAutoConfiguration

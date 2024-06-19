@@ -1,13 +1,10 @@
-create table user_roles(
-    id serial unique,
-    role varchar unique
+create table if not exists user_roles(
+    id serial primary key,
+    role varchar(30) unique
 );
 
-drop table user_roles;
-insert into user_roles (role) values ('USER'),('ADMIN');
-
-create table user_to_roles(
-    id serial,
+create table if not exists users_to_roles(
+    id serial primary key,
     userId int references users(id),
     roleId int references user_roles(id)
 );

@@ -1,25 +1,28 @@
 package com.dashaasavel.runservice.plan.type
 
+import com.dashaasavel.runservice.plan.training.CompetitionRunType
 import com.dashaasavel.runservice.Training
-import com.dashaasavel.runservice.plan.MarathonValidator
-import com.dashaasavel.runservice.plan.Plan
+import com.dashaasavel.runservice.plan.utils.MarathonValidator
+import com.dashaasavel.runservice.plan.PlanInfo
 import com.dashaasavel.runservice.utils.DateUtils
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 
-class MarathonPlanFactory: PlanAbstractFactory() {
-    override fun validate(plan: Plan) {
-        val weeks = DateUtils.countOfWeeks(LocalDate.now(), plan.date)
+class MarathonPlanFactory : PlanAbstractFactory() {
+    override fun getCompetitionRunType(): CompetitionRunType = CompetitionRunType.MARATHON
+
+    override fun validate(planInfo: PlanInfo) {
+        val weeks = DateUtils.countOfWeeks(LocalDate.now(), planInfo.competitionDate)
         MarathonValidator.validateMarathon(weeks)
     }
 
-    override fun createForThreeTimesAWeek(weeks: Int, plan: Plan, ratio: IntArray): List<Training> {
-        validate(plan)
+    override fun createForThreeTimesAWeek(weeks: Int, planInfo: PlanInfo, ratio: IntArray): List<Training> {
+        validate(planInfo)
         val trainings = mutableListOf<Training>()
-        var startWeek = DateUtils.getNextMonday(plan.date)
+        var startWeek = DateUtils.getNextMondayFromNow()
 
-        val timesAWeek: Int = plan.timesAWeek
+        val timesAWeek = planInfo.daysOfWeek
         for (week in 1 until weeks) {
             val dist: IntArray = distanceForTrainings(ratio[week])
             val dates = datesForAWeek(startWeek, timesAWeek)
@@ -29,15 +32,15 @@ class MarathonPlanFactory: PlanAbstractFactory() {
             startWeek = startWeek.with(TemporalAdjusters.next(DayOfWeek.MONDAY))
         }
         val trainingNumber = (weeks - 1) * 3
-        trainings += createLastWeek(trainingNumber, weeks, startWeek)
+        trainings += createLastWeek(trainingNumber, weeks, startWeek, planInfo.competitionDate)
         return trainings
     }
 
-    override fun createForFourTimesAWeek(weeks: Int, plan: Plan, ratio: IntArray): List<Training> {
-        validate(plan)
+    override fun createForFourTimesAWeek(weeks: Int, planInfo: PlanInfo, ratio: IntArray): List<Training> {
+        validate(planInfo)
         val trainings = mutableListOf<Training>()
-        var startWeek = DateUtils.getNextMonday(plan.date)
-        val timesAWeek = plan.timesAWeek
+        var startWeek = DateUtils.getNextMondayFromNow()
+        val timesAWeek = planInfo.daysOfWeek
         var level = 1
         for (week in 1 until weeks) {
             if (week > 18) {
@@ -55,15 +58,15 @@ class MarathonPlanFactory: PlanAbstractFactory() {
             startWeek = startWeek.with(TemporalAdjusters.next(DayOfWeek.MONDAY))
         }
         val trainingNumber = (weeks - 1) * 4
-        trainings += createLastWeek(trainingNumber, weeks, startWeek)
+        trainings += createLastWeek(trainingNumber, weeks, startWeek, planInfo.competitionDate)
         return trainings
     }
 
-    override fun createForFiveTimesAWeek(weeks: Int, plan: Plan, ratio: IntArray): List<Training> {
-        validate(plan)
+    override fun createForFiveTimesAWeek(weeks: Int, planInfo: PlanInfo, ratio: IntArray): List<Training> {
+        validate(planInfo)
         val trainings = mutableListOf<Training>()
-        var startWeek = DateUtils.getNextMonday(plan.date)
-        val timesAWeek = plan.timesAWeek
+        var startWeek = DateUtils.getNextMondayFromNow()
+        val timesAWeek = planInfo.daysOfWeek
         var level = 1
         for (week in 1 until weeks) {
             if (week > 18) {
@@ -81,7 +84,7 @@ class MarathonPlanFactory: PlanAbstractFactory() {
             startWeek = startWeek.with(TemporalAdjusters.next(DayOfWeek.MONDAY))
         }
         val trainingNumber = (weeks - 1) * 5
-        trainings += createLastWeek(trainingNumber, weeks, startWeek)
+        trainings += createLastWeek(trainingNumber, weeks, startWeek, planInfo.competitionDate)
         return trainings
     }
 }

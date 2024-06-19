@@ -1,7 +1,7 @@
 package com.dashaasavel.integrationtests.dao
 
-import org.springframework.context.annotation.Configuration
+import org.testcontainers.junit.jupiter.Testcontainers
 
-@Configuration
-open class DBConfig {
+@Testcontainers
+open class DAOTest {
 }

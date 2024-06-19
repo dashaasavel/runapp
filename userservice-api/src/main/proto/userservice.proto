@@ -1,0 +1,61 @@
+syntax = "proto2";
+
+package com.dashaasavel.userservice.api;
+
+import "google/protobuf/empty.proto";
+
+service UserService {
+  rpc RegisterUser(RegisterUser.Request) returns (google.protobuf.Empty);
+  rpc GetUserById(GetUserById.Request) returns (GetUserById.Response);
+  rpc GetUserByUsername(GetUserByUsername.Request) returns (GetUserByUsername.Response);
+}
+
+message RegisterUser {
+  message Request {
+    optional string username = 1;
+    optional string password = 2;
+  }
+  message Response {
+    oneof response {
+      int32 id = 1;
+      UserRegistrationResponseError error = 2;
+    }
+  }
+}
+
+message GetUserById {
+  message Request {
+    optional int32 id = 1;
+  }
+
+  message Response {
+    optional User user = 1;
+  }
+}
+
+message GetUserByUsername {
+  message Request {
+    optional string username = 1;
+  }
+
+  message Response {
+    optional User user = 1;
+  }
+}
+
+message User {
+  optional int32 id = 1;
+  optional string username = 2;
+  optional bool confirmed = 3;
+  repeated string roles = 4;
+}
+
+enum UserServiceError {
+  USER_DO_NOT_EXIST = 0;
+}
+
+enum UserRegistrationResponseError {
+  USER_EXISTS_AND_CONFIRMED = 0;
+  NEED_TO_CONFIRM_ACCOUNT = 1;
+  NEW_TOKEN_WAS_SENT = 2;
+}

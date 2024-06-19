@@ -1,26 +1,26 @@
-create table users (
-    id serial unique,
+create table if not exists users (
+    id serial primary key,
     username varchar unique,
     confirmed bool,
     password varchar
 );
 
-create table user_roles(
-                           id serial unique,
-                           role varchar unique
-);
+-- create table if not exists user_roles(
+--                            id serial primary key,
+--                            role varchar unique
+-- );
 
-insert into user_roles (role) values ('USER'),('ADMIN');
+-- insert into user_roles (role) values ('USER'),('ADMIN');
 
-create table user_to_roles(
-                              id serial,
-                              userId int references users(id),
-                              roleId int references user_roles(id)
-);
+-- create table users_to_roles(
+--                               id serial,
+--                               userId int references users(id),
+--                               roleId int references user_roles(id)
+-- );
 
 
-create table conf_tokens(
-    id serial unique,
+create table if not exists conf_tokens(
+    id serial primary key,
     userId int references users(id),
     token varchar,
     creationDate timestamp,
@@ -28,4 +28,4 @@ create table conf_tokens(
     expirationDate timestamp
 );
 
-drop table conf_tokens,user_to_roles,user_roles,users;
+-- drop table conf_tokens,users_to_roles,user_roles,users;
