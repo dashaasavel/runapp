@@ -2,8 +2,10 @@ package com.dashaasavel.integrationtests
 
 import com.dashaasavel.userservice.api.UserServiceGrpc.UserServiceBlockingStub
 import com.dashaasavel.userservice.api.Userservice
+import com.dashaasavel.userservice.api.Userservice.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import kotlin.test.assertEquals
 
 /**
  * надо сделать обертку над вызовами во внешний сервис по grpc
@@ -14,20 +16,27 @@ class UserServiceIT : BaseServiceTest() {
 
     @Test
     fun test1() {
-        val request = Userservice.RegisterUser.Request.newBuilder().apply {
+        val username = "dashaasavel4@gmail.com"
+        val registerUserRequest = Userservice.RegisterUser.Request.newBuilder().apply {
+            this.username = username
             this.password = "lol9"
-            this.username = "kek12"
         }.build()
-        val response = userServiceBlockingStub.registerUser(request)
-        println(response)
-    }
+        var registerUserResponse = RegisterUser.Response.getDefaultInstance()
+        registerUserResponse = userServiceBlockingStub.registerUser(registerUserRequest)
 
-//    @Test
-    fun test2() {
-        val request = Userservice.GetUserById.Request.newBuilder().apply {
-            this.id = 24
+        val userId = registerUserResponse.userId
+
+        val getUserByUsernameRequest = GetUserByUsername.Request.newBuilder().apply {
+            this.username = username
         }.build()
-        val response = userServiceBlockingStub.getUserById(request)
-        println(response)
+        val userByUsername = userServiceBlockingStub.getUserByUsername(getUserByUsernameRequest).user
+
+        val getUserByIdRequest = GetUserById.Request.newBuilder().apply {
+            this.userId = userId
+        }.build()
+
+        val userById = userServiceBlockingStub.getUserById(getUserByIdRequest).user
+
+        assertEquals(userById, userByUsername)
     }
 }

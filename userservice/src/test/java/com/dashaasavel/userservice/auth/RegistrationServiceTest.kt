@@ -1,7 +1,8 @@
 package com.dashaasavel.userservice.auth
 
+import com.dashaasavel.runapplib.grpc.error.GrpcServerException
+import com.dashaasavel.runapplib.grpc.error.UserRegistrationResponseError
 import com.dashaasavel.userservice.ProfilesHelper
-import com.dashaasavel.userservice.auth.UserRegistrationResponseStatus.*
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
 import com.dashaasavel.userservice.auth.mail.MailService
@@ -48,7 +49,7 @@ class RegistrationServiceTest {
 
         whenever(userService.isUserExists(user.username!!)) doReturn true
 
-        assertThrows<UserRegistrationException>(USER_EXISTS_AND_CONFIRMED.name) {
+        assertThrows<GrpcServerException>(UserRegistrationResponseError.USER_EXISTS_AND_CONFIRMED.name) {
             registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }
@@ -64,7 +65,7 @@ class RegistrationServiceTest {
         whenever(userService.isUserExists(user.username!!)) doReturn true
         whenever(confirmationTokenService.getLastConfirmationToken(user.id!!)) doReturn confirmationTokenDTO
 
-        assertThrows<UserRegistrationException>(NEED_TO_CONFIRM_ACCOUNT.name) {
+        assertThrows<GrpcServerException>(UserRegistrationResponseError.NEED_TO_CONFIRM_ACCOUNT.name) {
             registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }
@@ -80,7 +81,7 @@ class RegistrationServiceTest {
         whenever(userService.isUserExists(user.username!!)) doReturn true
         whenever(confirmationTokenService.getLastConfirmationToken(user.id!!)) doReturn confirmationTokenDTO
 
-        assertThrows<UserRegistrationException>(NEW_TOKEN_WAS_SENT.name) {
+        assertThrows<GrpcServerException>(UserRegistrationResponseError.NEW_TOKEN_WAS_SENT.name) {
             registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }
@@ -90,7 +91,7 @@ class RegistrationServiceTest {
         val captor = argumentCaptor<User>()
         whenever(userService.isUserExists(user.username!!)) doReturn false
         whenever(profilesHelper.isMailConfirmationEnabled()) doReturn true
-        whenever(userService.addUser(captor.capture())) doReturn user.id!!
+        whenever(userService.saveUser(captor.capture())) doReturn user.id!!
         whenever(confirmationTokenService.createAndSaveConfirmationToken(user.id!!)) doReturn "token"
 
         registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
@@ -105,7 +106,7 @@ class RegistrationServiceTest {
 
         whenever(userService.isUserExists(user.username!!)) doReturn false
         whenever(profilesHelper.isMailConfirmationEnabled()) doReturn false
-        whenever(userService.addUser(captor.capture())) doReturn user.id!!
+        whenever(userService.saveUser(captor.capture())) doReturn user.id!!
 
         registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
 

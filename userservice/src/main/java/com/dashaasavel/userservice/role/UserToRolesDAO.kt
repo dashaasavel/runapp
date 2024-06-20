@@ -1,6 +1,5 @@
 package com.dashaasavel.userservice.role
 
-import com.dashaasavel.userservice.rowmappers.IntListRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 
 class UserToRolesDAO(
@@ -15,6 +14,6 @@ class UserToRolesDAO(
 
     fun getUserRoles(userId: Int): List<Int> {
         val sql = "select roleId as id from $tableName where userId=?"
-        return jdbcTemplate.query(sql, IntListRowMapper, userId)
+        return jdbcTemplate.queryForList(sql, Int::class.java, userId)
     }
 }

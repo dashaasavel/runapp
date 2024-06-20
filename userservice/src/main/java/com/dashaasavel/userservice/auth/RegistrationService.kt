@@ -1,15 +1,17 @@
 package com.dashaasavel.userservice.auth
 
+import com.dashaasavel.runapplib.grpc.error.GrpcServerException
+import com.dashaasavel.runapplib.grpc.error.UserRegistrationResponseError
 import com.dashaasavel.userservice.ProfilesHelper
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
 import com.dashaasavel.userservice.auth.mail.MailSender
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.user.User
 import com.dashaasavel.userservice.user.UserService
+import io.grpc.Status
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import com.dashaasavel.userservice.api.Userservice.UserRegistrationResponseError
 
 open class RegistrationService(
     private val userService: UserService,
@@ -22,22 +24,31 @@ open class RegistrationService(
      * userId or null, if
      */
     @Transactional
-    open fun registerUser(username: String, password: String, roles: List<Roles>) {
+    open fun registerUser(username: String, password: String, roles: List<Roles>): Int {
         if (userService.isUserExists(username)) {
             val user = userService.getUserByUsername(username)!!
             if (user.confirmed!!) {
-                throw UserRegistrationException(UserRegistrationResponseError.USER_EXISTS_AND_CONFIRMED.name)
+                throw GrpcServerException(
+                    Status.INVALID_ARGUMENT,
+                    UserRegistrationResponseError.USER_EXISTS_AND_CONFIRMED
+                )
             }
             val token = confirmationTokenService.getLastConfirmationToken(user.id!!)
             if (token.expirationDate!!.isAfter(LocalDateTime.now())) {
-                throw UserRegistrationException(UserRegistrationResponseError.NEED_TO_CONFIRM_ACCOUNT.name)
+                throw GrpcServerException(
+                    Status.INVALID_ARGUMENT,
+                    UserRegistrationResponseError.NEED_TO_CONFIRM_ACCOUNT
+                )
             } else {
                 createAndSendToken(username, user.id!!)
-                throw UserRegistrationException(UserRegistrationResponseError.NEW_TOKEN_WAS_SENT.name)
+                throw GrpcServerException(
+                    Status.INVALID_ARGUMENT,
+                    UserRegistrationResponseError.NEW_TOKEN_WAS_SENT
+                )
             }
 
         }
-        createUserAndSendToken(username, password, roles)
+        return createUserAndSendToken(username, password, roles)
     }
 
     @Transactional
@@ -48,7 +59,7 @@ open class RegistrationService(
         confirmationTokenService.confirmToken(token, currentTime)
     }
 
-    private fun createUserAndSendToken(username: String, password: String, roles: List<Roles>): Int? {
+    private fun createUserAndSendToken(username: String, password: String, roles: List<Roles>): Int {
         val encodedPassword = encoder.encode(password)
         val user = User().apply {
             this.username = username
@@ -57,10 +68,10 @@ open class RegistrationService(
         }
         user.confirmed = !profilesHelper.isMailConfirmationEnabled()
 
-        val userId = userService.addUser(user)
+        val userId = userService.saveUser(user)
 
         if (profilesHelper.isMailConfirmationEnabled()) {
-            createAndSendToken(username, userId!!)
+            createAndSendToken(username, userId)
         }
         return userId
     }

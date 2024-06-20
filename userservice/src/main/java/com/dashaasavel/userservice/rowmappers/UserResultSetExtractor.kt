@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.ResultSetExtractor
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 
+
 object UserResultSetExtractor: ResultSetExtractor<User> {
     override fun extractData(rs: ResultSet): User? {
         return if (rs.next()) {
@@ -55,14 +56,9 @@ object ExistsRowExtractor: ResultSetExtractor<Boolean> {
 }
 
 object IntIdResultSetExtractor: ResultSetExtractor<Int> {
-    override fun extractData(rs: ResultSet): Int {
-        rs.next()
-        return rs.getInt("id")
-    }
-}
-
-object IntListRowMapper: RowMapper<Int> {
-    override fun mapRow(rs: ResultSet, rowNum: Int): Int {
-        return rs.getInt("id")
+    override fun extractData(rs: ResultSet): Int? {
+        return if (rs.next()) {
+            rs.getInt("id")
+        } else null
     }
 }

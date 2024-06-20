@@ -6,7 +6,6 @@ import com.dashaasavel.userservice.api.Userservice.*
 import com.dashaasavel.userservice.auth.RegistrationService
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.utils.toGrpcUser
-import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
 
 @GrpcService
@@ -16,18 +15,16 @@ class UserServiceGrpc(
 ) : com.dashaasavel.userservice.api.UserServiceGrpc.UserServiceImplBase() {
     override fun registerUser(
         request: RegisterUser.Request,
-        responseObserver: StreamObserver<Empty>
+        responseObserver: StreamObserver<RegisterUser.Response>
     ) {
         val username = request.username
         val password = request.password
 
         responseObserver.reply {
-            registrationService.registerUser(
-                username,
-                password,
-                listOf(Roles.USER)
-            ) // TODO: получать роли из риквеста??
-            Empty.getDefaultInstance()
+            val userId = registrationService.registerUser(
+                username, password, listOf(Roles.USER)
+            )
+            RegisterUser.Response.newBuilder().setUserId(userId).build()
         }
     }
 
@@ -35,11 +32,11 @@ class UserServiceGrpc(
         request: GetUserById.Request,
         responseObserver: StreamObserver<GetUserById.Response>
     ) {
-        val id = request.id
+        val userId = request.userId
 
         responseObserver.reply {
             val responseBuilder = GetUserById.Response.newBuilder()
-            userService.getUser(id)?.let {
+            userService.getUser(userId)?.let {
                 responseBuilder.user = it.toGrpcUser()
             }
             responseBuilder.build()

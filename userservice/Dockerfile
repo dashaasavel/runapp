@@ -5,5 +5,6 @@ COPY target/userservice-0.0.1-SNAPSHOT.jar /app/
 COPY target/classes/config/application.properties /app/config/
 
 EXPOSE 8091
+EXPOSE 9091
 
 CMD ["java", "-jar", "userservice-0.0.1-SNAPSHOT.jar"]

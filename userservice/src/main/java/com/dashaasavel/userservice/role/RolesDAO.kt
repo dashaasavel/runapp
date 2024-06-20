@@ -9,7 +9,7 @@ class RolesDAO(
 ) {
     private val tableName = "user_roles"
 
-    fun getIdByRole(role: Roles): Int {
+    fun getIdByRole(role: Roles): Int? {
         val sql = "select id from $tableName where role=?"
         return jdbcTemplate.query(sql, IntIdResultSetExtractor, role.name)!!
     }

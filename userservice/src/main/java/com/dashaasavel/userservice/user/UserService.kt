@@ -12,10 +12,10 @@ class UserService(
     /**
      * @return userId or null
      */
-    fun addUser(user: User): Int? {
-        val userId = userDAO.insertUser(user) ?: return null
+    fun saveUser(user: User): Int {
+        val userId = userDAO.insertUser(user)
         for (role in user.roles!!) {
-            val roleId = rolesDAO.getIdByRole(role) // TODO caching
+            val roleId = rolesDAO.getIdByRole(role) ?: error("Role ${role.name} was not found in db")
             userToRolesDAO.addRoleToUser(userId, roleId)
         }
         return userId
