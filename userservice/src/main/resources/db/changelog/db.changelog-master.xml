@@ -9,8 +9,32 @@
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
-                 path="db/users.sql"
-                 relativeToChangelogFile="true"
+                 path="classpath:db/tables/users.sql"
+                 relativeToChangelogFile="false"
+                 splitStatements="true"
+                 stripComments="true"/>
+
+        <sqlFile dbms="postgresql"
+                 encoding="UTF-8"
+                 endDelimiter="\nGO"
+                 path="classpath:db/tables/conf_tokens.sql"
+                 relativeToChangelogFile="false"
+                 splitStatements="true"
+                 stripComments="true"/>
+
+        <sqlFile dbms="postgresql"
+                 encoding="UTF-8"
+                 endDelimiter="\nGO"
+                 path="classpath:db/tables/roles.sql"
+                 relativeToChangelogFile="false"
+                 splitStatements="true"
+                 stripComments="true"/>
+
+        <sqlFile dbms="postgresql"
+                 encoding="UTF-8"
+                 endDelimiter="\nGO"
+                 path="classpath:db/tables/users_to_roles.sql"
+                 relativeToChangelogFile="false"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>

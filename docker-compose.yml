@@ -1,20 +1,29 @@
 version: "3"
 
 services:
-  postgres:
+  userservice-postgres:
+    container_name: userservice-postgres
     image: postgres:11.2
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: dasha
     ports:
-      - 5433:5432
+      - '5433:5432'
+
+  runservice-postgres:
+    container_name: runservice-postgres
+    image: postgres:11.2
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dasha
+    ports:
+      - '5434:5432'
     hostname: postgres
-#    network_mode: host
 
   mongodb:
     image: mongo
-#    container_name: mongo-dev
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
@@ -27,49 +36,35 @@ services:
       timeout: 10s
       retries: 5
 
-  mongo-express:
-    image: mongo-express
-    container_name: mongo-express
-    restart: always
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_MONGODB_PORT=27017
-    ports:
-      - '8081:8081'
-    depends_on:
-      mongodb:
-        condition: service_healthy
-
   userservice:
+    container_name: userservice
     build: userservice/
-#    networks:
-#      default:
-#        aliases:
-#          - userservice.local.own
-#    network_mode: host
     ports:
-      - 8091:8080
+      - '8091:8091'
+      - '9091:9091'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8091/test" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
     hostname: userservice
     depends_on:
-      - postgres
+      - userservice-postgres
 
   runservice:
+    container_name: runservice
     build: runservice/
-#    networks:
-#      default:
-#        aliases:
-#          - runservice.local.own
-#    network_mode: host
     ports:
-      - 8092:8080
-    hostname: runservice
+      - '8092:8092'
+      - '9092:9092'
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
     depends_on:
       - mongodb
+      - runservice-postgres
 
 volumes:
   data: {}
-#networks:
-#  host:
-#    external: true

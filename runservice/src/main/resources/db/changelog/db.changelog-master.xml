@@ -9,8 +9,8 @@
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
-                 path="db/plan_info.sql"
-                 relativeToChangelogFile="true"
+                 path="classpath:db/tables/plan_info.sql"
+                 relativeToChangelogFile="false"
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>

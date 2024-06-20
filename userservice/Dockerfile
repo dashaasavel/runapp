@@ -4,6 +4,6 @@ WORKDIR /app
 COPY target/userservice-0.0.1-SNAPSHOT.jar /app/
 COPY target/classes/config/application.properties /app/config/
 
-#EXPOSE 8080
+EXPOSE 8091
 
 CMD ["java", "-jar", "userservice-0.0.1-SNAPSHOT.jar"]

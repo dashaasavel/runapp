@@ -2,6 +2,7 @@ package com.dashaasavel.integrationtests
 
 import com.dashaasavel.userservice.api.UserServiceGrpc.UserServiceBlockingStub
 import com.dashaasavel.userservice.api.Userservice
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 /**
@@ -11,7 +12,7 @@ class UserServiceIT : BaseServiceTest() {
     @Autowired
     private lateinit var userServiceBlockingStub: UserServiceBlockingStub
 
-//    @Test
+    @Test
     fun test1() {
         val request = Userservice.RegisterUser.Request.newBuilder().apply {
             this.password = "lol9"
