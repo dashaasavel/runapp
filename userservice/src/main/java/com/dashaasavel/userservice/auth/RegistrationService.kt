@@ -1,14 +1,12 @@
 package com.dashaasavel.userservice.auth
 
-import com.dashaasavel.runapplib.grpc.error.GrpcServerException
-import com.dashaasavel.runapplib.grpc.error.UserRegistrationResponseError
+import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
 import com.dashaasavel.userservice.ProfilesHelper
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
 import com.dashaasavel.userservice.auth.mail.MailSender
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.user.User
 import com.dashaasavel.userservice.user.UserService
-import io.grpc.Status
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -28,22 +26,19 @@ open class RegistrationService(
         if (userService.isUserExists(username)) {
             val user = userService.getUserByUsername(username)!!
             if (user.confirmed!!) {
-                throw GrpcServerException(
-                    Status.INVALID_ARGUMENT,
-                    UserRegistrationResponseError.USER_EXISTS_AND_CONFIRMED
+                throw UserRegistrationException(
+                    UserRegistrationError.USER_EXISTS_AND_CONFIRMED
                 )
             }
             val token = confirmationTokenService.getLastConfirmationToken(user.id!!)
             if (token.expirationDate!!.isAfter(LocalDateTime.now())) {
-                throw GrpcServerException(
-                    Status.INVALID_ARGUMENT,
-                    UserRegistrationResponseError.NEED_TO_CONFIRM_ACCOUNT
+                throw UserRegistrationException(
+                    UserRegistrationError.NEED_TO_CONFIRM_ACCOUNT
                 )
             } else {
                 createAndSendToken(username, user.id!!)
-                throw GrpcServerException(
-                    Status.INVALID_ARGUMENT,
-                    UserRegistrationResponseError.NEW_TOKEN_WAS_SENT
+                throw UserRegistrationException(
+                    UserRegistrationError.NEW_TOKEN_WAS_SENT
                 )
             }
 

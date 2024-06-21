@@ -4,7 +4,7 @@ import com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils
 import io.grpc.*
 
 /**
- * Серверный перехватчик для валидации канала
+ * Серверный перехватчик grpc-вызовов для валидации канала клиента
  */
 class ChannelServerInterceptor(
     private val permittedChannels: List<String>

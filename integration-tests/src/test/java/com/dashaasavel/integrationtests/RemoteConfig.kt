@@ -16,7 +16,7 @@ open class RemoteConfig {
         val channel = ManagedChannelBuilder
             .forTarget(userServiceProperties.hostAndPort)
             .usePlaintext()
-            .intercept(GrpcMetadataUtils.clientHeaderAttachingInterceptor("TEST"))
+            .intercept(GrpcMetadataUtils.clientChannelAttachingInterceptor("TEST"))
             .build()
         return UserServiceGrpc.newBlockingStub(channel)
     }
@@ -26,7 +26,7 @@ open class RemoteConfig {
         val channel = ManagedChannelBuilder
             .forTarget(runServiceProperties.hostAndPort)
             .usePlaintext()
-            .intercept(GrpcMetadataUtils.clientHeaderAttachingInterceptor("TEST"))
+            .intercept(GrpcMetadataUtils.clientChannelAttachingInterceptor("TEST"))
             .build()
         return PlanServiceGrpc.newBlockingStub(channel)
     }

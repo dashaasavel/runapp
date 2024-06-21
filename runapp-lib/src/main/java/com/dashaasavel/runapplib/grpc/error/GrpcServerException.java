@@ -1,23 +1,12 @@
 package com.dashaasavel.runapplib.grpc.error;
 
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 
-public class GrpcServerException extends RuntimeException {
-    private final Status status;
+import static com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils.invalidClientData;
 
-    private final UserRegistrationResponseError error;
-
-    public GrpcServerException(Status status, UserRegistrationResponseError error) {
-        super(error.name());
-        this.status = status;
-        this.error = error;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public UserRegistrationResponseError getError() {
-        return error;
+public class GrpcServerException extends StatusRuntimeException {
+    public GrpcServerException(Status status, CommonError error) {
+        super(status, invalidClientData(error));
     }
 }

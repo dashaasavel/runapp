@@ -1,7 +1,6 @@
 package com.dashaasavel.userservice.auth
 
-import com.dashaasavel.runapplib.grpc.error.GrpcServerException
-import com.dashaasavel.runapplib.grpc.error.UserRegistrationResponseError
+import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
 import com.dashaasavel.userservice.ProfilesHelper
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
@@ -49,7 +48,7 @@ class RegistrationServiceTest {
 
         whenever(userService.isUserExists(user.username!!)) doReturn true
 
-        assertThrows<GrpcServerException>(UserRegistrationResponseError.USER_EXISTS_AND_CONFIRMED.name) {
+        assertThrows<UserRegistrationException>(UserRegistrationError.USER_EXISTS_AND_CONFIRMED.name) {
             registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }
@@ -65,7 +64,7 @@ class RegistrationServiceTest {
         whenever(userService.isUserExists(user.username!!)) doReturn true
         whenever(confirmationTokenService.getLastConfirmationToken(user.id!!)) doReturn confirmationTokenDTO
 
-        assertThrows<GrpcServerException>(UserRegistrationResponseError.NEED_TO_CONFIRM_ACCOUNT.name) {
+        assertThrows<UserRegistrationException>(UserRegistrationError.NEED_TO_CONFIRM_ACCOUNT.name) {
             registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }
@@ -81,7 +80,7 @@ class RegistrationServiceTest {
         whenever(userService.isUserExists(user.username!!)) doReturn true
         whenever(confirmationTokenService.getLastConfirmationToken(user.id!!)) doReturn confirmationTokenDTO
 
-        assertThrows<GrpcServerException>(UserRegistrationResponseError.NEW_TOKEN_WAS_SENT.name) {
+        assertThrows<UserRegistrationException>(UserRegistrationError.NEW_TOKEN_WAS_SENT.name) {
             registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }

@@ -1,8 +1,10 @@
 package com.dashaasavel.integrationtests
 
+import com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils.ERROR_METADATA_KEY
 import com.dashaasavel.userservice.api.UserServiceGrpc.UserServiceBlockingStub
 import com.dashaasavel.userservice.api.Userservice
 import com.dashaasavel.userservice.api.Userservice.*
+import io.grpc.StatusRuntimeException
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.assertEquals
@@ -22,7 +24,17 @@ class UserServiceIT : BaseServiceTest() {
             this.password = "lol9"
         }.build()
         var registerUserResponse = RegisterUser.Response.getDefaultInstance()
-        registerUserResponse = userServiceBlockingStub.registerUser(registerUserRequest)
+        try {
+            registerUserResponse = userServiceBlockingStub.registerUser(registerUserRequest)
+        } catch (e: RuntimeException) {
+            when(e) {
+                is StatusRuntimeException -> {
+                    println("----- ERROR -----")
+                    println("status: ${e.status.code}, error: ${e.trailers!![ERROR_METADATA_KEY]}")
+                }
+            }
+            throw e
+        }
 
         val userId = registerUserResponse.userId
 
