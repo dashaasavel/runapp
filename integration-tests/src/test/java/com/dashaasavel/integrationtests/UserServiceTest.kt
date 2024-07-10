@@ -18,12 +18,12 @@ class UserServiceIT : BaseServiceTest() {
 
     @Test
     fun test1() {
-        val username = "dashaasavel4@gmail.com"
-        val registerUserRequest = Userservice.RegisterUser.Request.newBuilder().apply {
+        val username = "dashaasavel5@gmail.com"
+        val registerUserRequest = RegisterUser.Request.newBuilder().apply {
             this.username = username
             this.password = "lol9"
         }.build()
-        var registerUserResponse = RegisterUser.Response.getDefaultInstance()
+        val registerUserResponse: RegisterUser.Response?
         try {
             registerUserResponse = userServiceBlockingStub.registerUser(registerUserRequest)
         } catch (e: RuntimeException) {

@@ -1,0 +1,9 @@
+# environment file for docker-compose purpose
+POSTGRES.VERSION=11.2
+CP.VERSION=7.6.1
+MONGO.VERSION=7.0.12
+
+# 5.1.2
+
+
+Подключить кэш для юзеров в runservice -- сейчас данные могут быть неконсистентны (?)

@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package com.dashaasavel.metric.api;
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+
+// на каждый тип метрик свой топик : Grpc свой
+// по ключу (или по хедеру) определяем клиента, для него и рисуем
+message GrpcMetric {
+  optional int64 timestamp = 1;
+  optional string serviceAndMethodName = 2;
+  optional string channel = 3;
+}

@@ -1,7 +1,9 @@
 package com.dashaasavel.userservice.grpc
 
+import com.dashaasavel.runapplib.KafkaSender
 import com.dashaasavel.runapplib.grpc.core.GrpcServerProperties
 import com.dashaasavel.runapplib.grpc.interceptor.LogServerInterceptor
+import com.dashaasavel.runapplib.grpc.interceptor.MetricInterceptor
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.ServerInterceptor
@@ -11,6 +13,7 @@ import org.springframework.context.SmartLifecycle
 class GrpcServer(
     private val config: GrpcServerProperties,
     private val channelInterceptor: ServerInterceptor,
+    private val kafkaSender: KafkaSender,
     private val handlerRegistry: MutableHandlerRegistry
 ) : SmartLifecycle {
     private lateinit var server: Server
@@ -26,6 +29,7 @@ class GrpcServer(
 //            .addService(userService)
             .intercept(LogServerInterceptor())
             .intercept(channelInterceptor)
+            .intercept(MetricInterceptor(kafkaSender))
 //            .intercept(GlobalGrpcInterceptor())
             .maxInboundMessageSize(config.maxInboundMessageSize)
             .build()

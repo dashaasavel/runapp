@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
-            <artifactId>grpc-netty</artifactId>
+            <artifactId>grpc-netty-shaded</artifactId>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
@@ -39,6 +39,11 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>annotations-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -58,6 +63,10 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-protobuf-serializer</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -103,6 +112,7 @@
     </dependencies>
 
     <build>
+        <finalName>userservice</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

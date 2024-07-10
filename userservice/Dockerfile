@@ -1,10 +1,10 @@
 FROM openjdk:17-ea-16-jdk
 
 WORKDIR /app
-COPY target/userservice-0.0.1-SNAPSHOT.jar /app/
-COPY target/classes/config/application.properties /app/config/
+COPY target/userservice.jar /app/
+COPY target/classes/config/ /app/config/
 
-EXPOSE 8091
-EXPOSE 9091
+EXPOSE 8083
+EXPOSE 8093
 
-CMD ["java", "-jar", "userservice-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "userservice.jar"]

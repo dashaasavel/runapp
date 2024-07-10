@@ -1,9 +1,10 @@
 FROM openjdk:17-ea-16-jdk
 
 WORKDIR /app
-COPY target/runservice-0.0.1-SNAPSHOT.jar /app/
+COPY target/runservice.jar /app/
 COPY target/classes/config/application.properties /app/config/
 
-#EXPOSE 8080
+EXPOSE 8082
+EXPOSE 8092
 
-CMD ["java", "-jar", "runservice-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "runservice.jar"]

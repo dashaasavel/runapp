@@ -23,10 +23,10 @@ class PlanServiceIT : BaseServiceTest() {
             this.addAllDaysOfWeek(listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.SATURDAY))
             this.longRunDistance = 6
         }.build()
-//        val request = CreatePlan.Request.newBuilder().setPlanInfo(planInfo).build()
-//        val response = planService.createPlan(request)
+        val request = CreatePlan.Request.newBuilder().setPlanInfo(planInfo).build()
+        val response = planService.createPlan(request)
 
-//        assertNotEquals(0, response.trainingsList.size)
+        assertNotEquals(0, response.trainingsList.size)
 //
         val planIdentifier = PlanIdentifier.newBuilder().apply {
             this.userId = 4

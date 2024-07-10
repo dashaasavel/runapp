@@ -9,7 +9,7 @@ import io.grpc.ServerInterceptor
 class LogServerInterceptor : ServerInterceptor {
     override fun <ReqT, RespT> interceptCall(
         call: ServerCall<ReqT, RespT>,
-        requestHeaders: io.grpc.Metadata,
+        headers: io.grpc.Metadata,
         next: ServerCallHandler<ReqT, RespT>
     ): ServerCall.Listener<ReqT> {
         val fullMethodName = call.methodDescriptor.fullMethodName
@@ -17,7 +17,7 @@ class LogServerInterceptor : ServerInterceptor {
         println("Service method called: $serviceAndMethod")
         return next.startCall(
             object : ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {},
-            requestHeaders
+            headers
         )
     }
 }
