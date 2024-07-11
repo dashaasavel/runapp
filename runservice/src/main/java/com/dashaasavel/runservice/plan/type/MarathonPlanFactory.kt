@@ -1,7 +1,7 @@
 package com.dashaasavel.runservice.plan.type
 
-import com.dashaasavel.runservice.plan.training.CompetitionRunType
-import com.dashaasavel.runservice.Training
+import com.dashaasavel.runservice.training.CompetitionRunType
+import com.dashaasavel.runservice.training.Training
 import com.dashaasavel.runservice.plan.utils.MarathonValidator
 import com.dashaasavel.runservice.plan.PlanInfo
 import com.dashaasavel.runservice.utils.DateUtils

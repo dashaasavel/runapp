@@ -1,9 +1,11 @@
-package com.dashaasavel.runservice
+package com.dashaasavel.runservice.utils
 
 import com.dashaasavel.runservice.api.Runservice
 import com.dashaasavel.runservice.api.Runservice.SpeedRunningInfo
 import com.dashaasavel.runservice.plan.PlanInfo
-import com.dashaasavel.runservice.plan.training.CompetitionRunType
+import com.dashaasavel.runservice.training.CompetitionRunType
+import com.dashaasavel.runservice.training.Training
+import com.dashaasavel.runservice.training.TrainingType
 import com.dashaasavel.userserviceapi.utils.DateUtils
 
 fun Runservice.CompetitionRunType.toLocalEnum() = CompetitionRunType.valueOf(this.name)

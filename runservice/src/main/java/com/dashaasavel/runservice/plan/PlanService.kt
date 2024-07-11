@@ -1,12 +1,13 @@
 package com.dashaasavel.runservice.plan
 
-import com.dashaasavel.runservice.Training
-import com.dashaasavel.runservice.TrainingsDAO
-import com.dashaasavel.runservice.plan.training.CompetitionRunType
-import com.dashaasavel.runservice.plan.training.Ratio
+import com.dashaasavel.runservice.training.Training
+import com.dashaasavel.runservice.training.TrainingsDAO
+import com.dashaasavel.runservice.training.CompetitionRunType
+import com.dashaasavel.runservice.training.Ratio
 import com.dashaasavel.runservice.plan.type.MarathonPlanFactory
 import com.dashaasavel.runservice.plan.type.PlanAbstractFactory
 import com.dashaasavel.runservice.plan.utils.CreatingPlanError
+import com.dashaasavel.runservice.training.Trainings
 import com.dashaasavel.runservice.utils.DateUtils
 import java.time.DayOfWeek
 import java.time.LocalDate

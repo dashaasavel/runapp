@@ -1,7 +1,5 @@
-package com.dashaasavel.runservice
+package com.dashaasavel.runservice.training
 
-import com.dashaasavel.runservice.plan.training.CompetitionRunType
-import com.dashaasavel.runservice.plan.training.SpeedRunningHelper
 import java.time.LocalDate
 
 class Training private constructor(

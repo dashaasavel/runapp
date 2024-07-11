@@ -1,6 +1,6 @@
 package com.dashaasavel.runservice
 
-import com.dashaasavel.runservice.plan.training.CompetitionRunType
+import com.dashaasavel.runservice.training.CompetitionRunType
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

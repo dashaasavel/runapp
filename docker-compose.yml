@@ -15,9 +15,9 @@ services:
     image: confluentinc/cp-kafka:${KAFKA_VERSION}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
       KAFKA_BROKER_ID: 1
       KAFKA_BROKER_RACK: "r1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -33,16 +33,18 @@ services:
       - '29092:29092'
     depends_on:
       - zookeeper
+      - schemaregistry
 
   schemaregistry:
     image: confluentinc/cp-schema-registry:${KAFKA_VERSION}
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
       SCHEMA_REGISTRY_HOST_NAME: schemaregistry
-      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8085"
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      SCHEMA_REGISTRY_LISTENERS: "http://schemaregistry:8081"
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
     ports:
-      - '8085:8085'
+      - '8081:8081'
     depends_on:
       - zookeeper
 
@@ -82,6 +84,13 @@ services:
     build: ./userservice
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5433/postgres
+      JAVA_OPTS: '
+                -Dcom.sun.management.jmxremote
+                -Dcom.sun.management.jmxremote.port=11383
+                -Dcom.sun.management.jmxremote.rmi.port=11383
+                -Dcom.sun.management.jmxremote.local.only=false
+                -Dcom.sun.management.jmxremote.authenticate=false
+                -Dcom.sun.management.jmxremote.ssl=false'
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8083/test" ]
       interval: 1m
@@ -90,6 +99,7 @@ services:
     ports:
       - '8083:8083'
       - '8093:8093' #grpc
+      - '11383:11383' # jmx
     depends_on:
       - userservice-postgres
 
@@ -110,8 +120,15 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5434/postgres
       MONGODB_URI: mongodb://mongodb:27017/docker-db
+      JAVA_OPTS: '
+                -Dcom.sun.management.jmxremote
+                -Dcom.sun.management.jmxremote.port=11382
+                -Dcom.sun.management.jmxremote.rmi.port=11382
+                -Dcom.sun.management.jmxremote.local.only=false
+                -Dcom.sun.management.jmxremote.authenticate=false
+                -Dcom.sun.management.jmxremote.ssl=false'
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8082/test" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/" ]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -119,11 +136,12 @@ services:
       - mongodb
       - runservice-postgres
     ports:
-      - '8082:8082'
-      - '8092:8092' #grpc
+      - '8082:8082'   #http
+      - '8092:8092'   #grpc
+      - '11382:11382' # jmx
 
-  metric-aggregation-postgres:
-    container_name: metric-aggregation-postgres
+  metric-aggregator-postgres:
+    container_name: metric-aggregator-postgres
     image: postgres:${POSTGRES_VERSION}
     environment:
       POSTGRES_DB: postgres
@@ -132,6 +150,27 @@ services:
     ports:
       - '5435:5432'
 
+  metric-aggregator:
+    container_name: metric-aggregator
+    image: runapp/metric-aggregator
+    build: ./metric-aggregator
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5435/postgres
+      KAFKA_CONSUMER_BOOTSTRAP_SERVERS: "kafka:9092"
+      KAFKA_CONSUMER_SCHEMA_REGISTRY_URL: "schemaregistry:8085"
+      JAVA_OPTS: '
+          -Dcom.sun.management.jmxremote
+          -Dcom.sun.management.jmxremote.port=11384
+          -Dcom.sun.management.jmxremote.rmi.port=11384
+          -Dcom.sun.management.jmxremote.local.only=false
+          -Dcom.sun.management.jmxremote.authenticate=false
+          -Dcom.sun.management.jmxremote.ssl=false'
+    ports:
+      - '8084:8084'   # http
+      - '11384:11384' # jmx
+    depends_on:
+      - metric-aggregator-postgres
+      - kafka
 
   mongodb:
     container_name: mongodb

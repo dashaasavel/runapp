@@ -1,8 +1,6 @@
-package com.dashaasavel.runservice
+package com.dashaasavel.runservice.plan
 
-import com.dashaasavel.runservice.plan.PlanInfoDAO
-import com.dashaasavel.runservice.plan.PlanService
-import com.dashaasavel.runservice.plan.PlanServiceGrpc
+import com.dashaasavel.runservice.training.TrainingsDAO
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.core.MongoTemplate

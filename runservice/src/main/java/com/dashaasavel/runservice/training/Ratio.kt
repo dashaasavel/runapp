@@ -1,4 +1,4 @@
-package com.dashaasavel.runservice.plan.training
+package com.dashaasavel.runservice.training
 
 import kotlin.math.ceil
 import kotlin.math.pow

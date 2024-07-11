@@ -1,7 +1,5 @@
-package com.dashaasavel.runservice
+package com.dashaasavel.runservice.training
 
-import com.dashaasavel.runservice.plan.TRAININGS_COLLECTION_NAME
-import com.dashaasavel.runservice.plan.Trainings
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query

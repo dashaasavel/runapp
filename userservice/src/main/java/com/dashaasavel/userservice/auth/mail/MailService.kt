@@ -1,6 +1,6 @@
 package com.dashaasavel.userservice.auth.mail
 
-import com.dashaasavel.userservice.ProfilesHelper
+import com.dashaasavel.userservice.profiles.ProfilesHelper
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationProperties
 import jakarta.mail.MessagingException
 import org.springframework.boot.autoconfigure.mail.MailProperties

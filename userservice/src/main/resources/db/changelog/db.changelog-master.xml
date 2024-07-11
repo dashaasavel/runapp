@@ -9,7 +9,7 @@
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
-                 path="classpath:db/changes/1_create_users_table.sql"
+                 path="classpath:db/changes/1_create_table_users.sql"
                  relativeToChangelogFile="false"
                  splitStatements="true"
                  stripComments="true"/>
@@ -17,7 +17,7 @@
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
-                 path="classpath:db/changes/2_create_conf_tokens_table.sql"
+                 path="classpath:db/changes/1_create_table_conf_tokens.sql"
                  relativeToChangelogFile="false"
                  splitStatements="true"
                  stripComments="true"/>
@@ -25,7 +25,7 @@
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
-                 path="classpath:db/changes/3_create_roles_table.sql"
+                 path="classpath:db/changes/1_create_table_roles.sql"
                  relativeToChangelogFile="false"
                  splitStatements="true"
                  stripComments="true"/>
@@ -33,7 +33,7 @@
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
-                 path="classpath:db/changes/4_create_users_to_roles_table.sql"
+                 path="classpath:db/changes/1_create_table_users_to_roles.sql"
                  relativeToChangelogFile="false"
                  splitStatements="true"
                  stripComments="true"/>
@@ -42,7 +42,7 @@
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
-                 path="classpath:db/changes/5_insert_roles.sql"
+                 path="classpath:db/changes/2_insert_roles.sql"
                  relativeToChangelogFile="false"
                  splitStatements="true"
                  stripComments="true"/>

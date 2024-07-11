@@ -1,6 +1,5 @@
-package com.dashaasavel.metricaggregator.db
+package com.dashaasavel.metricaggregator.metric
 
-import com.dashaasavel.metricaggregator.Metric
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcTemplate
@@ -19,7 +18,7 @@ class MetricDAO(
                 val e = metrics[i]
                 ps.setLong(1, e.timestamp)
                 ps.setString(2, e.clientId)
-                ps.setObject(3, e.metricValue)
+                ps.setBytes(3, e.metricValue.toByteArray())
             }
 
             override fun getBatchSize(): Int = metrics.size

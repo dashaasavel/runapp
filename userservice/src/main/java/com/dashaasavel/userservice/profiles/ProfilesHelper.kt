@@ -1,4 +1,4 @@
-package com.dashaasavel.userservice
+package com.dashaasavel.userservice.profiles
 
 import jakarta.annotation.PostConstruct
 import org.springframework.core.env.Environment

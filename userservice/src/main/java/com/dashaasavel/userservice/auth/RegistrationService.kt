@@ -1,7 +1,7 @@
 package com.dashaasavel.userservice.auth
 
 import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
-import com.dashaasavel.userservice.ProfilesHelper
+import com.dashaasavel.userservice.profiles.ProfilesHelper
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
 import com.dashaasavel.userservice.auth.mail.MailSender
 import com.dashaasavel.userservice.role.Roles

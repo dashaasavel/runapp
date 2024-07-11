@@ -1,7 +1,7 @@
 package com.dashaasavel.runservice.plan
 
-import com.dashaasavel.runservice.Training
-import com.dashaasavel.runservice.plan.training.CompetitionRunType
+import com.dashaasavel.runservice.training.Training
+import com.dashaasavel.runservice.training.CompetitionRunType
 import java.time.DayOfWeek
 import java.time.LocalDate
 

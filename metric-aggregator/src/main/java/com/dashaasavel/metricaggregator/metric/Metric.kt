@@ -1,4 +1,4 @@
-package com.dashaasavel.metricaggregator
+package com.dashaasavel.metricaggregator.metric
 
 import com.dashaasavel.metric.api.GrpcMetric
 
