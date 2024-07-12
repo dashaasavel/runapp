@@ -1,5 +1,6 @@
 package com.dashaasavel.userservice.auth.mail
 
+import com.dashaasavel.runapplib.logger
 import com.dashaasavel.userservice.profiles.ProfilesHelper
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationProperties
 import jakarta.mail.MessagingException
@@ -13,6 +14,8 @@ class MailService(
     private val confirmationProperties: ConfirmationProperties,
     private val profilesHelper: ProfilesHelper
 ): MailSender {
+    private val logger = logger()
+
     override fun sendToConfirm(toEmail: String, userToken: String) {
         if (!confirmationProperties.enabled || !profilesHelper.isMailConfirmationEnabled()) {
             return
@@ -46,7 +49,7 @@ class MailService(
             helper.setText("")
             mailSender.send(helloMessage)
         } catch (e: MessagingException){
-            println("sending message after confirmation failed $e")
+            logger.error("Sending message after confirmation failed", e)
             throw IllegalStateException("sending message failed");
         }
     }

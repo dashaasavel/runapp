@@ -1,5 +1,6 @@
 package com.dashaasavel.metricaggregator.kafka
 
+import com.dashaasavel.runapplib.logger
 import com.dashaasavel.metric.api.GrpcMetric
 import com.dashaasavel.metricaggregator.metric.Metric
 import com.dashaasavel.metricaggregator.metric.MetricDAO
@@ -11,6 +12,7 @@ class KafkaMessageProcessor(
     private val kafkaConsumer: KafkaConsumer<String, GrpcMetric>,
     private val metricDAO: MetricDAO
 ): InitializingBean {
+    private val logger = logger()
     @Volatile
     private var isConsumingMessagesEnabled = false
 
@@ -20,7 +22,8 @@ class KafkaMessageProcessor(
             if (!records.isEmpty) {
                 val metrics: MutableList<Metric> = ArrayList(records.count())
                 for (record in records) {
-                    println("RECEIVED MESSAGE: key:${record.key()}, record.channel=${record.value().channel}, record.serviceAndMethodName=${record.value().serviceAndMethodName}")
+                    logger.info("Kafka message was received: key={}, record.channel={}, record.serviceAndMethodName={}",
+                        record.key(),record.value().channel, record.value().serviceAndMethodName)
                     val metric = Metric(record.key(), record.timestamp(), record.value())
                     metrics+= metric
                 }

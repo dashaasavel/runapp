@@ -4,6 +4,7 @@ import com.dashaasavel.runapplib.KafkaSender
 import com.dashaasavel.runapplib.grpc.core.GrpcServerProperties
 import com.dashaasavel.runapplib.grpc.interceptor.LogServerInterceptor
 import com.dashaasavel.runapplib.grpc.interceptor.MetricInterceptor
+import com.dashaasavel.runapplib.logger
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.ServerInterceptor
@@ -16,7 +17,10 @@ class GrpcServer(
     private val kafkaSender: KafkaSender,
     private val handlerRegistry: MutableHandlerRegistry
 ) : SmartLifecycle {
+    private val logger = logger()
+
     private lateinit var server: Server
+    @Volatile
     private var isRunning = false
 
     private fun buildServer(): Server {
@@ -26,11 +30,9 @@ class GrpcServer(
         return ServerBuilder
             .forPort(config.port)
             .fallbackHandlerRegistry(handlerRegistry)
-//            .addService(userService)
             .intercept(LogServerInterceptor())
             .intercept(channelInterceptor)
             .intercept(MetricInterceptor(kafkaSender))
-//            .intercept(GlobalGrpcInterceptor())
             .maxInboundMessageSize(config.maxInboundMessageSize)
             .build()
     }
@@ -38,12 +40,13 @@ class GrpcServer(
     override fun start() {
         server = buildServer()
         server.start()
-        println("Grpc server running on port ${config.port}")
+        logger.info("Grpc server started on port:{}", config.port)
         isRunning = true
     }
 
     override fun stop() {
         server.shutdown()
+        logger.info("Grpc server was stopped on port")
         isRunning = false
     }
 
