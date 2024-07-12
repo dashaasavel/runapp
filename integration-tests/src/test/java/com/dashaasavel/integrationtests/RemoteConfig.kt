@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class RemoteConfig {
+class RemoteConfig {
     @Bean
-    open fun userService(userServiceProperties: GrpcServiceProperties): UserServiceGrpc.UserServiceBlockingStub {
+    fun userService(userServiceProperties: GrpcServiceProperties): UserServiceGrpc.UserServiceBlockingStub {
         val channel = ManagedChannelBuilder
             .forTarget(userServiceProperties.hostAndPort)
             .usePlaintext()
@@ -22,7 +22,7 @@ open class RemoteConfig {
     }
 
     @Bean
-    open fun runService(runServiceProperties: GrpcServiceProperties): PlanServiceGrpc.PlanServiceBlockingStub {
+    fun runService(runServiceProperties: GrpcServiceProperties): PlanServiceGrpc.PlanServiceBlockingStub {
         val channel = ManagedChannelBuilder
             .forTarget(runServiceProperties.hostAndPort)
             .usePlaintext()
@@ -33,9 +33,9 @@ open class RemoteConfig {
 
     @Bean
     @ConfigurationProperties("remotegrpc.user-service")
-    open fun userServiceProperties() = GrpcServiceProperties()
+    fun userServiceProperties() = GrpcServiceProperties()
 
     @Bean
     @ConfigurationProperties("remotegrpc.run-service")
-    open fun runServiceProperties() = GrpcServiceProperties()
+    fun runServiceProperties() = GrpcServiceProperties()
 }

@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class CoreConfig(
+class CoreConfig(
     private val buildProperties: BuildProperties
 ): HealthCheckConfigurer {
     @Bean
-    open fun applicationHealthCheck() = ApplicationHealthCheck(buildProperties)
+    fun applicationHealthCheck() = ApplicationHealthCheck(buildProperties)
 
     override fun configureHealthCheck(registry: HealthCheckRegistrar) {
         registry.register("application", applicationHealthCheck())

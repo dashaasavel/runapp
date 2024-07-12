@@ -13,7 +13,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 
-open class PlanService(
+class PlanService(
     private val trainingsDAO: TrainingsDAO,
     private val planInfoDAO: PlanInfoDAO
 ) {
@@ -43,7 +43,7 @@ open class PlanService(
     }
 
     // TODO make transactional
-    open fun savePlan(userId: Int, type: CompetitionRunType) {
+    fun savePlan(userId: Int, type: CompetitionRunType) {
         val plan = plans[userId] ?: error("User doesn't have a plan")
         val savedTrainingsIds = trainingsDAO.save(Trainings(_id = null, plan.trainings))
         plan.info.trainingsId = savedTrainingsIds

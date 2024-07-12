@@ -7,4 +7,4 @@ import org.springframework.test.context.ContextConfiguration
 @SpringBootTest
 @ContextConfiguration(classes = [RemoteConfig::class])
 @EnableConfigurationProperties
-open class BaseServiceTest
+class BaseServiceTest

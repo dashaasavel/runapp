@@ -8,21 +8,21 @@ import org.springframework.context.annotation.Configuration
 import java.util.Properties
 
 @Configuration
-open class KafkaConfig {
+class KafkaConfig {
     @Bean
     @ConfigurationProperties("kafka.producer")
-    open fun kafkaMapProperties() = HashMap<String, String>()
+    fun kafkaMapProperties() = HashMap<String, String>()
 
     @Bean
-    open fun kafkaProducerProperties() = Properties().apply {
+    fun kafkaProducerProperties() = Properties().apply {
         this.putAll(kafkaMapProperties())
     }
 
     @Bean
-    open fun kafkaProducer(): KafkaProducer<String, GrpcMetric> {
+    fun kafkaProducer(): KafkaProducer<String, GrpcMetric> {
         return KafkaProducer(kafkaProducerProperties())
     }
 
     @Bean
-    open fun kafkaSender() = KafkaSender(kafkaProducer())
+    fun kafkaSender() = KafkaSender(kafkaProducer())
 }

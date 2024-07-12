@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Configuration
-open class SecurityConfig {
+class SecurityConfig {
     @Bean
-    open fun passwordEncoder() = BCryptPasswordEncoder()
+    fun passwordEncoder() = BCryptPasswordEncoder()
 }

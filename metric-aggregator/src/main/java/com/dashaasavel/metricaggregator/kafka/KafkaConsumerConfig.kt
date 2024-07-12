@@ -12,31 +12,31 @@ import java.util.Properties
 
 
 @Configuration
-open class KafkaConsumerConfig(
+class KafkaConsumerConfig(
     private val metricDAO: MetricDAO
 ) {
     @Bean
-    open fun kafkaConsumer() : KafkaConsumer<String, GrpcMetric> {
+    fun kafkaConsumer() : KafkaConsumer<String, GrpcMetric> {
         val kafkaConsumer = KafkaConsumer<String, GrpcMetric>(kafkaConsumerProperties())
         kafkaConsumer.subscribe(listOf(KafkaTopicNames.GRPC_METRICS.topicName))
         return kafkaConsumer
     }
 
     @Bean
-    open fun kafkaMessageProcessor() = KafkaMessageProcessor(kafkaConsumer(), metricDAO)
+    fun kafkaMessageProcessor() = KafkaMessageProcessor(kafkaConsumer(), metricDAO)
 
     @Bean
     @ConfigurationProperties("kafka.consumer")
-    open fun kafkaConsumerPropertiesMap() = HashMap<String, String>()
+    fun kafkaConsumerPropertiesMap() = HashMap<String, String>()
 
     @Bean
-    open fun kafkaConsumerProperties() = Properties().also {
+    fun kafkaConsumerProperties() = Properties().also {
         it.putAll(kafkaConsumerPropertiesMap())
     }
 }
 
 @Configuration
-open class TestConfig(
+class TestConfig(
     private val kafkaConsumerPropertiesMap: Map<String, String>
 ) {
     @PostConstruct

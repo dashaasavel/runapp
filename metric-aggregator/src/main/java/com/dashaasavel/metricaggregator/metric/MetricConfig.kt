@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 
 @Configuration
-open class MetricConfig(
+class MetricConfig(
     private val jdbcTemplate: JdbcTemplate,
 ) {
     @Bean
-    open fun metricDAO() = MetricDAO(jdbcTemplate)
+    fun metricDAO() = MetricDAO(jdbcTemplate)
 }

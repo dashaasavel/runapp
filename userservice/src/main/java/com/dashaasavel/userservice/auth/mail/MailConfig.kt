@@ -9,16 +9,15 @@ import org.springframework.core.env.Environment
 import org.springframework.mail.javamail.JavaMailSender
 
 @Configuration
-open class MailConfig(
+class MailConfig(
     private val mailSender: JavaMailSender,
     private val mailProperties: MailProperties,
     private val confirmationProperties: ConfirmationProperties,
     private val env: Environment
 ) {
     @Bean
-    open fun mailService(): MailSender = MailService(mailSender, mailProperties, confirmationProperties, profilesHelper())
+    fun mailService(): MailSender = MailService(mailSender, mailProperties, confirmationProperties, profilesHelper())
 
     @Bean
-    open fun profilesHelper() = ProfilesHelper(env)
-
+    fun profilesHelper() = ProfilesHelper(env)
 }

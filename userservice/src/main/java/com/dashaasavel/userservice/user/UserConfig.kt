@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
-open class UserConfig(
+class UserConfig(
     private val jdbcTemplate: JdbcTemplate,
     private val mailService: MailSender,
     private val confirmationTokenService: ConfirmationTokenService,
@@ -20,20 +20,20 @@ open class UserConfig(
     private val passwordEncoder: PasswordEncoder
 ) {
     @Bean
-    open fun userRepo() = UserDAO(jdbcTemplate)
+    fun userRepo() = UserDAO(jdbcTemplate)
 
     @Bean
-    open fun userToRolesDAO() = UserToRolesDAO(jdbcTemplate)
+    fun userToRolesDAO() = UserToRolesDAO(jdbcTemplate)
 
     @Bean
-    open fun rolesDAO() = RolesDAO(jdbcTemplate)
+    fun rolesDAO() = RolesDAO(jdbcTemplate)
 
     @Bean
-    open fun userService() = UserService(userRepo(), userToRolesDAO(), rolesDAO())
+    fun userService() = UserService(userRepo(), userToRolesDAO(), rolesDAO())
 
     @Bean
-    open fun userGrpcService() = UserServiceGrpc(userService(), registrationService())
+    fun userGrpcService() = UserServiceGrpc(userService(), registrationService())
 
     @Bean
-    open fun registrationService() = RegistrationService(userService(), mailService, profilesHelper, confirmationTokenService, passwordEncoder)
+    fun registrationService() = RegistrationService(userService(), mailService, profilesHelper, confirmationTokenService, passwordEncoder)
 }

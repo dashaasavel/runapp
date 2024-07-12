@@ -9,21 +9,21 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class GrpcConfig(
+class GrpcConfig(
     private val handlerRegistry: MutableHandlerRegistry,
     private val kafkaSender: KafkaSender
 ) {
     @Bean
     @ConfigurationProperties("grpc.server")
-    open fun grpcServerProperties() = GrpcServerProperties()
+    fun grpcServerProperties() = GrpcServerProperties()
 
     @Bean
-    open fun grpcServer() = GrpcServer(grpcServerProperties(), channelServerInterceptor(), kafkaSender, handlerRegistry)
+    fun grpcServer() = GrpcServer(grpcServerProperties(), channelServerInterceptor(), kafkaSender, handlerRegistry)
 
     @Bean
     @ConfigurationProperties("application.security.permitted-channels")
-    open fun permittedChannels() = ArrayList<String>()
+    fun permittedChannels() = ArrayList<String>()
 
     @Bean
-    open fun channelServerInterceptor() = ChannelServerInterceptor(permittedChannels())
+    fun channelServerInterceptor() = ChannelServerInterceptor(permittedChannels())
 }

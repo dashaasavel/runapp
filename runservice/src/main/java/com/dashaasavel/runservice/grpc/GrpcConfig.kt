@@ -7,13 +7,13 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class GrpcConfig(
+class GrpcConfig(
     private val handlerRegistry: MutableHandlerRegistry
 ) {
     @Bean
     @ConfigurationProperties("grpc.server")
-    open fun grpcServerProperties() = GrpcServerProperties()
+    fun grpcServerProperties() = GrpcServerProperties()
 
     @Bean
-    open fun grpcServer() = GrpcServer(grpcServerProperties(), handlerRegistry)
+    fun grpcServer() = GrpcServer(grpcServerProperties(), handlerRegistry)
 }

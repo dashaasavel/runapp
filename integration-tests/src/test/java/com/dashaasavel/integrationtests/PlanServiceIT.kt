@@ -17,28 +17,28 @@ class PlanServiceIT : BaseServiceTest() {
     @Test
     fun `create and save plan`() {
         val planInfo = PlanInfo.newBuilder().apply {
-            this.userId = 4
+            this.userId = 5
             this.type = CompetitionRunType.MARATHON
             this.date = DateUtils.convertToGrpcDate(LocalDate.of(2024, 11, 17))
             this.addAllDaysOfWeek(listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.SATURDAY))
             this.longRunDistance = 6
         }.build()
-        val request = CreatePlan.Request.newBuilder().setPlanInfo(planInfo).build()
-        val response = planService.createPlan(request)
-
-        assertNotEquals(0, response.trainingsList.size)
+//        val request = CreatePlan.Request.newBuilder().setPlanInfo(planInfo).build()
+//        val response = planService.createPlan(request)
 //
+//        assertNotEquals(0, response.trainingsList.size)
+////
         val planIdentifier = PlanIdentifier.newBuilder().apply {
-            this.userId = 4
+            this.userId = 5
             this.type = CompetitionRunType.MARATHON
         }
-        val savePlanRequest = SavePlan.Request.newBuilder().setPlanIdentifier(planIdentifier).build()
-        planService.savePlan(savePlanRequest)
-//
-//        val getPlanRequest = GetPlan.Request.newBuilder().setPlanIdentifier(planIdentifier).build()
-//        val getPlanResponse = planService.getPlan(getPlanRequest)
-//
-//        assertEquals(planInfo, getPlanResponse.plan.planInfo)
+//        val savePlanRequest = SavePlan.Request.newBuilder().setPlanIdentifier(planIdentifier).build()
+//        planService.savePlan(savePlanRequest)
+////
+        val getPlanRequest = GetPlan.Request.newBuilder().setPlanIdentifier(planIdentifier).build()
+        val getPlanResponse = planService.getPlan(getPlanRequest)
+
+        assertEquals(planInfo, getPlanResponse.plan.planInfo)
     }
 
     @Test

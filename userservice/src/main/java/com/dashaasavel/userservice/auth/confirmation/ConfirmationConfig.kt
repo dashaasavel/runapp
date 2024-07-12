@@ -6,16 +6,16 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
 
 @Configuration
-open class ConfirmationConfig(
+class ConfirmationConfig(
     private val jdbcTemplate: JdbcTemplate
 ) {
     @Bean
     @ConfigurationProperties("confirmation")
-    open fun confirmationProperties() = ConfirmationProperties()
+    fun confirmationProperties() = ConfirmationProperties()
 
     @Bean
-    open fun confirmationTokenDAO() = ConfirmationTokenDAO(jdbcTemplate)
+    fun confirmationTokenDAO() = ConfirmationTokenDAO(jdbcTemplate)
 
     @Bean
-    open fun confirmationTokenService() = ConfirmationTokenService(confirmationTokenDAO(), confirmationProperties())
+    fun confirmationTokenService() = ConfirmationTokenService(confirmationTokenDAO(), confirmationProperties())
 }

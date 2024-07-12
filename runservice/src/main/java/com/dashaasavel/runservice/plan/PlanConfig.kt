@@ -7,19 +7,19 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.jdbc.core.JdbcTemplate
 
 @Configuration
-open class PlanConfig(
+class PlanConfig(
     private val mongoTemplate: MongoTemplate,
     private val jdbcTemplate: JdbcTemplate
 ) {
     @Bean
-    open fun planService() = PlanService(trainingDAO(), userToPlanIdsDAO())
+    fun planService() = PlanService(trainingDAO(), userToPlanIdsDAO())
 
     @Bean
-    open fun trainingDAO() = TrainingsDAO(mongoTemplate)
+    fun trainingDAO() = TrainingsDAO(mongoTemplate)
 
     @Bean
-    open fun planServiceGrpc() = PlanServiceGrpc(planService())
+    fun planServiceGrpc() = PlanServiceGrpc(planService())
 
     @Bean
-    open fun userToPlanIdsDAO() = PlanInfoDAO(jdbcTemplate)
+    fun userToPlanIdsDAO() = PlanInfoDAO(jdbcTemplate)
 }

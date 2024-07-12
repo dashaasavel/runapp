@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class GrpcAutoConfiguration {
+class GrpcAutoConfiguration {
     @Bean
-    open fun grpcServiceBeanPostProcessor() = GrpcServiceBeanPostProcessor(mutableHandlerRegistry())
+    fun grpcServiceBeanPostProcessor() = GrpcServiceBeanPostProcessor(mutableHandlerRegistry())
 
     @Bean
-    open fun mutableHandlerRegistry() = MutableHandlerRegistry()
+    fun mutableHandlerRegistry() = MutableHandlerRegistry()
 }

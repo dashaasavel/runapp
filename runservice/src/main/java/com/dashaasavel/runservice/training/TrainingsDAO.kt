@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 
-open class TrainingsDAO(
+class TrainingsDAO(
     private val mongoTemplate: MongoTemplate
 ) {
     fun save(trainings: Trainings): String {
