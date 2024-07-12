@@ -4,7 +4,6 @@ WORKDIR /app
 COPY target/runservice.jar /app/
 COPY target/classes/config/application.properties /app/config/
 
-EXPOSE 8082
-EXPOSE 8092
+EXPOSE 8082 8092
 
 CMD ["java", "-jar", "runservice.jar"]

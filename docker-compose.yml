@@ -2,7 +2,7 @@ version: "3"
 
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:${KAFKA_VERSION}
+    image: confluentinc/cp-zookeeper:${KAFKA_TAG}
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: "2181"
@@ -12,12 +12,12 @@ services:
       - '2181:2181'
 
   kafka:
-    image: confluentinc/cp-kafka:${KAFKA_VERSION}
+    image: confluentinc/cp-kafka:${KAFKA_TAG}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_BROKER_ID: 1
       KAFKA_BROKER_RACK: "r1"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -36,7 +36,7 @@ services:
       - schemaregistry
 
   schemaregistry:
-    image: confluentinc/cp-schema-registry:${KAFKA_VERSION}
+    image: confluentinc/cp-schema-registry:${KAFKA_TAG}
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
       SCHEMA_REGISTRY_HOST_NAME: schemaregistry
@@ -70,7 +70,7 @@ services:
   # databases
   userservice-postgres:
     container_name: userservice-postgres
-    image: postgres:${POSTGRES_VERSION}
+    image: postgres:${POSTGRES_TAG}
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -80,7 +80,7 @@ services:
 
   userservice:
     container_name: userservice
-    image: runapp/userservice
+    image: runapp/userservice:${RUNAPP_TAG}
     build: ./userservice
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5433/postgres
@@ -105,7 +105,7 @@ services:
 
   runservice-postgres:
     container_name: runservice-postgres
-    image: postgres:${POSTGRES_VERSION}
+    image: postgres:${POSTGRES_TAG}
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -115,11 +115,11 @@ services:
 
   runservice:
     container_name: runservice
-    image: runapp/runservice
+    image: runapp/runservice:${RUNAPP_TAG}
     build: ./runservice
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5434/postgres
-      MONGODB_URI: mongodb://mongodb:27017/docker-db
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/docker-db
       JAVA_OPTS: '
                 -Dcom.sun.management.jmxremote
                 -Dcom.sun.management.jmxremote.port=11382
@@ -142,7 +142,7 @@ services:
 
   metric-aggregator-postgres:
     container_name: metric-aggregator-postgres
-    image: postgres:${POSTGRES_VERSION}
+    image: postgres:${POSTGRES_TAG}
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -152,20 +152,23 @@ services:
 
   metric-aggregator:
     container_name: metric-aggregator
-    image: runapp/metric-aggregator
+    image: runapp/metric-aggregator:${RUNAPP_TAG}
     build: ./metric-aggregator
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5435/postgres
       KAFKA_CONSUMER_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_CONSUMER_SCHEMA_REGISTRY_URL: "schemaregistry:8085"
+      TOMCAT_JDWP_PORT: 15284
       JAVA_OPTS: '
           -Dcom.sun.management.jmxremote
           -Dcom.sun.management.jmxremote.port=11384
           -Dcom.sun.management.jmxremote.rmi.port=11384
           -Dcom.sun.management.jmxremote.local.only=false
           -Dcom.sun.management.jmxremote.authenticate=false
-          -Dcom.sun.management.jmxremote.ssl=false'
+          -Dcom.sun.management.jmxremote.ssl=false
+          -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:15284'
     ports:
+      - '15284:15284' #debug
       - '8084:8084'   # http
       - '11384:11384' # jmx
     depends_on:
@@ -174,7 +177,7 @@ services:
 
   mongodb:
     container_name: mongodb
-    image: mongo:${MONGO_VERSION}
+    image: mongo:${MONGO_TAG}
 #    environment:
 #      MONGO_INITDB_ROOT_USERNAME: admin
 #      MONGO_INITDB_ROOT_PASSWORD: password

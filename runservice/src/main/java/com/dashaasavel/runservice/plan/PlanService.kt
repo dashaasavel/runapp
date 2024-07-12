@@ -45,7 +45,7 @@ open class PlanService(
     // TODO make transactional
     open fun savePlan(userId: Int, type: CompetitionRunType) {
         val plan = plans[userId] ?: error("User doesn't have a plan")
-        val savedTrainingsIds = trainingsDAO.save(Trainings(id = null, plan.trainings))
+        val savedTrainingsIds = trainingsDAO.save(Trainings(_id = null, plan.trainings))
         plan.info.trainingsId = savedTrainingsIds
         planInfoDAO.insertPlan(plan.info)
     }

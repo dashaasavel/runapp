@@ -8,11 +8,9 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.kafka.annotation.EnableKafka
 import java.util.Properties
 
 
-@EnableKafka
 @Configuration
 open class KafkaConsumerConfig(
     private val metricDAO: MetricDAO

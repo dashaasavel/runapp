@@ -25,6 +25,7 @@ class KafkaMessageProcessor(
                     metrics+= metric
                 }
                 metricDAO.saveMetricBatch(metrics)
+                kafkaConsumer.commitSync()
             }
         }
     }
