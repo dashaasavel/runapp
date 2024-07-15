@@ -1,33 +1,36 @@
-package com.dashaasavel.runservice.grpc
+package com.dashaasavel.runapplib.grpc.core
 
-import com.dashaasavel.runapplib.grpc.core.GrpcServerProperties
-import com.dashaasavel.runapplib.grpc.interceptor.LogServerInterceptor
 import com.dashaasavel.runapplib.logger
 import io.grpc.Server
 import io.grpc.ServerBuilder
+import io.grpc.ServerInterceptor
 import io.grpc.util.MutableHandlerRegistry
 import org.springframework.context.SmartLifecycle
+import java.util.concurrent.ExecutorService
 
 class GrpcServer(
     private val config: GrpcServerProperties,
-    private val handlerRegistry: MutableHandlerRegistry
-): SmartLifecycle {
+    private val interceptors: List<ServerInterceptor>,
+    private val handlerRegistry: MutableHandlerRegistry,
+    private val executor: ExecutorService
+) : SmartLifecycle {
     private val logger = logger()
 
-    private lateinit var server : Server
+    private lateinit var server: Server
+
     @Volatile
     private var isRunning = false
 
     private fun buildServer(): Server {
-        // TODO ACCESS LOG
-        // TODO GRAFANA INTERCEPTOR
-        // todo executor
-        return ServerBuilder
+        val serverBuilder = ServerBuilder
             .forPort(config.port)
             .fallbackHandlerRegistry(handlerRegistry)
-            .intercept(LogServerInterceptor())
             .maxInboundMessageSize(config.maxInboundMessageSize)
-            .build()
+            .executor(executor)
+        for (interceptor in interceptors) {
+            serverBuilder.intercept(interceptor)
+        }
+        return serverBuilder.build()
     }
 
     override fun start() {

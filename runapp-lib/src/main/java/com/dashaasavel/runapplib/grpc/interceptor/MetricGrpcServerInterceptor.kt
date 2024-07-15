@@ -1,12 +1,12 @@
 package com.dashaasavel.runapplib.grpc.interceptor
 
 import com.dashaasavel.metric.api.GrpcMetric
-import com.dashaasavel.runapplib.KafkaSender
+import com.dashaasavel.runapplib.metric.KafkaMetricSender
 import com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils
 import io.grpc.*
 
-class MetricInterceptor(
-    private val kafkaSender: KafkaSender
+class MetricGrpcServerInterceptor(
+    private val kafkaSender: KafkaMetricSender
 ): ServerInterceptor {
     override fun <ReqT : Any?, RespT : Any?> interceptCall(
         call: ServerCall<ReqT, RespT>,

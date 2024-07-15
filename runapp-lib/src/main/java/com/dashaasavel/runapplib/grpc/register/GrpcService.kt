@@ -1,7 +1,8 @@
 package com.dashaasavel.runapplib.grpc.register
 
 /**
- * Аннотация, которая регистрирует grpc-сервис
+ * Аннотация, с помощью которой можно зарегистрировать grpc-сервис
  */
-// добавить всяких приблуд типа на че вешать, рантайм не рантайм
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class GrpcService()

@@ -1,9 +1,8 @@
 #!/bin/bash
-# пересоздать и запустить сервис
+# пересоздать образ и запустить контейнер
 
 service_name="$1"
 
-docker-compose stop $service_name && docker rmi -f $service_name
-cd $service_name && mvn clean package -DskipTests=true
-cd ..
-docker-compose up -d $service_name
+docker-compose stop $service_name
+mvn clean package -DskipTests=true -am -pl $service_name
+docker-compose up -d --build $service_name

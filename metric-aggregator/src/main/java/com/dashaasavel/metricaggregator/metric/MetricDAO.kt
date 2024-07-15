@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcTemplate
 import java.sql.PreparedStatement
+import java.sql.Timestamp
 
 class MetricDAO(
     private val jdbcTemplate: JdbcTemplate
@@ -16,7 +17,7 @@ class MetricDAO(
         jdbcTemplate.batchUpdate("insert into $tableName (timestamp, clientId, value) values (?, ?, ?)", object: BatchPreparedStatementSetter {
             override fun setValues(ps: PreparedStatement, i: Int) {
                 val e = metrics[i]
-                ps.setLong(1, e.timestamp)
+                ps.setTimestamp(1, Timestamp(e.timestamp))
                 ps.setString(2, e.clientId)
                 ps.setBytes(3, e.metricValue.toByteArray())
             }
