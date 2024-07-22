@@ -1,13 +1,9 @@
 package com.dashaasavel.runservice.plan
 
-import com.dashaasavel.runservice.training.Training
-import com.dashaasavel.runservice.training.TrainingsDAO
-import com.dashaasavel.runservice.training.CompetitionRunType
-import com.dashaasavel.runservice.training.Ratio
 import com.dashaasavel.runservice.plan.type.MarathonPlanFactory
 import com.dashaasavel.runservice.plan.type.PlanAbstractFactory
 import com.dashaasavel.runservice.plan.utils.CreatingPlanError
-import com.dashaasavel.runservice.training.Trainings
+import com.dashaasavel.runservice.training.*
 import com.dashaasavel.runservice.utils.DateUtils
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -50,9 +46,8 @@ class PlanService(
         planInfoDAO.insertPlan(plan.info)
     }
 
-    fun getPlanFromRepo(userId: Int, competitionRunType: CompetitionRunType): Plan {
-        val planInfo =
-            planInfoDAO.getPlanInfo(userId, competitionRunType) ?: throw IllegalStateException("Plan not found")
+    fun getPlanFromRepo(userId: Int, competitionRunType: CompetitionRunType): Plan? {
+        val planInfo = planInfoDAO.getPlanInfo(userId, competitionRunType) ?: return null
         val trainings = trainingsDAO.findById(planInfo.trainingsId!!)?.trainings
             ?: throw IllegalStateException("Plan ${planInfo.trainingsId} not found")
 

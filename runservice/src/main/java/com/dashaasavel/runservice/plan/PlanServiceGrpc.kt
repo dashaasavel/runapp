@@ -58,6 +58,7 @@ class PlanServiceGrpc(
 
         responseObserver.reply {
             val plan = planService.getPlanFromRepo(userId, type)
+                ?: return@reply Runservice.GetPlan.Response.getDefaultInstance()
             val planInfo = plan.info.toGrpc()
             val trainings = plan.trainings!!.map { it.toGrpc() }
             val grpcPlan = Runservice.Plan.newBuilder().apply {
