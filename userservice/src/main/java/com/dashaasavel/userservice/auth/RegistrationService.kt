@@ -24,7 +24,7 @@ open class RegistrationService(
     @Transactional
     open fun registerUser(username: String, password: String, roles: List<Roles>): Int {
         if (userService.isUserExists(username)) {
-            val user = userService.getUserByUsername(username)!!
+            val user = userService.getUser(username)!!
             if (user.confirmed!!) {
                 throw UserRegistrationException(
                     UserRegistrationError.USER_EXISTS_AND_CONFIRMED

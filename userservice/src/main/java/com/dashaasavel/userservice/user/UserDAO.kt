@@ -14,17 +14,17 @@ class UserDAO(
 
     fun getUser(userId: Int): User? {
         val sql = "select id,username,password,confirmed from $tableName where id=?"
-        return jdbcTemplate.query(sql, UserResultSetExtractor, userId)!!
+        return jdbcTemplate.query(sql, UserResultSetExtractor, userId)
     }
 
-    fun getUserByUsername(username: String): User? {
+    fun getUser(username: String): User? {
         val sql = "select id,username,password,confirmed from $tableName where username=?"
-        return jdbcTemplate.query(sql, UserResultSetExtractor, username)!!
+        return jdbcTemplate.query(sql, UserResultSetExtractor, username)
     }
 
-    fun getUserIdByUsername(username: String): Int {
-        val sql = "select id from $tableName where username=?"
-        return jdbcTemplate.query(sql, IntIdResultSetExtractor, username)!!
+    fun deleteUser(userId: Int) {
+        val sql = "delete from $tableName where id=?"
+        jdbcTemplate.update(sql, userId)
     }
 
     fun insertUser(dto: User): Int {

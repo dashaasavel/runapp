@@ -6,8 +6,8 @@ import "google/protobuf/empty.proto";
 
 service UserService {
   rpc RegisterUser(RegisterUser.Request) returns (RegisterUser.Response);
-  rpc GetUserById(GetUserById.Request) returns (GetUserById.Response);
-  rpc GetUserByUsername(GetUserByUsername.Request) returns (GetUserByUsername.Response);
+  rpc GetUser(GetUser.Request) returns (GetUser.Response);
+  rpc DeleteUser(DeleteUser.Request) returns (google.protobuf.Empty);
 }
 
 message RegisterUser {
@@ -20,9 +20,12 @@ message RegisterUser {
   }
 }
 
-message GetUserById {
+message GetUser {
   message Request {
-    optional int32 userId = 1;
+    oneof userIdentifier {
+      int32 userId = 1;
+      string username = 2;
+    }
   }
 
   message Response {
@@ -30,13 +33,12 @@ message GetUserById {
   }
 }
 
-message GetUserByUsername {
+message DeleteUser {
   message Request {
-    optional string username = 1;
-  }
-
-  message Response {
-    optional User user = 1;
+    oneof userIdentifier {
+      int32 userId = 1;
+      string username = 2;
+    }
   }
 }
 

@@ -26,7 +26,7 @@ class RegistrationServiceTest {
     }
 
     private val userService: UserService = mock {
-        on { getUserByUsername(user.username!!) } doReturn user
+        on { getUser(user.username!!) } doReturn user
     }
     private val mailService: MailService = mock {
         on { sendToConfirm(any(), any()) } doAnswer {}

@@ -16,4 +16,9 @@ class UserToRolesDAO(
         val sql = "select roleId as id from $tableName where userId=?"
         return jdbcTemplate.queryForList(sql, Int::class.java, userId)
     }
+
+    fun deleteUserRoles(userId: Int) {
+        val sql = "delete from $tableName where userId=?"
+        jdbcTemplate.update(sql, userId)
+    }
 }

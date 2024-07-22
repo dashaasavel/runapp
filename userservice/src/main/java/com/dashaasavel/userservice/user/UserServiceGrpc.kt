@@ -6,6 +6,7 @@ import com.dashaasavel.userservice.api.Userservice.*
 import com.dashaasavel.userservice.auth.RegistrationService
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.utils.toGrpcUser
+import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
 
 @GrpcService
@@ -28,33 +29,38 @@ class UserServiceGrpc(
         }
     }
 
-    override fun getUserById(
-        request: GetUserById.Request,
-        responseObserver: StreamObserver<GetUserById.Response>
+    override fun getUser(
+        request: GetUser.Request,
+        responseObserver: StreamObserver<GetUser.Response>
     ) {
-        val userId = request.userId
-
         responseObserver.reply {
-            val responseBuilder = GetUserById.Response.newBuilder()
-            userService.getUser(userId)?.let {
+            val responseBuilder = GetUser.Response.newBuilder()
+            val nullableUser = if (request.hasUserId()) {
+                val userId = request.userId
+                userService.getUser(userId)
+            } else if(request.hasUsername()) {
+                val username = request.username
+                userService.getUser(username)
+            } else null
+            nullableUser?.let {
                 responseBuilder.user = it.toGrpcUser()
             }
             responseBuilder.build()
         }
     }
 
-    override fun getUserByUsername(
-        request: GetUserByUsername.Request,
-        responseObserver: StreamObserver<GetUserByUsername.Response>
+    override fun deleteUser(request: DeleteUser.Request,
+                            responseObserver: StreamObserver<Empty>
     ) {
-        val username = request.username
-
         responseObserver.reply {
-            val responseBuilder = GetUserByUsername.Response.newBuilder()
-            userService.getUserByUsername(username)?.let {
-                responseBuilder.user = it.toGrpcUser()
+            if (request.hasUserId()) {
+                val userId = request.userId
+                userService.deleteUserById(userId)
+            } else if(request.hasUsername()) {
+                val username = request.username
+                userService.deleteUserByUsername(username)
             }
-            responseBuilder.build()
+            Empty.getDefaultInstance()
         }
     }
 }

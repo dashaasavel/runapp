@@ -15,3 +15,7 @@ fun <T> StreamObserver<T>.reply(block: () -> T) {
         throw e
     }
 }
+
+fun com.google.protobuf.GeneratedMessageV3.isNull(): Boolean {
+    return this.serializedSize == 0
+}

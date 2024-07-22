@@ -33,13 +33,25 @@ class UserService(
 
     fun isUserExists(username: String) = userDAO.isUserExists(username)
 
-    fun getUserByUsername(username: String): User? {
-        val userDTO = userDAO.getUserByUsername(username) ?: return null
+    fun getUser(username: String): User? {
+        val userDTO = userDAO.getUser(username) ?: return null
         userDTO.roles = getUserRoles(userDTO.id!!)
         return userDTO
     }
 
     private fun getUserRoles(userId: Int): List<Roles> {
         return userToRolesDAO.getUserRoles(userId).map { rolesDAO.getRoleById(it) }
+    }
+
+    fun deleteUserById(userId: Int) {
+        userToRolesDAO.deleteUserRoles(userId)
+        userDAO.deleteUser(userId)
+    }
+
+    fun deleteUserByUsername(username: String) {
+        getUser(username)?.id?.let {
+            userToRolesDAO.deleteUserRoles(it)
+            userDAO.deleteUser(it)
+        }
     }
 }
