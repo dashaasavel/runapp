@@ -1,5 +1,6 @@
 package com.dashaasavel.runapplib.grpc.interceptor
 
+import com.dashaasavel.runapplib.grpc.core.PermittedChannels
 import com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils
 import io.grpc.*
 
@@ -7,7 +8,7 @@ import io.grpc.*
  * Серверный перехватчик grpc-вызовов для валидации канала клиента
  */
 class ChannelServerInterceptor(
-    private val permittedChannels: List<String>
+    private val permittedGrpcChannels: PermittedChannels
 ) : ServerInterceptor {
     override fun <ReqT, RespT> interceptCall(
         call: ServerCall<ReqT, RespT>,
@@ -15,7 +16,7 @@ class ChannelServerInterceptor(
         next: ServerCallHandler<ReqT, RespT>
     ): ServerCall.Listener<ReqT> {
         val channel = headers.get(GrpcMetadataUtils.CHANNEL_METADATA_KEY)
-        if (!permittedChannels.contains(channel)) {
+        if (!permittedGrpcChannels.channels.contains(channel)) {
             call.close(Status.PERMISSION_DENIED, GrpcMetadataUtils.invalidChannelMetadata(channel))
         }
         return next.startCall(object : ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {}, headers)
