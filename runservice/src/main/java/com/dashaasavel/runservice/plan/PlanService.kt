@@ -53,8 +53,7 @@ class PlanService(
 
     fun getPlanFromRepo(userId: Int, competitionRunType: CompetitionRunType): Plan? {
         val planInfo = planInfoDAO.getPlanInfo(userId, competitionRunType) ?: return null
-        val trainings = trainingsDAO.findById(planInfo.trainingsId!!)?.trainings
-            ?: throw IllegalStateException("Plan ${planInfo.trainingsId} not found")
+        val trainings = trainingsDAO.findById(planInfo.trainingsId!!)!!.trainings
 
         return Plan(planInfo, trainings)
     }

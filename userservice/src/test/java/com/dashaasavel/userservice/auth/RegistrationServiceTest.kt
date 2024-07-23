@@ -1,15 +1,14 @@
 package com.dashaasavel.userservice.auth
 
 import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
-import com.dashaasavel.userservice.profiles.ProfilesHelper
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
 import com.dashaasavel.userservice.auth.mail.MailService
+import com.dashaasavel.userservice.profiles.ProfilesHelper
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.user.User
 import com.dashaasavel.userservice.user.UserService
 import com.nhaarman.mockitokotlin2.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -34,13 +33,8 @@ class RegistrationServiceTest {
     private val profilesHelper: ProfilesHelper = mock()
     private val confirmationTokenService: ConfirmationTokenService = mock()
     private val passwordEncoder: PasswordEncoder = mock()
-    private lateinit var registrationService: RegistrationService
-
-    @BeforeEach
-    fun before() {
-        registrationService =
-            RegistrationService(userService, mailService, profilesHelper, confirmationTokenService, passwordEncoder)
-    }
+    private val registrationService =
+        RegistrationService(userService, mailService, profilesHelper, confirmationTokenService, passwordEncoder)
 
     @Test
     fun `register existing and confirmed account`() {

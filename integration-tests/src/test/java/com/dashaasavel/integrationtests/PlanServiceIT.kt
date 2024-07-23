@@ -6,8 +6,6 @@ import io.grpc.StatusRuntimeException
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PlanServiceIT : BaseServiceTest() {
@@ -15,6 +13,16 @@ class PlanServiceIT : BaseServiceTest() {
     fun `create marathon plan with non existing user`() {
         assertGrpcCallThrows<StatusRuntimeException>(CreatingPlanError.USER_DOES_NOT_EXIST) {
             planService.createAndSaveMarathonPlan(Random().nextInt() % 5000)
+        }
+    }
+
+    @Test
+    fun `create 2 marathon plans`() {
+        val userId = userService.registerUser()
+        planService.createAndSaveMarathonPlan(userId).planInfo.identifier
+
+        assertGrpcCallThrows<StatusRuntimeException>(CreatingPlanError.PLAN_ALREADY_EXISTS) {
+            planService.createAndSaveMarathonPlan(userId)
         }
     }
 

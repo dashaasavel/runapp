@@ -19,7 +19,7 @@ open class RegistrationService(
     private val encoder: PasswordEncoder
 ) {
     /**
-     * userId or null, if
+     * userId or null
      */
     @Transactional
     open fun registerUser(username: String, password: String, roles: List<Roles>): Int {
