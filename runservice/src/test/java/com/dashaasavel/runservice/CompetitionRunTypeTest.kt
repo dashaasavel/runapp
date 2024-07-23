@@ -1,7 +1,7 @@
 package com.dashaasavel.runservice
 
-import com.dashaasavel.runservice.training.CompetitionRunType
-import org.junit.jupiter.api.Assertions.*
+import com.dashaasavel.userserviceapi.utils.CompetitionRunType
+import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 
 class CompetitionRunTypeTest {

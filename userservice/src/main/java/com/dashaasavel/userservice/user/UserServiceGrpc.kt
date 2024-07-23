@@ -8,6 +8,7 @@ import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.utils.toGrpcUser
 import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
+import java.lang.RuntimeException
 
 @GrpcService
 class UserServiceGrpc(
@@ -46,6 +47,22 @@ class UserServiceGrpc(
                 responseBuilder.user = it.toGrpcUser()
             }
             responseBuilder.build()
+        }
+    }
+
+    override fun isUserExists(
+        request: IsUserExists.Request,
+        responseObserver: StreamObserver<IsUserExists.Response>
+    ) {
+        responseObserver.reply {
+            val isUserExists = if (request.hasUserId()) {
+                val userId = request.userId
+                userService.isUserExists(userId)
+            } else if (request.hasUsername()) {
+                val username = request.username
+                userService.isUserExists(username)
+            } else throw RuntimeException() // TODO
+            IsUserExists.Response.newBuilder().setIsUserExists(isUserExists).build()
         }
     }
 

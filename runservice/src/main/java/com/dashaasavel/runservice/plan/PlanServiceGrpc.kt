@@ -20,8 +20,8 @@ class PlanServiceGrpc(
         responseObserver: StreamObserver<Response>
     ) {
         val planInfo = request.planInfo
-        val userId = planInfo.userId
-        val type = planInfo.type.toLocalEnum()
+        val userId = planInfo.identifier.userId
+        val type = planInfo.identifier.type.toLocalEnum()
         val date = planInfo.date
         val localDate = LocalDate.of(date.year, date.month, date.day)
         val timesAWeek = planInfo.daysOfWeekList.map { convertToDayOfWeek(it) }

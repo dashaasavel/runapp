@@ -1,5 +1,7 @@
 package com.dashaasavel.integrationtests
 
+import com.dashaasavel.integrationtests.facades.PlanServiceFacade
+import com.dashaasavel.integrationtests.facades.UserServiceFacade
 import com.dashaasavel.runapplib.grpc.core.GrpcServiceProperties
 import com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils
 import com.dashaasavel.runservice.api.PlanServiceGrpc
@@ -10,11 +12,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class RemoteConfig {
+class RemoteGrpcConfig {
     @Bean
-    fun userService(userServiceProperties: GrpcServiceProperties): UserServiceGrpc.UserServiceBlockingStub {
+    fun userService(): UserServiceGrpc.UserServiceBlockingStub {
         val channel = ManagedChannelBuilder
-            .forTarget(userServiceProperties.hostAndPort)
+            .forTarget(userServiceProperties().hostAndPort)
             .usePlaintext()
             .intercept(GrpcMetadataUtils.clientChannelAttachingInterceptor("TEST"))
             .build()
@@ -22,14 +24,20 @@ class RemoteConfig {
     }
 
     @Bean
-    fun runService(runServiceProperties: GrpcServiceProperties): PlanServiceGrpc.PlanServiceBlockingStub {
+    fun userServiceFacade() = UserServiceFacade(userService())
+
+    @Bean
+    fun runService(): PlanServiceGrpc.PlanServiceBlockingStub {
         val channel = ManagedChannelBuilder
-            .forTarget(runServiceProperties.hostAndPort)
+            .forTarget(runServiceProperties().hostAndPort)
             .usePlaintext()
             .intercept(GrpcMetadataUtils.clientChannelAttachingInterceptor("TEST"))
             .build()
         return PlanServiceGrpc.newBlockingStub(channel)
     }
+
+    @Bean
+    fun planServiceFacade() = PlanServiceFacade(runService())
 
     @Bean
     @ConfigurationProperties("remotegrpc.user-service")

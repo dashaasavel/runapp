@@ -124,6 +124,7 @@ services:
       SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/docker-db
       KAFKA_METRIC_PRODUCER_BOOTSTRAP_SERVERS: 'kafka:9092'
       KAFKA_METRIC_PRODUCER_SCHEMA_REGISTRY_URL: 'http://schemaregistry:8081'
+      REMOTEGRPC_USER_SERVICE_HOST_AND_PORT: 'userservice:8093'
       JAVA_OPTS: '
                 -Dcom.sun.management.jmxremote
                 -Dcom.sun.management.jmxremote.port=11382
@@ -136,13 +137,14 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
-    depends_on:
-      - mongodb
-      - runservice-postgres
     ports:
       - '8082:8082'   #http
       - '8092:8092'   #grpc
       - '11382:11382' # jmx
+    depends_on:
+      - mongodb
+      - runservice-postgres
+
 
   metric-aggregator-postgres:
     container_name: metric-aggregator-postgres

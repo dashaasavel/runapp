@@ -33,6 +33,8 @@ class UserService(
 
     fun isUserExists(username: String) = userDAO.isUserExists(username)
 
+    fun isUserExists(userId: Int) = userDAO.isUserExists(userId)
+
     fun getUser(username: String): User? {
         val userDTO = userDAO.getUser(username) ?: return null
         userDTO.roles = getUserRoles(userDTO.id!!)

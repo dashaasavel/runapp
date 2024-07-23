@@ -1,8 +1,8 @@
 package com.dashaasavel.runservice.plan.type
 
-import com.dashaasavel.runservice.training.CompetitionRunType
 import com.dashaasavel.runservice.training.Training
 import com.dashaasavel.runservice.plan.PlanInfo
+import com.dashaasavel.userserviceapi.utils.CompetitionRunType
 import java.lang.UnsupportedOperationException
 import java.time.DayOfWeek
 import java.time.DayOfWeek.*

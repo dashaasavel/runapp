@@ -47,6 +47,11 @@ class UserDAO(
         return jdbcTemplate.query(query, ExistsRowExtractor, username)!!
     }
 
+    fun isUserExists(userId: Int): Boolean {
+        val query = "select 1 from $tableName where id=?"
+        return jdbcTemplate.query(query, ExistsRowExtractor, userId)!!
+    }
+
     fun updateConfirmed(userId: Int, confirmed: Boolean) {
         val query = "update $tableName set confirmed=? where id=?"
         jdbcTemplate.update(query, confirmed, userId)

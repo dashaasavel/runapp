@@ -1,6 +1,6 @@
 package com.dashaasavel.runservice.plan
 
-import com.dashaasavel.runservice.training.CompetitionRunType
+import com.dashaasavel.userserviceapi.utils.CompetitionRunType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import java.sql.Date

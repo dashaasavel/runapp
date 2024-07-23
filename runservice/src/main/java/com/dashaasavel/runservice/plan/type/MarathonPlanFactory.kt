@@ -1,10 +1,10 @@
 package com.dashaasavel.runservice.plan.type
 
-import com.dashaasavel.runservice.training.CompetitionRunType
 import com.dashaasavel.runservice.training.Training
 import com.dashaasavel.runservice.plan.utils.MarathonValidator
 import com.dashaasavel.runservice.plan.PlanInfo
 import com.dashaasavel.runservice.utils.DateUtils
+import com.dashaasavel.userserviceapi.utils.CompetitionRunType
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters

@@ -2,8 +2,6 @@ syntax = "proto2";
 
 package com.dashaasavel.metric.api;
 
-import "google/protobuf/empty.proto";
-
 option java_multiple_files = true;
 
 // на каждый тип метрик свой топик : Grpc свой

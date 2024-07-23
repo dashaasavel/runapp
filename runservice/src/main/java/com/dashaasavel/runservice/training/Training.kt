@@ -1,5 +1,7 @@
 package com.dashaasavel.runservice.training
 
+import com.dashaasavel.userserviceapi.utils.CompetitionRunType
+import com.dashaasavel.userserviceapi.utils.TrainingType
 import java.time.LocalDate
 
 class Training private constructor(
@@ -45,8 +47,4 @@ class Training private constructor(
     override fun toString(): String {
         return "Training(trainingNumber=$trainingNumber, weekNumber=$weekNumber, type=$type, distance=$distance, speedRunningInfo=$speedRunningInfo, date=$date)"
     }
-}
-
-enum class TrainingType {
-    LONG_DISTANCE, REGULAR_RUN, GYM, SPEED_RUNNING, COMPETITION
 }
