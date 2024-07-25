@@ -44,7 +44,7 @@ class PlanServiceFacade(
     fun createMarathonPlanIdentifier(
         userId: Int,
     ): Runservice.PlanIdentifier {
-        return PlanServiceMessageWrappers.planIdentifier(userId, Runservice.CompetitionRunType.MARATHON)
+        return PlanServiceMessageWrappers.planIdentifier(userId, CompetitionRunType.MARATHON)
     }
 
     fun createPlan(planInfo: Runservice.PlanInfo): Runservice.CreatePlan.Response {

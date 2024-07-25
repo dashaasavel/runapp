@@ -42,7 +42,7 @@ class GrpcServer(
 
     override fun stop() {
         server.shutdown()
-        logger.info("Grpc server was stopped on port")
+        logger.info("Grpc server was stopped")
         isRunning = false
     }
 

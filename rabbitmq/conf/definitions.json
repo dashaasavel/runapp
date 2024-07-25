@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "name": "user",
+      "password": "password",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts":[
+    {"name":"/"}
+  ],
+  "queues": [
+    {
+      "name": "user_deletion_queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "user": "user",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "user_events_exchange",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "user_events_exchange",
+      "vhost": "/",
+      "destination": "user_deletion_queue",
+      "destination_type": "queue",
+      "routing_key": "user_deletion",
+      "arguments": {}
+    }
+  ]
+}

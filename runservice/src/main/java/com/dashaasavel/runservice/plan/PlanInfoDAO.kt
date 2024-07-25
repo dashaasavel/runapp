@@ -44,7 +44,7 @@ class PlanInfoDAO(
     /**
      * @return trainingsId
      */
-    fun deletePlan(userId: Int, competitionRunType: CompetitionRunType): String {
+    fun deletePlan(userId: Int, competitionRunType: CompetitionRunType): String? {
         val query = "delete from $tableName where userId=? and competitionRunType=?"
         val keyHolder = GeneratedKeyHolder()
 
@@ -54,6 +54,18 @@ class PlanInfoDAO(
             ps.setString(2, competitionRunType.name)
             ps
         }, keyHolder)
-        return keyHolder.keys?.get("trainingsId") as String
+        return keyHolder.keys?.get("trainingsId") as String?
+    }
+
+    fun deleteAllPlans(userId: Int): List<String> {
+        val query = "delete from $tableName where userId=?"
+        val keyHolder = GeneratedKeyHolder()
+
+        jdbcTemplate.update({
+            val ps = it.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
+            ps.setInt(1, userId)
+            ps
+        }, keyHolder)
+        return keyHolder.keyList.map { it["trainingsId"] as String }
     }
 }

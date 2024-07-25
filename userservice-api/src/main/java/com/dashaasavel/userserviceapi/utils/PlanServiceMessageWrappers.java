@@ -7,17 +7,17 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class PlanServiceMessageWrappers {
-    public static Runservice.PlanIdentifier planIdentifier(int userId, Runservice.CompetitionRunType type) {
+    public static Runservice.PlanIdentifier planIdentifier(int userId, CompetitionRunType type) {
         return Runservice.PlanIdentifier.newBuilder()
                 .setUserId(userId)
-                .setType(type)
+                .setType(convertToGrpc(type))
                 .build();
     }
 
     public static Runservice.PlanInfo planInfo(int userId, CompetitionRunType type, LocalDate competitionDate, List<DayOfWeek> trainingDays, int longRunDistance) {
         var convertedTrainingsDays = trainingDays.stream().map(DateUtils::convertToGrpcDayOfWeek).toList();
         return Runservice.PlanInfo.newBuilder()
-                .setIdentifier(planIdentifier(userId, convertToGrpc(type)))
+                .setIdentifier(planIdentifier(userId, type))
                 .setDate(DateUtils.convertToGrpcDate(competitionDate))
                 .addAllDaysOfWeek(convertedTrainingsDays)
                 .setLongRunDistance(longRunDistance)

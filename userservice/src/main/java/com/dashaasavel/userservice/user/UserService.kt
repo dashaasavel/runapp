@@ -1,5 +1,6 @@
 package com.dashaasavel.userservice.user
 
+import com.dashaasavel.userservice.rabbit.UserDeletionNotificator
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.role.RolesDAO
 import com.dashaasavel.userservice.role.UserToRolesDAO
@@ -7,7 +8,8 @@ import com.dashaasavel.userservice.role.UserToRolesDAO
 class UserService(
     private val userDAO: UserDAO,
     private val userToRolesDAO: UserToRolesDAO,
-    private val rolesDAO: RolesDAO
+    private val rolesDAO: RolesDAO,
+    private val notificator: UserDeletionNotificator
 ) {
     /**
      * @return userId or null
@@ -45,15 +47,15 @@ class UserService(
         return userToRolesDAO.getUserRoles(userId).map { rolesDAO.getRoleById(it) }
     }
 
-    fun deleteUserById(userId: Int) {
+    fun deleteUser(userId: Int) {
         userToRolesDAO.deleteUserRoles(userId)
         userDAO.deleteUser(userId)
+        notificator.notify(userId)
     }
 
-    fun deleteUserByUsername(username: String) {
+    fun deleteUser(username: String) {
         getUser(username)?.id?.let {
-            userToRolesDAO.deleteUserRoles(it)
-            userDAO.deleteUser(it)
+            deleteUser(it)
         }
     }
 }

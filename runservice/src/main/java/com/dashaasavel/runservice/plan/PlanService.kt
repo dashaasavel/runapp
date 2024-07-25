@@ -1,10 +1,14 @@
 package com.dashaasavel.runservice.plan
 
 import com.dashaasavel.runapplib.grpc.error.CreatingPlanError
+import com.dashaasavel.runapplib.logger
 import com.dashaasavel.runservice.api.UserService
 import com.dashaasavel.runservice.plan.type.MarathonPlanFactory
 import com.dashaasavel.runservice.plan.type.PlanAbstractFactory
-import com.dashaasavel.runservice.training.*
+import com.dashaasavel.runservice.training.Ratio
+import com.dashaasavel.runservice.training.Training
+import com.dashaasavel.runservice.training.Trainings
+import com.dashaasavel.runservice.training.TrainingsDAO
 import com.dashaasavel.runservice.utils.DateUtils
 import com.dashaasavel.userserviceapi.utils.CompetitionRunType
 import java.time.DayOfWeek
@@ -16,6 +20,8 @@ class PlanService(
     private val planInfoDAO: PlanInfoDAO,
     private val userService: UserService
 ) {
+    private val logger = logger()
+
     private val plans = ConcurrentHashMap<Int, Plan>()
     fun createPlan(
         userId: Int, type: CompetitionRunType, competitionDate: LocalDate,
@@ -60,8 +66,16 @@ class PlanService(
 
     // TODO make transactional
     fun deletePlan(userId: Int, type: CompetitionRunType) {
-        val trainingsId = planInfoDAO.deletePlan(userId, type)
+        val trainingsId = planInfoDAO.deletePlan(userId, type) ?: kotlin.run {
+            logger.info("Plan with identifier(userId={}, type={}) was not found in database", userId, type.name)
+            return
+        }
         trainingsDAO.deleteById(trainingsId)
+    }
+
+    fun deleteAllPlans(userId: Int) {
+        val ids = planInfoDAO.deleteAllPlans(userId)
+        trainingsDAO.deleteByIds(ids)
     }
 
     private fun checkIfPlanExists(userId: Int, competitionRunType: CompetitionRunType) {

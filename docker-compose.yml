@@ -86,6 +86,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5433/postgres
       KAFKA_METRIC_PRODUCER_BOOTSTRAP_SERVERS: 'kafka:9092'
       KAFKA_METRIC_PRODUCER_SCHEMA_REGISTRY_URL: 'http://schemaregistry:8081'
+      RABBIT_PRODUCER_HOST: 'rabbitmq'
       JAVA_OPTS: '
                 -Dcom.sun.management.jmxremote
                 -Dcom.sun.management.jmxremote.port=11383
@@ -125,6 +126,7 @@ services:
       KAFKA_METRIC_PRODUCER_BOOTSTRAP_SERVERS: 'kafka:9092'
       KAFKA_METRIC_PRODUCER_SCHEMA_REGISTRY_URL: 'http://schemaregistry:8081'
       REMOTEGRPC_USER_SERVICE_HOST_AND_PORT: 'userservice:8093'
+      RABBIT_CONSUMER_HOST: 'rabbitmq'
       JAVA_OPTS: '
                 -Dcom.sun.management.jmxremote
                 -Dcom.sun.management.jmxremote.port=11382
@@ -144,6 +146,7 @@ services:
     depends_on:
       - mongodb
       - runservice-postgres
+      - rabbitmq
 
 
   metric-aggregator-postgres:
@@ -174,7 +177,7 @@ services:
           -Dcom.sun.management.jmxremote.ssl=false
           -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:15284'
     ports:
-      - '15284:15284' #debug
+      - '15284:15284' # debug
       - '8084:8084'   # http
       - '11384:11384' # jmx
     depends_on:
@@ -196,3 +199,14 @@ services:
       retries: 5
     ports:
       - '27017:27017'
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: runapp/rabbitmq:${RABBITMQ_TAG}
+    build: ./rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - '5672:5672'   # amqp
+      - '15672:15672' # http

@@ -72,10 +72,10 @@ class UserServiceGrpc(
         responseObserver.reply {
             if (request.hasUserId()) {
                 val userId = request.userId
-                userService.deleteUserById(userId)
+                userService.deleteUser(userId)
             } else if(request.hasUsername()) {
                 val username = request.username
-                userService.deleteUserByUsername(username)
+                userService.deleteUser(username)
             }
             Empty.getDefaultInstance()
         }

@@ -4,6 +4,7 @@ import com.dashaasavel.userservice.profiles.ProfilesHelper
 import com.dashaasavel.userservice.auth.RegistrationService
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
 import com.dashaasavel.userservice.auth.mail.MailSender
+import com.dashaasavel.userservice.rabbit.UserDeletionNotificator
 import com.dashaasavel.userservice.role.RolesDAO
 import com.dashaasavel.userservice.role.UserToRolesDAO
 import org.springframework.context.annotation.Bean
@@ -17,7 +18,8 @@ class UserConfig(
     private val mailService: MailSender,
     private val confirmationTokenService: ConfirmationTokenService,
     private val profilesHelper: ProfilesHelper,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val notificator: UserDeletionNotificator
 ) {
     @Bean
     fun userRepo() = UserDAO(jdbcTemplate)
@@ -29,7 +31,7 @@ class UserConfig(
     fun rolesDAO() = RolesDAO(jdbcTemplate)
 
     @Bean
-    fun userService() = UserService(userRepo(), userToRolesDAO(), rolesDAO())
+    fun userService() = UserService(userRepo(), userToRolesDAO(), rolesDAO(), notificator)
 
     @Bean
     fun userGrpcService() = UserServiceGrpc(userService(), registrationService())

@@ -72,11 +72,14 @@ class UserServiceIT : BaseServiceTest() {
     @Test
     fun `delete user and check if plans deleted too`() {
         val userId = userService.registerUser()
-        val identifier = planService.createAndSaveMarathonPlan(userId).planInfo.identifier
+        val planInfo = planService.createAndSaveMarathonPlan(userId).planInfo
+        val identifier = planInfo.identifier
 
         userService.deleteUserById(userId)
+        Thread.sleep(10000)
         val plan = planService.getPlan(identifier)
 
+        // FIXME: check results with retries (because rabbit)
         assertTrue {
             plan.isNull()
         }
