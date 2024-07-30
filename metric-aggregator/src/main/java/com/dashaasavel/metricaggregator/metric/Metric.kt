@@ -7,4 +7,6 @@ class Metric(
     var clientId: String,
     var timestamp: Long,
     var metricValue: GrpcMetric
-)
+) {
+    var id: Int? = null
+}

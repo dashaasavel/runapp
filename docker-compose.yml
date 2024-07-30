@@ -2,16 +2,20 @@ version: "3"
 
 services:
   zookeeper:
+    container_name: zookeeper
     image: confluentinc/cp-zookeeper:${KAFKA_TAG}
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: "2181"
       ZOOKEEPER_TICK_TIME: "2000"
       ZOOKEEPER_SERVERS: "zookeeper:22888:23888"
+    networks:
+      - runapp
     ports:
       - '2181:2181'
 
   kafka:
+    container_name: kafka
     image: confluentinc/cp-kafka:${KAFKA_TAG}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
@@ -26,6 +30,8 @@ services:
       KAFKA_SCHEMA_REGISTRY_URL: "http://schemaregistry:8081"
       KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
       KAFKA_JMX_PORT: 9991
+    networks:
+      - runapp
     ports:
       # Exposes 29092 for external connections to the broker
       # Use kafka1:9092 for connections internal on the docker network
@@ -36,6 +42,7 @@ services:
       - schemaregistry
 
   schemaregistry:
+    container_name: schemaregistry
     image: confluentinc/cp-schema-registry:${KAFKA_TAG}
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
@@ -43,6 +50,8 @@ services:
       SCHEMA_REGISTRY_LISTENERS: "http://schemaregistry:8081"
 #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+    networks:
+      - runapp
     ports:
       - '8081:8081'
     depends_on:
@@ -60,6 +69,8 @@ services:
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
+    networks:
+      - runapp
     ports:
       - '9021:9021'
     depends_on:
@@ -75,6 +86,8 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: dasha
+    networks:
+      - runapp
     ports:
       - '5433:5432'
 
@@ -99,6 +112,8 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
+    networks:
+      - runapp
     ports:
       - '8083:8083'
       - '8093:8093' #grpc
@@ -113,6 +128,8 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: dasha
+    networks:
+      - runapp
     ports:
       - '5434:5432'
 
@@ -139,6 +156,8 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
+    networks:
+      - runapp
     ports:
       - '8082:8082'   #http
       - '8092:8092'   #grpc
@@ -156,6 +175,8 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: dasha
+    networks:
+      - runapp
     ports:
       - '5435:5432'
 
@@ -176,6 +197,8 @@ services:
           -Dcom.sun.management.jmxremote.authenticate=false
           -Dcom.sun.management.jmxremote.ssl=false
           -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:15284'
+    networks:
+      - runapp
     ports:
       - '15284:15284' # debug
       - '8084:8084'   # http
@@ -197,6 +220,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
+    networks:
+      - runapp
     ports:
       - '27017:27017'
 
@@ -207,6 +232,12 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
+    networks:
+      - runapp
     ports:
       - '5672:5672'   # amqp
       - '15672:15672' # http
+
+networks:
+  runapp:
+    driver: bridge

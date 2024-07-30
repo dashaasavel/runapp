@@ -54,6 +54,12 @@
             <artifactId>kotlin-reflect</artifactId>
         </dependency>
 
+        <!-- GRPC -->
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty-shaded</artifactId>
+        </dependency>
+
         <!-- DB -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -83,10 +89,6 @@
         </dependency>
 
         <!-- KAFKA -->
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-protobuf-serializer</artifactId>

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 import java.util.Properties
 
 
-@Configuration()
+@Configuration
 class KafkaConsumerConfig(
     private val metricDAO: MetricDAO
 ) {

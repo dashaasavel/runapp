@@ -15,22 +15,26 @@
         <dependency>
             <groupId>com.dashaasavel</groupId>
             <artifactId>userservice-api</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- SPRING CORE -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- KOTLIN -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- KAFKA -->
@@ -44,20 +48,24 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty-shaded</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-util</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- OTHER -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

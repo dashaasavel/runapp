@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.util.*
-import kotlin.collections.HashMap
 
 @Configuration
 @ConditionalOnProperty("metric-aggregator.kafka-sending.enabled", havingValue = "true")
