@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 
-class RegistrationServiceTest {
+class AuthServiceTest {
     private val user = User().apply {
         this.id = 1
         this.username = "user1"
@@ -33,8 +33,9 @@ class RegistrationServiceTest {
     private val profilesHelper: ProfilesHelper = mock()
     private val confirmationTokenService: ConfirmationTokenService = mock()
     private val passwordEncoder: PasswordEncoder = mock()
-    private val registrationService =
-        RegistrationService(userService, mailService, profilesHelper, confirmationTokenService, passwordEncoder)
+    private val jwtManager: JwtManager  = mock()
+    private val authService =
+        AuthService(userService, mailService, profilesHelper, confirmationTokenService, passwordEncoder, jwtManager)
 
     @Test
     fun `register existing and confirmed account`() {
@@ -43,7 +44,7 @@ class RegistrationServiceTest {
         whenever(userService.isUserExists(user.username!!)) doReturn true
 
         assertThrows<UserRegistrationException>(UserRegistrationError.USER_EXISTS_AND_CONFIRMED.name) {
-            registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
+            authService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }
 
@@ -59,7 +60,7 @@ class RegistrationServiceTest {
         whenever(confirmationTokenService.getLastConfirmationToken(user.id!!)) doReturn confirmationTokenDTO
 
         assertThrows<UserRegistrationException>(UserRegistrationError.NEED_TO_CONFIRM_ACCOUNT.name) {
-            registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
+            authService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }
 
@@ -75,7 +76,7 @@ class RegistrationServiceTest {
         whenever(confirmationTokenService.getLastConfirmationToken(user.id!!)) doReturn confirmationTokenDTO
 
         assertThrows<UserRegistrationException>(UserRegistrationError.NEW_TOKEN_WAS_SENT.name) {
-            registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
+            authService.registerUser(user.username!!, user.password!!, user.roles!!)
         }
     }
 
@@ -87,7 +88,7 @@ class RegistrationServiceTest {
         whenever(userService.saveUser(captor.capture())) doReturn user.id!!
         whenever(confirmationTokenService.createAndSaveConfirmationToken(user.id!!)) doReturn "token"
 
-        registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
+        authService.registerUser(user.username!!, user.password!!, user.roles!!)
 
         assertEquals(false, captor.firstValue.confirmed)
         verify(mailService).sendToConfirm(any(), any())
@@ -101,7 +102,7 @@ class RegistrationServiceTest {
         whenever(profilesHelper.isMailConfirmationEnabled()) doReturn false
         whenever(userService.saveUser(captor.capture())) doReturn user.id!!
 
-        registrationService.registerUser(user.username!!, user.password!!, user.roles!!)
+        authService.registerUser(user.username!!, user.password!!, user.roles!!)
 
         assertEquals(true, captor.firstValue.confirmed)
     }

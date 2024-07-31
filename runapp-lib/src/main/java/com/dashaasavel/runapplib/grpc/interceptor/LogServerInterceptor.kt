@@ -1,5 +1,6 @@
 package com.dashaasavel.runapplib.grpc.interceptor
 
+import com.dashaasavel.runapplib.grpc.getServiceAndMethodName
 import com.dashaasavel.runapplib.logger
 import io.grpc.*
 
@@ -11,12 +12,10 @@ class LogServerInterceptor : ServerInterceptor {
         headers: Metadata,
         next: ServerCallHandler<ReqT, RespT>
     ): ServerCall.Listener<ReqT> {
-        val fullMethodName = call.methodDescriptor.fullMethodName
-        val serviceAndMethod = fullMethodName.substringAfterLast('.')
+        val serviceAndMethod = call.getServiceAndMethodName()
         logger.info("TEST: service method called: {}", serviceAndMethod)
         return next.startCall(
-            object : ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {},
-            headers
+            object : ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {}, headers
         )
     }
 }

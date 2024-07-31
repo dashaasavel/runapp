@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package com.dashaasavel.userservice.api;
+
+service AuthService {
+  rpc RegisterUser(RegisterUser.Request) returns (RegisterUser.Response);
+  rpc AuthUser(AuthUser.Request) returns (AuthUser.Response);
+}
+
+message RegisterUser {
+  message Request {
+    optional UserCredentials credentials = 1;
+    optional string firstName = 2;
+  }
+  message Response {
+    optional int32 userId = 1;
+  }
+}
+
+message AuthUser {
+  message Request {
+    optional UserCredentials credentials = 1;
+  }
+  message Response {
+    optional string jwtToken = 1;
+  }
+}
+
+message UserCredentials {
+  optional string username = 1;
+  optional string password = 2;
+}

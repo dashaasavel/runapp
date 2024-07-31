@@ -4,6 +4,7 @@ import com.dashaasavel.runapplib.grpc.core.GrpcExecutorProperties
 import com.dashaasavel.runapplib.grpc.core.GrpcServer
 import com.dashaasavel.runapplib.grpc.core.GrpcServerProperties
 import com.dashaasavel.runapplib.grpc.core.PermittedChannels
+import com.dashaasavel.runapplib.auth.AuthorizationServerInterceptor
 import com.dashaasavel.runapplib.grpc.interceptor.ChannelServerInterceptor
 import com.dashaasavel.runapplib.grpc.interceptor.LogServerInterceptor
 import com.dashaasavel.runapplib.grpc.register.GrpcServiceBeanPostProcessor
@@ -41,8 +42,11 @@ class GrpcServerAutoConfiguration(
     fun threadPoolExecutor(): ExecutorService = Executors.newFixedThreadPool(grpcExecutorProperties().threadCount)
 
     @Bean
+    fun authorizationServerInterceptor() = AuthorizationServerInterceptor()
+
+    @Bean
     fun grpcServer(): GrpcServer {
-        val allInterceptors = mutableListOf<ServerInterceptor>(LogServerInterceptor())
+        val allInterceptors = mutableListOf(LogServerInterceptor(), authorizationServerInterceptor())
         allInterceptors += interceptors
         permittedGrpcChannels.ifPresent {
             allInterceptors += ChannelServerInterceptor(it)

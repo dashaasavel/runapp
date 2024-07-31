@@ -5,20 +5,9 @@ package com.dashaasavel.userservice.api;
 import "google/protobuf/empty.proto";
 
 service UserService {
-  rpc RegisterUser(RegisterUser.Request) returns (RegisterUser.Response);
   rpc GetUser(GetUser.Request) returns (GetUser.Response);
   rpc IsUserExists(IsUserExists.Request) returns (IsUserExists.Response);
   rpc DeleteUser(DeleteUser.Request) returns (google.protobuf.Empty);
-}
-
-message RegisterUser {
-  message Request {
-    optional string username = 1;
-    optional string password = 2;
-  }
-  message Response {
-    optional int32 userId = 1;
-  }
 }
 
 message GetUser {

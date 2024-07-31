@@ -1,27 +1,27 @@
 package com.dashaasavel.userservice.auth
 
+import com.dashaasavel.runapplib.grpc.error.UserAuthError
 import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
-import com.dashaasavel.userservice.profiles.ProfilesHelper
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
 import com.dashaasavel.userservice.auth.mail.MailSender
+import com.dashaasavel.userservice.profiles.ProfilesHelper
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.user.User
 import com.dashaasavel.userservice.user.UserService
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
-open class RegistrationService(
+open class AuthService(
     private val userService: UserService,
     private val mailService: MailSender,
     private val profilesHelper: ProfilesHelper,
     private val confirmationTokenService: ConfirmationTokenService,
-    private val encoder: PasswordEncoder
+    private val encoder: PasswordEncoder,
+    private val jwtManager: JwtManager
 ) {
     /**
      * userId or null
      */
-    @Transactional
     open fun registerUser(username: String, password: String, roles: List<Roles>): Int {
         if (userService.isUserExists(username)) {
             val user = userService.getUser(username)!!
@@ -46,7 +46,14 @@ open class RegistrationService(
         return createUserAndSendToken(username, password, roles)
     }
 
-    @Transactional
+    fun authUser(username: String, password: String): String {
+        val user = userService.getUser(username) ?: throw UserAuthException(UserAuthError.USER_DOES_NOT_EXIST)
+        if (encoder.matches(password, user.password)) {
+            return jwtManager.createJwtToken(user.id!!, username)
+        } else throw UserAuthException(UserAuthError.INCORRECT_PASSWORD)
+    }
+
+    @SuppressWarnings("unused")
     open fun confirmAccount(token: String) {
         val currentTime = LocalDateTime.now()
         val userId = confirmationTokenService.checkTokenAndGetUserId(token)

@@ -1,5 +1,6 @@
 package com.dashaasavel.integrationtests
 
+import com.dashaasavel.integrationtests.utils.assertGrpcCallThrows
 import com.dashaasavel.runapplib.grpc.core.isNull
 import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
 import io.grpc.StatusRuntimeException
@@ -15,7 +16,7 @@ class UserServiceIT : BaseServiceTest() {
         val username = "test-user-${Random().nextInt() % 5000}@gmail.com"
         val password = "password-${Random().nextInt() % 5000}"
 
-        val userId = userService.registerUser(username, password)
+        val userId = authService.registerAndAuthUser(username, password)
 
         val user = userService.getUserById(userId)
 
@@ -23,7 +24,7 @@ class UserServiceIT : BaseServiceTest() {
         assertEquals(username, user.username)
 
         assertGrpcCallThrows<StatusRuntimeException>(UserRegistrationError.USER_EXISTS_AND_CONFIRMED) {
-            userService.registerUser(username, password)
+            authService.registerAndAuthUser(username, password)
         }
     }
 
@@ -32,7 +33,7 @@ class UserServiceIT : BaseServiceTest() {
         val username = "test-user-${Random().nextInt() % 5000}@gmail.com"
         val password = "password-${Random().nextInt() % 5000}"
 
-        val userId = userService.registerUser(username, password)
+        val userId = authService.registerAndAuthUser(username, password)
 
         var user = userService.getUserById(userId)
 
@@ -53,7 +54,7 @@ class UserServiceIT : BaseServiceTest() {
         val username = "test-user-${Random().nextInt() % 5000}@gmail.com"
         val password = "password-${Random().nextInt() % 5000}"
 
-        val userId = userService.registerUser(username, password)
+        val userId = authService.registerAndAuthUser(username, password)
 
         var user = userService.getUserByUsername(username)
 
@@ -71,7 +72,7 @@ class UserServiceIT : BaseServiceTest() {
 
     @Test
     fun `delete user and check if plans deleted too`() {
-        val userId = userService.registerUser()
+        val userId = authService.registerAndAuthUser()
         val planInfo = planService.createAndSaveMarathonPlan(userId).planInfo
         val identifier = planInfo.identifier
 

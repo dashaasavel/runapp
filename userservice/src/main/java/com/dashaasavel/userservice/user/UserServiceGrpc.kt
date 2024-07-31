@@ -3,8 +3,7 @@ package com.dashaasavel.userservice.user
 import com.dashaasavel.runapplib.grpc.core.reply
 import com.dashaasavel.runapplib.grpc.register.GrpcService
 import com.dashaasavel.userservice.api.Userservice.*
-import com.dashaasavel.userservice.auth.RegistrationService
-import com.dashaasavel.userservice.role.Roles
+import com.dashaasavel.userservice.auth.AuthService
 import com.dashaasavel.userservice.utils.toGrpcUser
 import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
@@ -13,22 +12,8 @@ import java.lang.RuntimeException
 @GrpcService
 class UserServiceGrpc(
     private val userService: UserService,
-    private val registrationService: RegistrationService
 ) : com.dashaasavel.userservice.api.UserServiceGrpc.UserServiceImplBase() {
-    override fun registerUser(
-        request: RegisterUser.Request,
-        responseObserver: StreamObserver<RegisterUser.Response>
-    ) {
-        val username = request.username
-        val password = request.password
 
-        responseObserver.reply {
-            val userId = registrationService.registerUser(
-                username, password, listOf(Roles.USER)
-            )
-            RegisterUser.Response.newBuilder().setUserId(userId).build()
-        }
-    }
 
     override fun getUser(
         request: GetUser.Request,

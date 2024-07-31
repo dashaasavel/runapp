@@ -29,11 +29,11 @@ class PlanServiceFacade(
         return plan
     }
 
-    fun createMarathonPlanInfo(userId: Int): Runservice.PlanInfo {
+    private fun createMarathonPlanInfo(userId: Int): Runservice.PlanInfo {
         return createPlanInfo(userId, CompetitionRunType.MARATHON)
     }
 
-    fun createPlanInfo(userId: Int, competitionRunType: CompetitionRunType): Runservice.PlanInfo {
+    private fun createPlanInfo(userId: Int, competitionRunType: CompetitionRunType): Runservice.PlanInfo {
         val marathonDate = LocalDate.now().plusWeeks(17).with(TemporalAdjusters.next(DayOfWeek.SUNDAY))
         return PlanServiceMessageWrappers.planInfo(
             userId, competitionRunType, marathonDate,
@@ -41,18 +41,18 @@ class PlanServiceFacade(
         )
     }
 
-    fun createMarathonPlanIdentifier(
+    private fun createMarathonPlanIdentifier(
         userId: Int,
     ): Runservice.PlanIdentifier {
         return PlanServiceMessageWrappers.planIdentifier(userId, CompetitionRunType.MARATHON)
     }
 
-    fun createPlan(planInfo: Runservice.PlanInfo): Runservice.CreatePlan.Response {
+    private fun createPlan(planInfo: Runservice.PlanInfo): Runservice.CreatePlan.Response {
         val request = Runservice.CreatePlan.Request.newBuilder().setPlanInfo(planInfo).build()
         return planService.createPlan(request)
     }
 
-    fun savePlan(planIdentifier: Runservice.PlanIdentifier) {
+    private fun savePlan(planIdentifier: Runservice.PlanIdentifier) {
         val request = Runservice.SavePlan.Request.newBuilder().setPlanIdentifier(planIdentifier).build()
         planService.savePlan(request)
     }

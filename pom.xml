@@ -27,11 +27,13 @@
 		<kotlin.version>1.9.0</kotlin.version>
 		<SB.version>3.2.3</SB.version>
 
+		<jjwt.version>0.12.6</jjwt.version>
+
 		<protobuf.version>3.21.12</protobuf.version>
 		<protobuf.plugin.version>0.6.1</protobuf.plugin.version>
 		<grpc.version>1.64.0</grpc.version>
 
-		<kafka-protobuf-serializer.version>7.6.1</kafka-protobuf-serializer.version>
+		<kafka-confluent.version>7.6.1</kafka-confluent.version>
 
 		<mongodb-jdbc.version>2.1.0</mongodb-jdbc.version>
 
@@ -59,6 +61,26 @@
 				<artifactId>kotlin-stdlib-jdk8</artifactId>
 				<version>${kotlin.version}</version>
 			</dependency>
+
+			<!-- AUTH -->
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-api</artifactId>
+				<version>${jjwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-impl</artifactId>
+				<version>${jjwt.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-jackson</artifactId>
+				<version>${jjwt.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+
 
 			<!-- GRPC -->
 			<dependency>
@@ -103,8 +125,13 @@
 			<dependency>
 				<groupId>io.confluent</groupId>
 				<artifactId>kafka-protobuf-serializer</artifactId>
-				<version>${kafka-protobuf-serializer.version}</version>
+				<version>${kafka-confluent.version}</version>
 			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>io.confluent</groupId>-->
+<!--				<artifactId>kafka-schema-serializer</artifactId>-->
+<!--				<version>${kafka-confluent.version}</version>-->
+<!--			</dependency>-->
 
 			<!-- DB -->
 			<dependency>

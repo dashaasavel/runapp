@@ -37,6 +37,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- AUTH -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+        </dependency>
+
         <!-- KAFKA -->
         <dependency>
             <groupId>org.apache.kafka</groupId>

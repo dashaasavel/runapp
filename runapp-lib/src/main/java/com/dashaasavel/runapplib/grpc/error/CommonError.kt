@@ -19,6 +19,30 @@ enum class UserRegistrationError : CommonError {
     }
 }
 
+enum class UserAuthError: CommonError {
+    USER_DOES_NOT_EXIST {
+        override fun getName(): String = this.name
+    },
+    INCORRECT_PASSWORD {
+        override fun getName(): String = this.name
+    }
+}
+
+enum class AuthError: CommonError {
+    AUTH_TOKEN_IS_MISSING {
+        override fun getName(): String = this.name
+    },
+    UNKNOWN_AUTHORIZATION_TYPE {
+        override fun getName(): String = this.name
+    },
+    TOKEN_IS_OUT_OF_DATE {
+        override fun getName(): String = this.name
+    },
+    UNKNOWN_ERROR {
+        override fun getName(): String = this.name
+    }
+}
+
 enum class CreatingPlanError: CommonError {
     MORE_TIME_IS_NEEDED {
         override fun getName(): String = this.name
