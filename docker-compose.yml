@@ -2,7 +2,6 @@ version: "3"
 
 services:
   zookeeper:
-    container_name: zookeeper
     image: confluentinc/cp-zookeeper:${KAFKA_TAG}
     environment:
       ZOOKEEPER_SERVER_ID: 1
@@ -15,7 +14,6 @@ services:
       - '2181:2181'
 
   kafka:
-    container_name: kafka
     image: confluentinc/cp-kafka:${KAFKA_TAG}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
@@ -42,7 +40,6 @@ services:
       - schemaregistry
 
   schemaregistry:
-    container_name: schemaregistry
     image: confluentinc/cp-schema-registry:${KAFKA_TAG}
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
@@ -118,6 +115,7 @@ services:
       - '8083:8083'
       - '8093:8093' #grpc
       - '11383:11383' # jmx
+      - '15383:15383' #debug
     depends_on:
       - userservice-postgres
 
@@ -162,6 +160,7 @@ services:
       - '8082:8082'   #http
       - '8092:8092'   #grpc
       - '11382:11382' # jmx
+      - '15382:15382' #debug
     depends_on:
       - mongodb
       - runservice-postgres
@@ -200,9 +199,9 @@ services:
     networks:
       - runapp
     ports:
-      - '15284:15284' # debug
       - '8084:8084'   # http
       - '11384:11384' # jmx
+      - '15384:15384' #debug
     depends_on:
       - metric-aggregator-postgres
       - kafka
