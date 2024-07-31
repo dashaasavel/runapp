@@ -6,15 +6,17 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.transaction.support.TransactionTemplate
 
 @Configuration
 class PlanConfig(
     private val mongoTemplate: MongoTemplate,
     private val jdbcTemplate: JdbcTemplate,
-    private val userService: UserService
+    private val userService: UserService,
+    private val transactionTemplate: TransactionTemplate
 ) {
     @Bean
-    fun planService() = PlanService(trainingDAO(), userToPlanIdsDAO(), userService)
+    fun planService() = PlanService(trainingDAO(), userToPlanIdsDAO(), userService, transactionTemplate)
 
     @Bean
     fun trainingDAO() = TrainingsDAO(mongoTemplate)

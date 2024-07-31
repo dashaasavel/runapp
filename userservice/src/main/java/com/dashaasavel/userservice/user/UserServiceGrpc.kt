@@ -3,11 +3,11 @@ package com.dashaasavel.userservice.user
 import com.dashaasavel.runapplib.grpc.core.reply
 import com.dashaasavel.runapplib.grpc.register.GrpcService
 import com.dashaasavel.userservice.api.Userservice.*
-import com.dashaasavel.userservice.auth.AuthService
 import com.dashaasavel.userservice.utils.toGrpcUser
 import com.google.protobuf.Empty
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
-import java.lang.RuntimeException
 
 @GrpcService
 class UserServiceGrpc(
@@ -24,7 +24,7 @@ class UserServiceGrpc(
             val nullableUser = if (request.hasUserId()) {
                 val userId = request.userId
                 userService.getUser(userId)
-            } else if(request.hasUsername()) {
+            } else if (request.hasUsername()) {
                 val username = request.username
                 userService.getUser(username)
             } else null
@@ -46,19 +46,20 @@ class UserServiceGrpc(
             } else if (request.hasUsername()) {
                 val username = request.username
                 userService.isUserExists(username)
-            } else throw RuntimeException() // TODO
+            } else throw StatusRuntimeException(Status.INVALID_ARGUMENT)
             IsUserExists.Response.newBuilder().setIsUserExists(isUserExists).build()
         }
     }
 
-    override fun deleteUser(request: DeleteUser.Request,
-                            responseObserver: StreamObserver<Empty>
+    override fun deleteUser(
+        request: DeleteUser.Request,
+        responseObserver: StreamObserver<Empty>
     ) {
         responseObserver.reply {
             if (request.hasUserId()) {
                 val userId = request.userId
                 userService.deleteUser(userId)
-            } else if(request.hasUsername()) {
+            } else if (request.hasUsername()) {
                 val username = request.username
                 userService.deleteUser(username)
             }

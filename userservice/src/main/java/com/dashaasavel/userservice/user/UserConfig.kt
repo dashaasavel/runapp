@@ -6,10 +6,12 @@ import com.dashaasavel.userservice.role.UserToRolesDAO
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.transaction.support.TransactionTemplate
 
 @Configuration
 class UserConfig(
     private val jdbcTemplate: JdbcTemplate,
+    private val transactionTemplate: TransactionTemplate,
     private val notificator: UserDeletionNotificator
 ) {
     @Bean
@@ -22,7 +24,7 @@ class UserConfig(
     fun rolesDAO() = RolesDAO(jdbcTemplate)
 
     @Bean
-    fun userService() = UserService(userRepo(), userToRolesDAO(), rolesDAO(), notificator)
+    fun userService() = UserService(userRepo(), userToRolesDAO(), rolesDAO(), notificator, transactionTemplate)
 
     @Bean
     fun userGrpcService() = UserServiceGrpc(userService())

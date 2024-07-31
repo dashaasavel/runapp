@@ -11,6 +11,7 @@ import com.dashaasavel.runservice.training.Trainings
 import com.dashaasavel.runservice.training.TrainingsDAO
 import com.dashaasavel.runservice.utils.DateUtils
 import com.dashaasavel.userserviceapi.utils.CompetitionRunType
+import org.springframework.transaction.support.TransactionTemplate
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
@@ -18,7 +19,8 @@ import java.util.concurrent.ConcurrentHashMap
 class PlanService(
     private val trainingsDAO: TrainingsDAO,
     private val planInfoDAO: PlanInfoDAO,
-    private val userService: UserService
+    private val userService: UserService,
+    private val transactionTemplate: TransactionTemplate
 ) {
     private val logger = logger()
 
@@ -48,13 +50,15 @@ class PlanService(
         return trainings
     }
 
-    // TODO make transactional
     fun savePlan(userId: Int, type: CompetitionRunType) {
         checkIfUserExists(userId)
         val plan = plans[userId] ?: error("User doesn't have a plan")
-        val savedTrainingsIds = trainingsDAO.save(Trainings(_id = null, plan.trainings))
-        plan.info.trainingsId = savedTrainingsIds
-        planInfoDAO.insertPlan(plan.info)
+        transactionTemplate.executeWithoutResult {
+            val savedTrainingsIds = trainingsDAO.save(Trainings(_id = null, plan.trainings))
+            plan.info.trainingsId = savedTrainingsIds
+            planInfoDAO.insertPlan(plan.info)
+            plans.remove(userId)
+        }
     }
 
     fun getPlanFromRepo(userId: Int, competitionRunType: CompetitionRunType): Plan? {
@@ -64,18 +68,21 @@ class PlanService(
         return Plan(planInfo, trainings)
     }
 
-    // TODO make transactional
     fun deletePlan(userId: Int, type: CompetitionRunType) {
-        val trainingsId = planInfoDAO.deletePlan(userId, type) ?: kotlin.run {
-            logger.info("Plan with identifier(userId={}, type={}) was not found in database", userId, type.name)
-            return
+        transactionTemplate.executeWithoutResult {
+            val trainingsId = planInfoDAO.deletePlan(userId, type) ?: kotlin.run {
+                logger.info("Plan with identifier(userId={}, type={}) was not found in database", userId, type.name)
+                return@executeWithoutResult
+            }
+            trainingsDAO.deleteById(trainingsId)
         }
-        trainingsDAO.deleteById(trainingsId)
     }
 
     fun deleteAllPlans(userId: Int) {
-        val ids = planInfoDAO.deleteAllPlans(userId)
-        trainingsDAO.deleteByIds(ids)
+        transactionTemplate.executeWithoutResult {
+            val ids = planInfoDAO.deleteAllPlans(userId)
+            trainingsDAO.deleteByIds(ids)
+        }
     }
 
     private fun checkIfPlanExists(userId: Int, competitionRunType: CompetitionRunType) {
@@ -84,6 +91,7 @@ class PlanService(
         }
     }
 
+    // и все таки мне кажется это странным...
     private fun checkIfUserExists(userId: Int) {
         if (!userService.isUserExists(userId)) {
             throw CreatingPlanException(CreatingPlanError.USER_DOES_NOT_EXIST)

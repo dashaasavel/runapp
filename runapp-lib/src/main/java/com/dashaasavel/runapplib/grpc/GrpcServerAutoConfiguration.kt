@@ -46,11 +46,11 @@ class GrpcServerAutoConfiguration(
 
     @Bean
     fun grpcServer(): GrpcServer {
-        val allInterceptors = mutableListOf(LogServerInterceptor(), authorizationServerInterceptor())
+        val allInterceptors = mutableListOf<ServerInterceptor>(LogServerInterceptor())
         allInterceptors += interceptors
         permittedGrpcChannels.ifPresent {
             allInterceptors += ChannelServerInterceptor(it)
         }
-        return GrpcServer(grpcServerProperties(), allInterceptors, mutableHandlerRegistry(), threadPoolExecutor())
+        return GrpcServer(grpcServerProperties(), allInterceptors, authorizationServerInterceptor(), mutableHandlerRegistry(), threadPoolExecutor())
     }
 }

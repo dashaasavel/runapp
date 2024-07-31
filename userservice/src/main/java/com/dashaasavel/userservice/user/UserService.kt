@@ -4,23 +4,27 @@ import com.dashaasavel.userservice.rabbit.UserDeletionNotificator
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.role.RolesDAO
 import com.dashaasavel.userservice.role.UserToRolesDAO
+import org.springframework.transaction.support.TransactionTemplate
 
 class UserService(
     private val userDAO: UserDAO,
     private val userToRolesDAO: UserToRolesDAO,
     private val rolesDAO: RolesDAO,
-    private val notificator: UserDeletionNotificator
+    private val notificator: UserDeletionNotificator,
+    private val transactionTemplate: TransactionTemplate
 ) {
     /**
-     * @return userId or null
+     * @return userId
      */
     fun saveUser(user: User): Int {
-        val userId = userDAO.insertUser(user)
-        for (role in user.roles!!) {
-            val roleId = rolesDAO.getIdByRole(role) ?: error("Role ${role.name} was not found in db")
-            userToRolesDAO.addRoleToUser(userId, roleId)
-        }
-        return userId
+        return transactionTemplate.execute {
+            val userId = userDAO.insertUser(user)
+            for (role in user.roles!!) {
+                val roleId = rolesDAO.getIdByRole(role) ?: error("Role ${role.name} was not found in db")
+                userToRolesDAO.addRoleToUser(userId, roleId)
+            }
+            userId
+        }!!
     }
 
     fun updateConfirmed(userId: Int, confirmed: Boolean) {
@@ -48,9 +52,11 @@ class UserService(
     }
 
     fun deleteUser(userId: Int) {
-        userToRolesDAO.deleteUserRoles(userId)
-        userDAO.deleteUser(userId)
-        notificator.notify(userId)
+        transactionTemplate.executeWithoutResult {
+            userToRolesDAO.deleteUserRoles(userId)
+            userDAO.deleteUser(userId)
+            notificator.notify(userId)
+        }
     }
 
     fun deleteUser(username: String) {

@@ -18,10 +18,9 @@ import kotlin.test.assertEquals
 
 class PlanServiceTest {
     private val userId = 1
-    private val trainingsDAO: TrainingsDAO = mock()
     private val planInfoDAO: PlanInfoDAO = mock()
     private val userService: UserService = mock()
-    private val planService = PlanService(trainingsDAO, planInfoDAO, userService)
+    private val planService = PlanService(mock(), planInfoDAO, userService, mock())
 
     @Test
     fun `create plan with non existing user`() {
