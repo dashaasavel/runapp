@@ -3,8 +3,6 @@ package com.dashaasavel.runservice.plan
 import com.dashaasavel.runapplib.grpc.error.CommonError
 import com.dashaasavel.runapplib.grpc.error.CreatingPlanError
 import com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils
-import com.dashaasavel.runservice.api.UserService
-import com.dashaasavel.runservice.training.TrainingsDAO
 import com.dashaasavel.userserviceapi.utils.CompetitionRunType
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -19,23 +17,10 @@ import kotlin.test.assertEquals
 class PlanServiceTest {
     private val userId = 1
     private val planInfoDAO: PlanInfoDAO = mock()
-    private val userService: UserService = mock()
-    private val planService = PlanService(mock(), planInfoDAO, userService, mock())
-
-    @Test
-    fun `create plan with non existing user`() {
-        val marathonDate = LocalDate.now().plusWeeks(20)
-        val daysOfWeek = listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.SATURDAY)
-
-        assertThrows<CreatingPlanException>(CreatingPlanError.USER_DOES_NOT_EXIST) {
-            planService.createPlan(userId, CompetitionRunType.MARATHON, marathonDate, daysOfWeek, 6)
-        }
-    }
+    private val planService = PlanService(mock(), planInfoDAO, mock())
 
     @Test
     fun `types half marathon and 10 km throws exception (unsupported now)`() {
-        whenever(userService.isUserExists(1)) doReturn true
-
         val marathonDate = LocalDate.now().plusWeeks(20)
         val daysOfWeek = listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.SATURDAY)
 
@@ -50,7 +35,6 @@ class PlanServiceTest {
 
     @Test
     fun `create plan when plan already exists (throw exception)`() {
-        whenever(userService.isUserExists(1)) doReturn true
         whenever(planInfoDAO.isPlanExists(1, CompetitionRunType.MARATHON)) doReturn true
 
         val marathonDate = LocalDate.now().plusWeeks(20)
@@ -63,8 +47,6 @@ class PlanServiceTest {
 
     @Test
     fun `create plan with training times a week less 3 or more than 5 is unsupported`() {
-        whenever(userService.isUserExists(1)) doReturn true
-
         val marathonDate = LocalDate.now().plusWeeks(20)
 
         val daysOfWeek = mutableListOf(DayOfWeek.MONDAY)

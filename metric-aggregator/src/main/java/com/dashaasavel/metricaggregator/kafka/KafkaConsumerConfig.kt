@@ -1,7 +1,7 @@
 package com.dashaasavel.metricaggregator.kafka
 
 import com.dashaasavel.metric.api.GrpcMetric
-import com.dashaasavel.metricaggregator.metric.MetricDAO
+import com.dashaasavel.metricaggregator.metric.MetricService
 import com.dashaasavel.userserviceapi.utils.KafkaTopicNames
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -12,7 +12,7 @@ import java.util.Properties
 
 @Configuration
 class KafkaConsumerConfig(
-    private val metricDAO: MetricDAO
+    private val metricService: MetricService
 ) {
     @Bean
     fun kafkaConsumer() : KafkaConsumer<String, GrpcMetric> {
@@ -22,7 +22,7 @@ class KafkaConsumerConfig(
     }
 
     @Bean
-    fun kafkaMessageProcessor() = KafkaMessageProcessor(kafkaConsumer(), metricDAO)
+    fun kafkaMessageProcessor() = KafkaMessageProcessor(kafkaConsumer(), metricService)
 
     @Bean
     @ConfigurationProperties("kafka.consumer")

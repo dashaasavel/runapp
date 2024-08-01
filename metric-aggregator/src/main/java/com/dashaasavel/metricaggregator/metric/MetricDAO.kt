@@ -27,4 +27,9 @@ class MetricDAO(
 
         logger.info("Закончили заварушку!!")
     }
+
+    fun getAllMetrics(): List<Metric> {
+        val sql = "select * from $tableName"
+        return jdbcTemplate.query(sql, MetricRowMapper)
+    }
 }

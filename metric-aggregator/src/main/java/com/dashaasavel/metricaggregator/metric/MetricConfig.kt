@@ -10,4 +10,7 @@ class MetricConfig(
 ) {
     @Bean
     fun metricDAO() = MetricDAO(jdbcTemplate)
+
+    @Bean
+    fun metricService() = MetricService(metricDAO())
 }

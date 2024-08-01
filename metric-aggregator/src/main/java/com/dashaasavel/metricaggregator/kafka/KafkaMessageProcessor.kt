@@ -1,18 +1,19 @@
 package com.dashaasavel.metricaggregator.kafka
 
-import com.dashaasavel.runapplib.logger
 import com.dashaasavel.metric.api.GrpcMetric
 import com.dashaasavel.metricaggregator.metric.Metric
-import com.dashaasavel.metricaggregator.metric.MetricDAO
+import com.dashaasavel.metricaggregator.metric.MetricService
+import com.dashaasavel.runapplib.logger
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.springframework.beans.factory.InitializingBean
 import java.time.Duration
 
 class KafkaMessageProcessor(
     private val kafkaConsumer: KafkaConsumer<String, GrpcMetric>,
-    private val metricDAO: MetricDAO
-): InitializingBean {
+    private val metricService: MetricService
+) : InitializingBean {
     private val logger = logger()
+
     @Volatile
     private var isConsumingMessagesEnabled = false
 
@@ -22,12 +23,14 @@ class KafkaMessageProcessor(
             if (!records.isEmpty) {
                 val metrics: MutableList<Metric> = ArrayList(records.count())
                 for (record in records) {
-                    logger.info("Kafka message was received: key={}, record.channel={}, record.serviceAndMethodName={}",
-                        record.key(),record.value().channel, record.value().serviceAndMethodName)
+                    logger.info(
+                        "Kafka message was received: key={}, record.channel={}, record.serviceAndMethodName={}",
+                        record.key(), record.value().channel, record.value().serviceAndMethodName
+                    )
                     val metric = Metric(record.key(), record.timestamp(), record.value())
-                    metrics+= metric
+                    metrics += metric
                 }
-                metricDAO.saveMetricBatch(metrics)
+                metricService.saveMetrics(metrics)
                 kafkaConsumer.commitSync()
             }
         }

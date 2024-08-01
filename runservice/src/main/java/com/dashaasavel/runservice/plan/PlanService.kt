@@ -2,7 +2,6 @@ package com.dashaasavel.runservice.plan
 
 import com.dashaasavel.runapplib.grpc.error.CreatingPlanError
 import com.dashaasavel.runapplib.logger
-import com.dashaasavel.runservice.api.UserService
 import com.dashaasavel.runservice.plan.type.MarathonPlanFactory
 import com.dashaasavel.runservice.plan.type.PlanAbstractFactory
 import com.dashaasavel.runservice.training.Ratio
@@ -19,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap
 class PlanService(
     private val trainingsDAO: TrainingsDAO,
     private val planInfoDAO: PlanInfoDAO,
-    private val userService: UserService,
     private val transactionTemplate: TransactionTemplate
 ) {
     private val logger = logger()
@@ -30,7 +28,6 @@ class PlanService(
         daysOfWeek: List<DayOfWeek>, longRunDistance: Int
     ): List<Training> {
         checkIfPlanExists(userId, type)
-        checkIfUserExists(userId)
         val planInfo =
             PlanInfo(id = null, trainingsId = null, userId, type, competitionDate, daysOfWeek, longRunDistance)
         val weeks = DateUtils.countOfWeeks(LocalDate.now(), competitionDate)
@@ -51,7 +48,6 @@ class PlanService(
     }
 
     fun savePlan(userId: Int, type: CompetitionRunType) {
-        checkIfUserExists(userId)
         val plan = plans[userId] ?: error("User doesn't have a plan")
         transactionTemplate.executeWithoutResult {
             val savedTrainingsIds = trainingsDAO.save(Trainings(_id = null, plan.trainings))
@@ -78,23 +74,17 @@ class PlanService(
         }
     }
 
-    fun deleteAllPlans(userId: Int) {
-        transactionTemplate.executeWithoutResult {
+    fun deleteAllPlans(userId: Int): List<String> {
+        return transactionTemplate.execute {
             val ids = planInfoDAO.deleteAllPlans(userId)
             trainingsDAO.deleteByIds(ids)
-        }
+            ids
+        }!!
     }
 
     private fun checkIfPlanExists(userId: Int, competitionRunType: CompetitionRunType) {
         if (planInfoDAO.isPlanExists(userId, competitionRunType)) {
             throw CreatingPlanException(CreatingPlanError.PLAN_ALREADY_EXISTS)
-        }
-    }
-
-    // и все таки мне кажется это странным...
-    private fun checkIfUserExists(userId: Int) {
-        if (!userService.isUserExists(userId)) {
-            throw CreatingPlanException(CreatingPlanError.USER_DOES_NOT_EXIST)
         }
     }
 }

@@ -11,7 +11,7 @@ class DeleteUserMessageListener(
     private val logger = logger()
     override fun onMessage(message: Message) {
         val userId = String(message.body).toInt()
-        planService.deleteAllPlans(userId)
-        logger.info("Plan for userId={} successfully deleted", userId)
+        val trainingIds = planService.deleteAllPlans(userId)
+        logger.info("Plans with trainingIds={} for userId={} successfully deleted", userId, trainingIds)
     }
 }

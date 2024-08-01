@@ -1,6 +1,5 @@
 package com.dashaasavel.runservice.plan
 
-import com.dashaasavel.runservice.api.UserService
 import com.dashaasavel.runservice.training.TrainingsDAO
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,11 +11,10 @@ import org.springframework.transaction.support.TransactionTemplate
 class PlanConfig(
     private val mongoTemplate: MongoTemplate,
     private val jdbcTemplate: JdbcTemplate,
-    private val userService: UserService,
     private val transactionTemplate: TransactionTemplate
 ) {
     @Bean
-    fun planService() = PlanService(trainingDAO(), userToPlanIdsDAO(), userService, transactionTemplate)
+    fun planService() = PlanService(trainingDAO(), userToPlanIdsDAO(), transactionTemplate)
 
     @Bean
     fun trainingDAO() = TrainingsDAO(mongoTemplate)
