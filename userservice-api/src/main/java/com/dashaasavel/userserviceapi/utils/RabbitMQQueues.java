@@ -1,7 +1,10 @@
 package com.dashaasavel.userserviceapi.utils;
 
 public enum RabbitMQQueues {
-    USER_DELETION("user_deletion_queue", "user_events_exchange", "user_deletion");
+    USER_DELETED_MAIL_SERVICE("user-deleted-queue-mail-service", "user.deleted", "user.event.deleted"),
+    USER_DELETED_RUN_SERVICE("user-deleted-queue-run-service", "user.deleted", "user.event.deleted"),
+    USER_NEED_CONFIRMATION_MAIL_SERVICE("user-unconfirmed-queue-mail-service", "user.unconfirmed", "user.event.unconfirmed"),
+    USER_CREATED_MAIL_SERVICE("user-created-queue-mail-service", "user.created", "user.event.created");
 
     final String queueName;
 

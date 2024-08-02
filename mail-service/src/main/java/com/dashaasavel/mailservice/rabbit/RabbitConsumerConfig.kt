@@ -1,6 +1,5 @@
-package com.dashaasavel.runservice.rabbit
+package com.dashaasavel.mailservice.rabbit
 
-import com.dashaasavel.runservice.plan.PlanService
 import com.dashaasavel.userserviceapi.utils.RabbitMQQueues
 import org.springframework.amqp.core.*
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
@@ -14,9 +13,7 @@ import org.springframework.context.annotation.Configuration
 
 
 @Configuration
-class RabbitConsumerConfig(
-    private val planService: PlanService
-) {
+class RabbitConsumerConfig {
     @Bean
     @ConfigurationProperties("rabbit.consumer")
     fun rabbitProperties() = RabbitProperties()
@@ -35,12 +32,14 @@ class RabbitConsumerConfig(
     @Bean
     fun messageListenerContainer(): SimpleMessageListenerContainer {
         val container = SimpleMessageListenerContainer()
-        container.messageListener = deleteUserMessageListener()
+        container.messageListener = mailMessageListener()
         container.connectionFactory = connectionFactory()
-        container.addQueueNames(RabbitMQQueues.USER_DELETED_RUN_SERVICE.queueName)
+        container.addQueueNames(
+            RabbitMQQueues.USER_DELETED_MAIL_SERVICE.queueName, RabbitMQQueues.USER_NEED_CONFIRMATION_MAIL_SERVICE.queueName, RabbitMQQueues.USER_CREATED_MAIL_SERVICE.queueName
+        )
         return container
     }
 
     @Bean
-    fun deleteUserMessageListener() = RabbitMessageListener(planService)
+    fun mailMessageListener() = MailMessageListener()
 }

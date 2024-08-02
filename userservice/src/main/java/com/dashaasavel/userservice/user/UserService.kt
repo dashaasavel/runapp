@@ -1,17 +1,24 @@
 package com.dashaasavel.userservice.user
 
-import com.dashaasavel.userservice.rabbit.UserDeletionNotificator
+import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
+import com.dashaasavel.userservice.auth.UserRegistrationException
+import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDAO
+import com.dashaasavel.userservice.rabbit.UserDeletionSender
+import com.dashaasavel.userservice.rabbit.WelcomeMessageSender
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.role.RolesDAO
 import com.dashaasavel.userservice.role.UserToRolesDAO
 import org.springframework.transaction.support.TransactionTemplate
+import java.time.LocalDateTime
 
 class UserService(
     private val userDAO: UserDAO,
     private val userToRolesDAO: UserToRolesDAO,
     private val rolesDAO: RolesDAO,
-    private val notificator: UserDeletionNotificator,
-    private val transactionTemplate: TransactionTemplate
+    private val confirmationTokenDAO: ConfirmationTokenDAO,
+    private val transactionTemplate: TransactionTemplate,
+    private val messageSender: UserDeletionSender,
+    private val welcomeMessageSender: WelcomeMessageSender,
 ) {
     /**
      * @return userId
@@ -27,10 +34,6 @@ class UserService(
         }!!
     }
 
-    fun updateConfirmed(userId: Int, confirmed: Boolean) {
-        userDAO.updateConfirmed(userId, confirmed)
-    }
-
     fun getUser(id: Int): User? {
         val user = userDAO.getUser(id) ?: return null
         val roles = getUserRoles(user.id!!)
@@ -38,8 +41,6 @@ class UserService(
     }
 
     fun isUserExists(username: String) = userDAO.isUserExists(username)
-
-    fun isUserExists(userId: Int) = userDAO.isUserExists(userId)
 
     fun getUser(username: String): User? {
         val userDTO = userDAO.getUser(username) ?: return null
@@ -54,14 +55,37 @@ class UserService(
     fun deleteUser(userId: Int) {
         transactionTemplate.executeWithoutResult {
             userToRolesDAO.deleteUserRoles(userId)
-            userDAO.deleteUser(userId)
-            notificator.notify(userId)
+            confirmationTokenDAO.deleteUserTokens(userId)
+            val user = userDAO.deleteUser(userId) ?: return@executeWithoutResult
+            messageSender.sendUserDeletion(user.firstName!!, user.username!!, userId) // удалить это из транзакции
         }
     }
 
     fun deleteUser(username: String) {
-        getUser(username)?.id?.let {
+        userDAO.getUser(username)?.id?.let {
             deleteUser(it)
         }
+    }
+
+    fun confirmUser(token: String) {
+        val currentTime = LocalDateTime.now()
+        val userId = checkTokenAndGetUserId(token)
+        transactionTemplate.executeWithoutResult {
+            val user = userDAO.updateConfirmed(userId, true)!!
+            confirmToken(token, currentTime)
+            welcomeMessageSender.sendWelcomeMessage(user.firstName!!, user.username!!) // убрать отсюда!
+        }
+    }
+    private fun checkTokenAndGetUserId(token: String): Int {
+        val userId = confirmationTokenDAO.getUserIdByToken(token)
+        val lastToken = confirmationTokenDAO.getLastConfirmationTokenByUserId(userId).token
+        if (lastToken != token) {
+            throw UserRegistrationException(UserRegistrationError.NEED_TO_CONFIRM_THE_LATEST_TOKEN)
+        }
+        return userId
+    }
+
+    private fun confirmToken(token: String, confirmedTime: LocalDateTime) {
+        confirmationTokenDAO.setConfirmed(token, confirmedTime)
     }
 }

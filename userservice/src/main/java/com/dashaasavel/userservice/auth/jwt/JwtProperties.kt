@@ -1,4 +1,4 @@
-package com.dashaasavel.userservice.auth
+package com.dashaasavel.userservice.auth.jwt
 
 class JwtProperties {
     var signingKey: String = ""

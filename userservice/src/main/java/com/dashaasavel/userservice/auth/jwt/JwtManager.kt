@@ -1,4 +1,4 @@
-package com.dashaasavel.userservice.auth
+package com.dashaasavel.userservice.auth.jwt
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys

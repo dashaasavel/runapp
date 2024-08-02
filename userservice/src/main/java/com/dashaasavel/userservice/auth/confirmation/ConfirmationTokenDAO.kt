@@ -33,4 +33,9 @@ class ConfirmationTokenDAO(
         val sql = "update $tableName set confirmationDate=? where token=?"
         jdbcTemplate.update(sql, Timestamp.valueOf(confirmationDateTime), token)
     }
+
+    fun deleteUserTokens(userId: Int) {
+        val sql = "delete from $tableName where userId=?"
+        jdbcTemplate.update(sql, userId)
+    }
 }

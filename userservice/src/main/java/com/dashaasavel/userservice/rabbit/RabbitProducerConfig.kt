@@ -25,7 +25,4 @@ class RabbitProducerConfig {
 
     @Bean
     fun rabbitTemplate() = RabbitTemplate(connectionFactory())
-
-    @Bean
-    fun userDeletionNotificator() = UserDeletionNotificator(rabbitTemplate())
 }

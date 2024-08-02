@@ -16,6 +16,9 @@ enum class UserRegistrationError : CommonError {
     },
     NEW_TOKEN_WAS_SENT {
         override fun getName(): String = this.name
+    },
+    NEED_TO_CONFIRM_THE_LATEST_TOKEN {
+        override fun getName(): String = this.name
     }
 }
 

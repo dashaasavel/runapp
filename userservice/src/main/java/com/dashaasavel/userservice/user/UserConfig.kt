@@ -1,6 +1,7 @@
 package com.dashaasavel.userservice.user
 
-import com.dashaasavel.userservice.rabbit.UserDeletionNotificator
+import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDAO
+import com.dashaasavel.userservice.rabbit.RabbitMessageSender
 import com.dashaasavel.userservice.role.RolesDAO
 import com.dashaasavel.userservice.role.UserToRolesDAO
 import org.springframework.context.annotation.Bean
@@ -12,10 +13,11 @@ import org.springframework.transaction.support.TransactionTemplate
 class UserConfig(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val notificator: UserDeletionNotificator
+    private val confirmationTokenDAO: ConfirmationTokenDAO,
+    private val messageSender: RabbitMessageSender
 ) {
     @Bean
-    fun userRepo() = UserDAO(jdbcTemplate)
+    fun userDAO() = UserDAO(jdbcTemplate)
 
     @Bean
     fun userToRolesDAO() = UserToRolesDAO(jdbcTemplate)
@@ -24,7 +26,8 @@ class UserConfig(
     fun rolesDAO() = RolesDAO(jdbcTemplate)
 
     @Bean
-    fun userService() = UserService(userRepo(), userToRolesDAO(), rolesDAO(), notificator, transactionTemplate)
+    fun userService() =
+        UserService(userDAO(), userToRolesDAO(), rolesDAO(), confirmationTokenDAO, transactionTemplate, messageSender, messageSender)
 
     @Bean
     fun userGrpcService() = UserServiceGrpc(userService())

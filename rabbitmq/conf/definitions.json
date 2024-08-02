@@ -12,7 +12,34 @@
   ],
   "queues": [
     {
-      "name": "user_deletion_queue",
+      "name": "user-deleted-queue-mail-service",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "user-deleted-queue-run-service",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "user-unconfirmed-queue-mail-service",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "user-created-queue-mail-service",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -32,7 +59,25 @@
   ],
   "exchanges": [
     {
-      "name": "user_events_exchange",
+      "name": "user.deleted",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "user.created",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "user.unconfirmed",
       "vhost": "/",
       "type": "direct",
       "durable": true,
@@ -43,11 +88,35 @@
   ],
   "bindings": [
     {
-      "source": "user_events_exchange",
+      "source": "user.deleted",
       "vhost": "/",
-      "destination": "user_deletion_queue",
+      "destination": "user-deleted-queue-run-service",
       "destination_type": "queue",
-      "routing_key": "user_deletion",
+      "routing_key": "user.event.deleted",
+      "arguments": {}
+    },
+    {
+      "source": "user.deleted",
+      "vhost": "/",
+      "destination": "user-deleted-queue-mail-service",
+      "destination_type": "queue",
+      "routing_key": "user.event.deleted",
+      "arguments": {}
+    },
+    {
+      "source": "user.unconfirmed",
+      "vhost": "/",
+      "destination": "user-unconfirmed-queue-mail-service",
+      "destination_type": "queue",
+      "routing_key": "user.event.unconfirmed",
+      "arguments": {}
+    },
+    {
+      "source": "user.created",
+      "vhost": "/",
+      "destination": "user-created-queue-mail-service",
+      "destination_type": "queue",
+      "routing_key": "user.event.created",
       "arguments": {}
     }
   ]

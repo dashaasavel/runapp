@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 
 @Configuration
 class ConfirmationConfig(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
 ) {
     @Bean
     @ConfigurationProperties("confirmation")

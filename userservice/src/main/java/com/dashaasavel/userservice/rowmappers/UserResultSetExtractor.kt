@@ -10,11 +10,13 @@ object UserResultSetExtractor: ResultSetExtractor<User> {
     override fun extractData(rs: ResultSet): User? {
         return if (rs.next()) {
             val id = rs.getInt("id")
+            val firstName = rs.getString("firstName")
             val username = rs.getString("username")
             val password = rs.getString("password")
             val confirmed = rs.getBoolean("confirmed")
             User().apply {
                 this.id = id
+                this.firstName = firstName
                 this.username = username
                 this.password = password
                 this.confirmed = confirmed

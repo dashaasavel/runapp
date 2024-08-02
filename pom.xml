@@ -18,6 +18,7 @@
 		<module>userservice-api</module>
 		<module>runapp-lib</module>
 		<module>metric-aggregator</module>
+		<module>mail-service</module>
 	</modules>
 	<packaging>pom</packaging>
 	<name>runapp</name>

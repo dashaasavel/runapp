@@ -237,6 +237,34 @@ services:
       - '5672:5672'   # amqp
       - '15672:15672' # http
 
+  mail-service:
+    container_name: mail-service
+    image: runapp/mail-service:${RUNAPP_TAG}
+    build: ./mail-service
+    environment:
+      RABBIT_CONSUMER_HOST: 'rabbitmq'
+      JAVA_OPTS: '
+                -Dcom.sun.management.jmxremote
+                -Dcom.sun.management.jmxremote.port=11385
+                -Dcom.sun.management.jmxremote.rmi.port=11385
+                -Dcom.sun.management.jmxremote.local.only=false
+                -Dcom.sun.management.jmxremote.authenticate=false
+                -Dcom.sun.management.jmxremote.ssl=false'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8085/" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    networks:
+      - runapp
+    ports:
+      - '8085:8085'   #http
+      - '8095:8095'   #grpc
+      - '11385:11385' # jmx
+      - '15385:15385' #debug
+    depends_on:
+      - rabbitmq
+
 networks:
   runapp:
     driver: bridge

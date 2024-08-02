@@ -6,7 +6,6 @@ import "google/protobuf/empty.proto";
 
 service UserService {
   rpc GetUser(GetUser.Request) returns (GetUser.Response);
-  rpc IsUserExists(IsUserExists.Request) returns (IsUserExists.Response);
   rpc DeleteUser(DeleteUser.Request) returns (google.protobuf.Empty);
 }
 
@@ -23,18 +22,6 @@ message GetUser {
   }
 }
 
-message IsUserExists {
-  message Request {
-    oneof userIdentifier {
-      int32 userId = 1;
-      string username = 2;
-    }
-  }
-
-  message Response {
-    optional bool isUserExists = 1;
-  }
-}
 message DeleteUser {
   message Request {
     oneof userIdentifier {

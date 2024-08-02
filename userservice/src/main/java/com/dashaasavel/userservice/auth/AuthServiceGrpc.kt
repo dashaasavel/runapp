@@ -10,18 +10,19 @@ import io.grpc.stub.StreamObserver
 
 @GrpcService
 class AuthServiceGrpc(
-    private val authService: AuthService
+    private val authService: AuthService,
 ) : AuthServiceGrpc.AuthServiceImplBase() {
     override fun registerUser(
         request: RegisterUser.Request,
         responseObserver: StreamObserver<RegisterUser.Response>
     ) {
+        val firstName = request.firstName
         val username = request.credentials.username
         val password = request.credentials.password
 
         responseObserver.reply {
             val userId = authService.registerUser(
-                username, password, listOf(Roles.USER)
+                firstName, username, password, listOf(Roles.USER)
             )
             RegisterUser.Response.newBuilder().setUserId(userId).build()
         }

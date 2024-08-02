@@ -2,19 +2,16 @@ package com.dashaasavel.userservice.user
 
 import com.dashaasavel.runapplib.grpc.core.reply
 import com.dashaasavel.runapplib.grpc.register.GrpcService
-import com.dashaasavel.userservice.api.Userservice.*
+import com.dashaasavel.userservice.api.Userservice.DeleteUser
+import com.dashaasavel.userservice.api.Userservice.GetUser
 import com.dashaasavel.userservice.utils.toGrpcUser
 import com.google.protobuf.Empty
-import io.grpc.Status
-import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
 
 @GrpcService
 class UserServiceGrpc(
     private val userService: UserService,
 ) : com.dashaasavel.userservice.api.UserServiceGrpc.UserServiceImplBase() {
-
-
     override fun getUser(
         request: GetUser.Request,
         responseObserver: StreamObserver<GetUser.Response>
@@ -32,22 +29,6 @@ class UserServiceGrpc(
                 responseBuilder.user = it.toGrpcUser()
             }
             responseBuilder.build()
-        }
-    }
-
-    override fun isUserExists(
-        request: IsUserExists.Request,
-        responseObserver: StreamObserver<IsUserExists.Response>
-    ) {
-        responseObserver.reply {
-            val isUserExists = if (request.hasUserId()) {
-                val userId = request.userId
-                userService.isUserExists(userId)
-            } else if (request.hasUsername()) {
-                val username = request.username
-                userService.isUserExists(username)
-            } else throw StatusRuntimeException(Status.INVALID_ARGUMENT)
-            IsUserExists.Response.newBuilder().setIsUserExists(isUserExists).build()
         }
     }
 
