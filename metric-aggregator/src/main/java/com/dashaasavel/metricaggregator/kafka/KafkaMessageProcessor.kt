@@ -3,7 +3,7 @@ package com.dashaasavel.metricaggregator.kafka
 import com.dashaasavel.metric.api.GrpcMetric
 import com.dashaasavel.metricaggregator.metric.Metric
 import com.dashaasavel.metricaggregator.metric.MetricService
-import com.dashaasavel.runapplib.logger
+import com.dashaasavel.runapplib.core.logger
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.springframework.beans.factory.InitializingBean
 import java.time.Duration

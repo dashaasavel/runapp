@@ -16,17 +16,18 @@ class ConfirmationTokenDAO(
         return jdbcTemplate.update(sql, dto.userId, dto.token, dto.creationDate, dto.expirationDate)
     }
 
-    fun getLastConfirmationTokenByUserId(userId: Int): ConfirmationTokenDTO {
-        val sql = "select token,creationDate,confirmationDate,expirationDate from $tableName where userId=? order by id desc limit 1"
+    fun getLastConfirmationTokenByUserId(userId: Int): ConfirmationTokenDTO? {
+        val sql = "select userId,token,creationDate,confirmationDate,expirationDate from $tableName where userId=? order by id desc limit 1"
         return jdbcTemplate.query(sql, ConfirmationTokenExtractor, userId)!!
     }
 
-    fun getUserIdByToken(token: String): Int {
+    fun getUserIdByToken(token: String): Int? {
         val sql = "select userId from $tableName where token=?"
         return jdbcTemplate.query(sql, ResultSetExtractor {
-            it.next()
-            it.getInt("userId")
-        }, token)!!
+            if (it.next()) {
+                return@ResultSetExtractor it.getInt("userId")
+            } else return@ResultSetExtractor null
+        }, token)
     }
 
     fun setConfirmed(token: String, confirmationDateTime: LocalDateTime) {

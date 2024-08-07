@@ -1,7 +1,7 @@
 package com.dashaasavel.runapplib.grpc.core
 
 import com.dashaasavel.runapplib.auth.AuthorizationServerInterceptor
-import com.dashaasavel.runapplib.logger
+import com.dashaasavel.runapplib.core.logger
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.ServerInterceptor
@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService
 class GrpcServer(
     private val config: GrpcServerProperties,
     private val interceptors: List<ServerInterceptor>,
-    private val authorizationServerInterceptor: AuthorizationServerInterceptor,
+    private val authorizationServerInterceptor: AuthorizationServerInterceptor?,
     private val handlerRegistry: MutableHandlerRegistry,
     private val executor: ExecutorService
 ) : SmartLifecycle {
@@ -33,7 +33,7 @@ class GrpcServer(
             serverBuilder.intercept(interceptor)
         }
         // отдельно, потому что порядок добавления перехватчиков имеет значения, а он должен отрабатывать первым
-        serverBuilder.intercept(authorizationServerInterceptor)
+        authorizationServerInterceptor?.let { serverBuilder.intercept(it) }
         return serverBuilder.build()
     }
 

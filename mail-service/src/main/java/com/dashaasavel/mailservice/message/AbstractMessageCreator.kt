@@ -1,6 +1,5 @@
 package com.dashaasavel.mailservice.message
 
-import com.google.protobuf.Message
 import jakarta.mail.internet.MimeMessage
 import org.springframework.boot.autoconfigure.mail.MailProperties
 import org.springframework.mail.javamail.JavaMailSender
@@ -10,15 +9,21 @@ abstract class AbstractMessageCreator(
     private val mailProperties: MailProperties,
     private val javaMailSender: JavaMailSender
 ) {
-    abstract fun createMessage(message: Message): MimeMessage
+    protected val appName = "RunApp"
+    abstract fun getSubject(): String
 
-    protected fun createMessage(username: String, subject: String, body: String): MimeMessage {
+    abstract fun getBody(message: ByteArray): String
+
+    abstract fun getUsername(message: ByteArray): String
+
+    abstract fun getQueueName(): String
+
+    fun createMimeMessage(message: ByteArray): MimeMessage {
         val mimeMessage = javaMailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, "utf-8")
-        helper.setTo(username)
-        helper.setSubject(subject)
-        helper.setText(body)
-
+        helper.setTo(getUsername(message))
+        helper.setSubject(getSubject())
+        helper.setText(getBody(message))
         helper.setFrom(mailProperties.username)
         return mimeMessage
     }

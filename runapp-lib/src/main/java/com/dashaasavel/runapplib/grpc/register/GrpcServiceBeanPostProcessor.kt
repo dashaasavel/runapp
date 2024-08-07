@@ -1,6 +1,6 @@
 package com.dashaasavel.runapplib.grpc.register
 
-import com.dashaasavel.runapplib.logger
+import com.dashaasavel.runapplib.core.logger
 import io.grpc.BindableService
 import io.grpc.util.MutableHandlerRegistry
 import org.springframework.beans.factory.config.BeanPostProcessor

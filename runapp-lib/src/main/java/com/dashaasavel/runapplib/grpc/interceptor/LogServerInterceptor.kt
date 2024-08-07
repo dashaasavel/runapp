@@ -1,7 +1,7 @@
 package com.dashaasavel.runapplib.grpc.interceptor
 
 import com.dashaasavel.runapplib.grpc.getServiceAndMethodName
-import com.dashaasavel.runapplib.logger
+import com.dashaasavel.runapplib.core.logger
 import io.grpc.*
 
 

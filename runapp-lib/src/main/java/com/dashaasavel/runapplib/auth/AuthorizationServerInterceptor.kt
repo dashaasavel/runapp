@@ -3,7 +3,7 @@ package com.dashaasavel.runapplib.auth
 import com.dashaasavel.runapplib.grpc.error.AuthError
 import com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils
 import com.dashaasavel.runapplib.grpc.getServiceAndMethodName
-import com.dashaasavel.runapplib.logger
+import com.dashaasavel.runapplib.core.logger
 import io.grpc.*
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts

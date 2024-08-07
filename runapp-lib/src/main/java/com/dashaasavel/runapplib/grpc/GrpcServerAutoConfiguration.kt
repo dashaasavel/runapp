@@ -17,12 +17,14 @@ import org.springframework.context.annotation.Configuration
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.jvm.optionals.getOrNull
 
 @Configuration
 @ConditionalOnProperty("grpc.server.port")
 class GrpcServerAutoConfiguration(
     private val interceptors: List<ServerInterceptor>,
-    private val permittedGrpcChannels: Optional<PermittedChannels>
+    private val permittedGrpcChannels: Optional<PermittedChannels>,
+    private val authorizationServerInterceptor: Optional<AuthorizationServerInterceptor>
 ) {
     @Bean
     fun grpcServiceBeanPostProcessor() = GrpcServiceBeanPostProcessor(mutableHandlerRegistry())
@@ -42,15 +44,12 @@ class GrpcServerAutoConfiguration(
     fun threadPoolExecutor(): ExecutorService = Executors.newFixedThreadPool(grpcExecutorProperties().threadCount)
 
     @Bean
-    fun authorizationServerInterceptor() = AuthorizationServerInterceptor()
-
-    @Bean
     fun grpcServer(): GrpcServer {
         val allInterceptors = mutableListOf<ServerInterceptor>(LogServerInterceptor())
         allInterceptors += interceptors
         permittedGrpcChannels.ifPresent {
             allInterceptors += ChannelServerInterceptor(it)
         }
-        return GrpcServer(grpcServerProperties(), allInterceptors, authorizationServerInterceptor(), mutableHandlerRegistry(), threadPoolExecutor())
+        return GrpcServer(grpcServerProperties(), allInterceptors, authorizationServerInterceptor.getOrNull(), mutableHandlerRegistry(), threadPoolExecutor())
     }
 }

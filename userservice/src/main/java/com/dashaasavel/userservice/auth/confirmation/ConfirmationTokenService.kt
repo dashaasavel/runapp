@@ -21,7 +21,7 @@ class ConfirmationTokenService(
     }
 
 
-    fun getLastConfirmationToken(userId: Int): ConfirmationTokenDTO {
+    fun getLastConfirmationToken(userId: Int): ConfirmationTokenDTO? {
         return confirmationTokenDAO.getLastConfirmationTokenByUserId(userId)
     }
 }

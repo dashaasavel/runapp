@@ -1,7 +1,7 @@
 package com.dashaasavel.runservice.rabbit
 
 import com.dashaasavel.mailservice.message.GoodByeMessage
-import com.dashaasavel.runapplib.logger
+import com.dashaasavel.runapplib.core.logger
 import com.dashaasavel.runservice.plan.PlanService
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.MessageListener

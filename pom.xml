@@ -39,6 +39,7 @@
 		<mongodb-jdbc.version>2.1.0</mongodb-jdbc.version>
 
 		<annotations-api.version>6.0.53</annotations-api.version>
+		<commons-validator.version>1.9.0</commons-validator.version>
 
 		<mockito-kotlin.version>2.2.0</mockito-kotlin.version>
 	</properties>
@@ -128,11 +129,6 @@
 				<artifactId>kafka-protobuf-serializer</artifactId>
 				<version>${kafka-confluent.version}</version>
 			</dependency>
-<!--			<dependency>-->
-<!--				<groupId>io.confluent</groupId>-->
-<!--				<artifactId>kafka-schema-serializer</artifactId>-->
-<!--				<version>${kafka-confluent.version}</version>-->
-<!--			</dependency>-->
 
 			<!-- DB -->
 			<dependency>
@@ -147,6 +143,11 @@
 				<artifactId>annotations-api</artifactId>
 				<version>${annotations-api.version}</version>
 				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>commons-validator</groupId>
+				<artifactId>commons-validator</artifactId>
+				<version>${commons-validator.version}</version>
 			</dependency>
 
 			<!-- TEST -->

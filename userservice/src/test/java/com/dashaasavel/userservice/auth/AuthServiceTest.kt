@@ -121,6 +121,20 @@ class AuthServiceTest {
             confirmationProperties.serverUrl
         )
     }
+
+    @Test
+    fun `registration with invalid email should throw an exception`() {
+        val confirmationToken = "token"
+        user.username = "username"
+        whenever(userService.isUserExists(user.username!!)) doReturn false
+        whenever(userService.saveUser(any())) doReturn user.id!!
+        whenever(confirmationTokenService.createAndSaveConfirmationToken(user.id!!)) doReturn confirmationToken
+
+        assertThrows<UserRegistrationException>(UserRegistrationError.INVALID_EMAIL.name) {
+            authService.registerUser(user.firstName!!, user.username!!, user.password!!, user.roles!!)
+        }
+        user.username = "dashasaavel@gmail.com"
+    }
 }
 
 inline fun <reified T : StatusRuntimeException> assertThrowsAuthException(error: CommonError, executable: () -> Unit) {

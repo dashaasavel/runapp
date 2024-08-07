@@ -3,6 +3,7 @@ package com.dashaasavel.userservice.user
 import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
 import com.dashaasavel.userservice.auth.UserRegistrationException
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDAO
+import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
 import com.dashaasavel.userservice.rabbit.UserDeletionSender
 import com.dashaasavel.userservice.rabbit.WelcomeMessageSender
 import com.dashaasavel.userservice.role.Roles
@@ -69,20 +70,25 @@ class UserService(
 
     fun confirmUser(token: String) {
         val currentTime = LocalDateTime.now()
-        val userId = checkTokenAndGetUserId(token)
+        val daoToken = checkAndGetToken(token)
+        if (daoToken.confirmationDate != null) return
         transactionTemplate.executeWithoutResult {
-            val user = userDAO.updateConfirmed(userId, true)!!
+            val user = userDAO.updateConfirmed(daoToken.userId!!, true)!!
             confirmToken(token, currentTime)
             welcomeMessageSender.sendWelcomeMessage(user.firstName!!, user.username!!) // убрать отсюда!
         }
     }
-    private fun checkTokenAndGetUserId(token: String): Int {
-        val userId = confirmationTokenDAO.getUserIdByToken(token)
-        val lastToken = confirmationTokenDAO.getLastConfirmationTokenByUserId(userId).token
+
+    private fun checkAndGetToken(token: String): ConfirmationTokenDTO {
+        val userId = confirmationTokenDAO.getUserIdByToken(token) ?: throw UserRegistrationException(
+            UserRegistrationError.TOKEN_NOT_FOUND
+        )
+        val lastConfirmationToken = confirmationTokenDAO.getLastConfirmationTokenByUserId(userId)!!
+        val lastToken = lastConfirmationToken.token
         if (lastToken != token) {
             throw UserRegistrationException(UserRegistrationError.NEED_TO_CONFIRM_THE_LATEST_TOKEN)
         }
-        return userId
+        return lastConfirmationToken
     }
 
     private fun confirmToken(token: String, confirmedTime: LocalDateTime) {

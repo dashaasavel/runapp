@@ -1,7 +1,7 @@
 package com.dashaasavel.runservice.plan
 
 import com.dashaasavel.runapplib.grpc.error.CreatingPlanError
-import com.dashaasavel.runapplib.logger
+import com.dashaasavel.runapplib.core.logger
 import com.dashaasavel.runservice.plan.type.MarathonPlanFactory
 import com.dashaasavel.runservice.plan.type.PlanAbstractFactory
 import com.dashaasavel.runservice.training.Ratio

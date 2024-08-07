@@ -4,7 +4,7 @@ import com.dashaasavel.mailservice.message.ConfirmationMessage
 import com.dashaasavel.mailservice.message.GoodByeMessage
 import com.dashaasavel.mailservice.message.UserInfo
 import com.dashaasavel.mailservice.message.WelcomeMessage
-import com.dashaasavel.runapplib.logger
+import com.dashaasavel.runapplib.core.logger
 import com.dashaasavel.userserviceapi.utils.RabbitMQQueues
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.core.RabbitTemplate

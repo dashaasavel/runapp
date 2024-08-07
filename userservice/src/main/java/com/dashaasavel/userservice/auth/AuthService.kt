@@ -9,6 +9,7 @@ import com.dashaasavel.userservice.rabbit.RegistrationMessageSender
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.user.User
 import com.dashaasavel.userservice.user.UserService
+import org.apache.commons.validator.routines.EmailValidator
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 
@@ -37,7 +38,7 @@ class AuthService(
                     UserRegistrationError.USER_EXISTS_AND_CONFIRMED
                 )
             }
-            val token = confirmationTokenService.getLastConfirmationToken(user.id!!)
+            val token = confirmationTokenService.getLastConfirmationToken(user.id!!)!!
             if (token.expirationDate!!.isAfter(LocalDateTime.now())) {
                 throw UserRegistrationException(
                     UserRegistrationError.NEED_TO_CONFIRM_ACCOUNT
@@ -50,10 +51,17 @@ class AuthService(
             }
 
         }
-        return createUserAndSendConfirmationToken(firstName, username, password, roles)
+        if (EmailValidator.getInstance(true).isValid(username)) {
+            return createUserAndSendConfirmationToken(firstName, username, password, roles)
+        } else {
+
+            throw UserRegistrationException(UserRegistrationError.INVALID_EMAIL)
+        }
     }
 
-    private fun createUserAndSendConfirmationToken(firstName: String, username: String, password: String, roles: List<Roles>): Int {
+    private fun createUserAndSendConfirmationToken(
+        firstName: String, username: String, password: String, roles: List<Roles>
+    ): Int {
         val encodedPassword = encoder.encode(password)
         val user = User().apply {
             this.firstName = firstName

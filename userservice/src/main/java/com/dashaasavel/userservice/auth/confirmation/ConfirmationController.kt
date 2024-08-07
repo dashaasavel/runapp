@@ -1,19 +1,16 @@
 package com.dashaasavel.userservice.auth.confirmation
 
 import com.dashaasavel.userservice.user.UserService
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping(path = ["v1/auth"])
+@RequestMapping(path = ["api/v1/auth"]) // todo в целом прикольно с сочетанием rest и grpc, надо с безопасностью подумать
 class ConfirmationController(
     private val userService: UserService
 ) {
-    @PostMapping(path = ["confirm"])
+    @GetMapping(path = ["confirm"])
     fun confirmAccount(@RequestParam("token") token: String): String {
         userService.confirmUser(token)
-        return "OK!"
+        return "CONFIRMED!"
     }
 }

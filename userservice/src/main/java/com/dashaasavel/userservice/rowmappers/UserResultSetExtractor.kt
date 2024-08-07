@@ -26,14 +26,16 @@ object UserResultSetExtractor: ResultSetExtractor<User> {
 }
 
 object ConfirmationTokenExtractor: ResultSetExtractor<ConfirmationTokenDTO> {
-    override fun extractData(rs: ResultSet): ConfirmationTokenDTO {
-        rs.next()
-        return ConfirmationTokenDTO().apply {
-            this.token = rs.getString("token")
-            this.creationDate = rs.getTimestamp("creationDate").toLocalDateTime()
-            this.confirmationDate = rs.getTimestamp("confirmationDate")?.toLocalDateTime()
-            this.expirationDate = rs.getTimestamp("expirationDate").toLocalDateTime()
-        }
+    override fun extractData(rs: ResultSet): ConfirmationTokenDTO? {
+        return if (rs.next()) {
+            ConfirmationTokenDTO().apply {
+                this.userId = rs.getInt("userId")
+                this.token = rs.getString("token")
+                this.creationDate = rs.getTimestamp("creationDate").toLocalDateTime()
+                this.confirmationDate = rs.getTimestamp("confirmationDate")?.toLocalDateTime()
+                this.expirationDate = rs.getTimestamp("expirationDate").toLocalDateTime()
+            }
+        } else null
     }
 }
 

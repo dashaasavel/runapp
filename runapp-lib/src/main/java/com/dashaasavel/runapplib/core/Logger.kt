@@ -1,4 +1,4 @@
-package com.dashaasavel.runapplib
+package com.dashaasavel.runapplib.core
 
 import org.slf4j.LoggerFactory
 
