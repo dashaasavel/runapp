@@ -47,4 +47,13 @@
                  splitStatements="true"
                  stripComments="true"/>
     </changeSet>
+    <changeSet id="3" author="dashaasavel">
+        <sqlFile dbms="postgresql"
+                 encoding="UTF-8"
+                 endDelimiter="\nGO"
+                 path="classpath:db/changes/3_create_refresh_tokens_table.sql"
+                 relativeToChangelogFile="false"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
 </databaseChangeLog>

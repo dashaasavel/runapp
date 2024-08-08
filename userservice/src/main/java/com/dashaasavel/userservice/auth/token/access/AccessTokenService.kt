@@ -1,4 +1,4 @@
-package com.dashaasavel.userservice.auth.jwt
+package com.dashaasavel.userservice.auth.token.access
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -6,21 +6,21 @@ import java.nio.charset.StandardCharsets
 import java.sql.Date
 import javax.crypto.SecretKey
 
-class JwtManager(
-    private val jwtProperties: JwtProperties
+class AccessTokenService(
+    private val accessTokenProperties: AccessTokenProperties
 ) {
-    fun createJwtToken(userId: Int, username: String): String {
+    fun createAccessToken(userId: Int, username: String): String {
         val secretKey = createSignInKey()
         return Jwts.builder()
             .subject(username)
             .claim("userId", userId)
             .signWith(secretKey)
             .issuedAt(Date(System.currentTimeMillis()))
-            .expiration(Date(System.currentTimeMillis() + jwtProperties.expirationTimeMillis))
+            .expiration(Date(System.currentTimeMillis() + accessTokenProperties.expirationTimeInMillis))
             .compact()
     }
 
     private fun createSignInKey(): SecretKey {
-        return Keys.hmacShaKeyFor(jwtProperties.signingKey.toByteArray(StandardCharsets.UTF_8))
+        return Keys.hmacShaKeyFor(accessTokenProperties.signingKey.toByteArray(StandardCharsets.UTF_8))
     }
 }

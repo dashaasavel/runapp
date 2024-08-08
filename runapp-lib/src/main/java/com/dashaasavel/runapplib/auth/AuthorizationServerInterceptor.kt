@@ -19,7 +19,7 @@ import java.sql.Date
 class AuthorizationServerInterceptor : ServerInterceptor, InitializingBean {
     private val logger = logger()
 
-    @Value("\${jwt.signing-key}")
+    @Value("\${access-token.signing-key}")
     var signingKey: String = ""
 
     private val bearerTypeLength = AuthConstants.BEARER_TYPE.length
@@ -37,7 +37,6 @@ class AuthorizationServerInterceptor : ServerInterceptor, InitializingBean {
         }
         val value = headers[AuthConstants.AUTHORIZATION_METADATA_KEY]
         if (value == null) {
-            println("${call.getServiceAndMethodName()} token is missing!!!")
             headers.merge(GrpcMetadataUtils.invalidClientAuthData(AuthError.AUTH_TOKEN_IS_MISSING))
         } else if (!value.startsWith(AuthConstants.BEARER_TYPE)) {
             headers.merge(GrpcMetadataUtils.invalidClientAuthData(AuthError.UNKNOWN_AUTHORIZATION_TYPE))

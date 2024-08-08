@@ -1,10 +1,12 @@
 package com.dashaasavel.userservice.auth
 
-import com.dashaasavel.runapplib.grpc.error.UserAuthError
+import com.dashaasavel.runapplib.grpc.error.AuthError
 import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationProperties
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
-import com.dashaasavel.userservice.auth.jwt.JwtManager
+import com.dashaasavel.userservice.auth.token.access.AccessTokenService
+import com.dashaasavel.userservice.auth.token.AuthTokens
+import com.dashaasavel.userservice.auth.token.refresh.RefreshTokenService
 import com.dashaasavel.userservice.rabbit.RegistrationMessageSender
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.user.User
@@ -19,15 +21,27 @@ class AuthService(
     private val confirmationProperties: ConfirmationProperties,
     private val mailMessageSender: RegistrationMessageSender,
     private val encoder: PasswordEncoder,
-    private val jwtManager: JwtManager
+    private val accessTokenService: AccessTokenService,
+    private val refreshTokenService: RefreshTokenService
 ) {
     private val isAccountConfirmedByDefault = true
 
-    fun authUser(username: String, password: String): String {
-        val user = userService.getUser(username) ?: throw UserAuthException(UserAuthError.USER_DOES_NOT_EXIST)
+    fun refreshAccessToken(refreshToken: String): String {
+        val token =
+            refreshTokenService.findByToken(refreshToken) ?: throw UserAuthException(AuthError.REFRESH_TOKEN_NOT_FOUND)
+        if (token.isExpired()) {
+            throw UserAuthException(AuthError.REFRESH_TOKEN_EXPIRED)
+        }
+        return accessTokenService.createAccessToken(token.userId!!, token.username)
+    }
+
+    fun authUser(username: String, password: String): AuthTokens {
+        val user = userService.getUser(username) ?: throw UserAuthException(AuthError.USER_DOES_NOT_EXIST)
         if (encoder.matches(password, user.password)) {
-            return jwtManager.createJwtToken(user.id!!, username)
-        } else throw UserAuthException(UserAuthError.INCORRECT_PASSWORD)
+            val accessToken = accessTokenService.createAccessToken(user.id!!, username)
+            val refreshToken = refreshTokenService.createRefreshToken(user.id!!, username)
+            return AuthTokens(accessToken, refreshToken)
+        } else throw UserAuthException(AuthError.INCORRECT_PASSWORD)
     }
 
     fun registerUser(firstName: String, username: String, password: String, roles: List<Roles>): Int {

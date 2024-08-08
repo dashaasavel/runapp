@@ -25,4 +25,7 @@ class RabbitProducerConfig {
 
     @Bean
     fun rabbitTemplate() = RabbitTemplate(connectionFactory())
+
+    @Bean
+    fun rabbitMessageSender() = RabbitMessageSender(rabbitTemplate())
 }

@@ -2,13 +2,14 @@ package com.dashaasavel.userservice.auth
 
 import com.dashaasavel.runapplib.auth.AuthConstants
 import com.dashaasavel.runapplib.grpc.error.CommonError
-import com.dashaasavel.runapplib.grpc.error.UserAuthError
+import com.dashaasavel.runapplib.grpc.error.AuthError
 import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
 import com.dashaasavel.userservice.Fixtures
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationProperties
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenService
-import com.dashaasavel.userservice.auth.jwt.JwtManager
+import com.dashaasavel.userservice.auth.token.access.AccessTokenService
+import com.dashaasavel.userservice.auth.token.refresh.RefreshTokenService
 import com.dashaasavel.userservice.rabbit.RegistrationMessageSender
 import com.dashaasavel.userservice.user.UserService
 import com.nhaarman.mockitokotlin2.*
@@ -34,15 +35,22 @@ class AuthServiceTest {
         on { sendConfirmationToken(any(), any(), any(), any(), any()) } doAnswer {}
     }
     private val encoder: PasswordEncoder = mock()
-    private val jwtManager: JwtManager = mock()
-    private val authService =
-        AuthService(userService, confirmationTokenService, confirmationProperties, messageSender, encoder, jwtManager)
+    private val accessTokenService: AccessTokenService = mock {
+        on { createAccessToken(any(), any()) } doReturn "accessToken"
+    }
+    private val refreshTokenService: RefreshTokenService = mock {
+        on { createRefreshToken(any(), any()) } doReturn "refreshToken"
+    }
+    private val authService = AuthService(
+        userService, confirmationTokenService, confirmationProperties, messageSender,
+        encoder, accessTokenService, refreshTokenService
+    )
 
     @Test
     fun `auth user with incorrect username should throw an exception`() {
         whenever(userService.getUser(user.username!!)) doReturn null
 
-        assertThrowsAuthException<UserAuthException>(UserAuthError.USER_DOES_NOT_EXIST) {
+        assertThrowsAuthException<UserAuthException>(AuthError.USER_DOES_NOT_EXIST) {
             authService.authUser(user.username!!, user.password!!)
         }
     }
@@ -51,7 +59,7 @@ class AuthServiceTest {
     fun `auth user with incorrect password should throw an exception`() {
         whenever(encoder.matches(any(), any())) doReturn false
 
-        assertThrowsAuthException<UserAuthException>(UserAuthError.INCORRECT_PASSWORD) {
+        assertThrowsAuthException<UserAuthException>(AuthError.INCORRECT_PASSWORD) {
             authService.authUser(user.username!!, user.password!!)
         }
     }
@@ -62,7 +70,7 @@ class AuthServiceTest {
 
         authService.authUser(user.username!!, user.password!!)
 
-        verify(jwtManager).createJwtToken(user.id!!, user.username!!)
+        verify(accessTokenService).createAccessToken(user.id!!, user.username!!)
     }
 
     @Test

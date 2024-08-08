@@ -4,6 +4,7 @@ import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
 import com.dashaasavel.userservice.auth.UserRegistrationException
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDAO
 import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
+import com.dashaasavel.userservice.auth.token.refresh.RefreshTokenDAO
 import com.dashaasavel.userservice.rabbit.UserDeletionSender
 import com.dashaasavel.userservice.rabbit.WelcomeMessageSender
 import com.dashaasavel.userservice.role.Roles
@@ -17,6 +18,7 @@ class UserService(
     private val userToRolesDAO: UserToRolesDAO,
     private val rolesDAO: RolesDAO,
     private val confirmationTokenDAO: ConfirmationTokenDAO,
+    private val refreshTokenDAO: RefreshTokenDAO,
     private val transactionTemplate: TransactionTemplate,
     private val messageSender: UserDeletionSender,
     private val welcomeMessageSender: WelcomeMessageSender,
@@ -57,6 +59,7 @@ class UserService(
         transactionTemplate.executeWithoutResult {
             userToRolesDAO.deleteUserRoles(userId)
             confirmationTokenDAO.deleteUserTokens(userId)
+            refreshTokenDAO.deleteByUserId(userId)
             val user = userDAO.deleteUser(userId) ?: return@executeWithoutResult
             messageSender.sendUserDeletion(user.firstName!!, user.username!!, userId) // удалить это из транзакции
         }

@@ -3,6 +3,7 @@ package com.dashaasavel.integrationtests.facades
 import com.dashaasavel.integrationtests.utils.LocalStorage
 import com.dashaasavel.userservice.api.AuthServiceGrpc
 import com.dashaasavel.userservice.api.Authservice
+import com.dashaasavel.userservice.api.Authservice.RefreshAccessToken
 import com.dashaasavel.userserviceapi.utils.AuthServiceMessageWrapper
 import java.util.*
 
@@ -32,8 +33,15 @@ class AuthServiceFacade(
             this.credentials = AuthServiceMessageWrapper.userCredentials(username, password)
         }.build()
 
-        val jwtToken = authServiceBlockingStub.authUser(authRequest).jwtToken
-        localStorage.saveToken(jwtToken)
+        val accessToken = authServiceBlockingStub.authUser(authRequest).accessToken
+        localStorage.saveToken(accessToken)
         return userId
+    }
+
+    fun refreshAccessToken(refreshToken: String): String {
+        val request = RefreshAccessToken.Request.newBuilder()
+            .setRefreshToken(refreshToken)
+            .build()
+        return authServiceBlockingStub.refreshAccessToken(request).accessToken
     }
 }
