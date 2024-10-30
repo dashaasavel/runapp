@@ -1,81 +1,6 @@
 version: "3"
 
 services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:${KAFKA_TAG}
-    environment:
-      ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_CLIENT_PORT: "2181"
-      ZOOKEEPER_TICK_TIME: "2000"
-      ZOOKEEPER_SERVERS: "zookeeper:22888:23888"
-    networks:
-      - runapp
-    ports:
-      - '2181:2181'
-
-  kafka:
-    image: confluentinc/cp-kafka:${KAFKA_TAG}
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_BROKER_ID: 1
-      KAFKA_BROKER_RACK: "r1"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_DELETE_TOPIC_ENABLE: "true"
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_SCHEMA_REGISTRY_URL: "http://schemaregistry:8081"
-      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
-      KAFKA_JMX_PORT: 9991
-    networks:
-      - runapp
-    ports:
-      # Exposes 29092 for external connections to the broker
-      # Use kafka1:9092 for connections internal on the docker network
-      # See https://rmoff.net/2018/08/02/kafka-listeners-explained/ for details
-      - '29092:29092'
-    depends_on:
-      - zookeeper
-      - schemaregistry
-
-  schemaregistry:
-    image: confluentinc/cp-schema-registry:${KAFKA_TAG}
-    environment:
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
-      SCHEMA_REGISTRY_HOST_NAME: schemaregistry
-      SCHEMA_REGISTRY_LISTENERS: "http://schemaregistry:8081"
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
-    networks:
-      - runapp
-    ports:
-      - '8081:8081'
-    depends_on:
-      - zookeeper
-
-  control-center:
-    container_name: control-center
-    image: confluentinc/cp-control-center:3.0.1
-    environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
-      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schemaregistry:8081"
-      CONTROL_CENTER_REPLICATION_FACTOR: 1
-      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-      PORT: 9021
-    networks:
-      - runapp
-    ports:
-      - '9021:9021'
-    depends_on:
-      - zookeeper
-      - kafka
-      - schemaregistry
-
-  # databases
   userservice-postgres:
     container_name: userservice-postgres
     image: postgres:${POSTGRES_TAG}
@@ -94,8 +19,6 @@ services:
     build: ./userservice
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5433/postgres
-      KAFKA_METRIC_PRODUCER_BOOTSTRAP_SERVERS: 'kafka:9092'
-      KAFKA_METRIC_PRODUCER_SCHEMA_REGISTRY_URL: 'http://schemaregistry:8081'
       RABBIT_PRODUCER_HOST: 'rabbitmq'
       JAVA_OPTS: '
                 -Dcom.sun.management.jmxremote
@@ -138,8 +61,6 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5434/postgres
       SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/docker-db
-      KAFKA_METRIC_PRODUCER_BOOTSTRAP_SERVERS: 'kafka:9092'
-      KAFKA_METRIC_PRODUCER_SCHEMA_REGISTRY_URL: 'http://schemaregistry:8081'
       REMOTEGRPC_USER_SERVICE_HOST_AND_PORT: 'userservice:8093'
       RABBIT_CONSUMER_HOST: 'rabbitmq'
       JAVA_OPTS: '
@@ -165,46 +86,6 @@ services:
       - mongodb
       - runservice-postgres
       - rabbitmq
-
-
-  metric-aggregator-postgres:
-    container_name: metric-aggregator-postgres
-    image: postgres:${POSTGRES_TAG}
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: dasha
-    networks:
-      - runapp
-    ports:
-      - '5435:5432'
-
-  metric-aggregator:
-    container_name: metric-aggregator
-    image: runapp/metric-aggregator:${RUNAPP_TAG}
-    build: ./metric-aggregator
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5435/postgres
-      KAFKA_CONSUMER_BOOTSTRAP_SERVERS: "kafka:9092"
-      KAFKA_CONSUMER_SCHEMA_REGISTRY_URL: "http://schemaregistry:8081"
-      TOMCAT_JDWP_PORT: 15284
-      JAVA_OPTS: '
-          -Dcom.sun.management.jmxremote
-          -Dcom.sun.management.jmxremote.port=11384
-          -Dcom.sun.management.jmxremote.rmi.port=11384
-          -Dcom.sun.management.jmxremote.local.only=false
-          -Dcom.sun.management.jmxremote.authenticate=false
-          -Dcom.sun.management.jmxremote.ssl=false
-          -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:15284'
-    networks:
-      - runapp
-    ports:
-      - '8084:8084'   # http
-      - '11384:11384' # jmx
-      - '15384:15384' #debug
-    depends_on:
-      - metric-aggregator-postgres
-      - kafka
 
   mongodb:
     container_name: mongodb

@@ -101,12 +101,6 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
 
-        <!-- KAFKA -->
-        <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>kafka-protobuf-serializer</artifactId>
-        </dependency>
-
         <!-- TEST -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

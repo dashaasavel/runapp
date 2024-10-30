@@ -43,13 +43,6 @@
             <artifactId>jjwt-api</artifactId>
         </dependency>
 
-        <!-- KAFKA -->
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <!-- GRPC -->
         <dependency>
             <groupId>io.grpc</groupId>

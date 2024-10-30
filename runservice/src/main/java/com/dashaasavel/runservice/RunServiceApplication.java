@@ -4,12 +4,10 @@ import com.dashaasavel.runapplib.grpc.core.PermittedChannels;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication(exclude = {
-        KafkaAutoConfiguration.class,
         RabbitAutoConfiguration.class
 })
 public class RunServiceApplication {
