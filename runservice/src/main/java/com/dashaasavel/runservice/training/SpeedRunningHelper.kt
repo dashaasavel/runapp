@@ -10,7 +10,7 @@ object SpeedRunningHelper {
     private val level3 = listOf(Pair(5, 600), Pair(6, 500), Pair(4, 750))
 
     fun getSpeedTraining(level: Int): Pair<Int, Int> {
-        val random = Random().nextInt()
+        val random = Random().nextInt(3)
         return when(level) {
             1 -> level1[random]
             2 -> level2[random]

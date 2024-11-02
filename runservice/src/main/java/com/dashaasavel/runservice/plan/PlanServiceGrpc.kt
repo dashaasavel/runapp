@@ -38,12 +38,10 @@ class PlanServiceGrpc(
         request: Runservice.SavePlan.Request,
         responseObserver: StreamObserver<Empty>
     ) {
-        val planIdentifier = request.planIdentifier
-        val userId = planIdentifier.userId
-        val type = planIdentifier.type.toLocalEnum()
+        val userId = request.planIdentifier.userId
 
         responseObserver.reply {
-            planService.savePlan(userId, type)
+            planService.savePlan(userId)
             Empty.getDefaultInstance()
         }
     }

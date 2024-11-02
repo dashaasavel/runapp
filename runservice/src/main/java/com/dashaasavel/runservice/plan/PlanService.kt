@@ -47,7 +47,7 @@ class PlanService(
         return trainings
     }
 
-    fun savePlan(userId: Int, type: CompetitionRunType) {
+    fun savePlan(userId: Int) {
         val plan = plans[userId] ?: error("User doesn't have a plan")
         transactionTemplate.executeWithoutResult {
             val savedTrainingsIds = trainingsDAO.save(Trainings(_id = null, plan.trainings))
