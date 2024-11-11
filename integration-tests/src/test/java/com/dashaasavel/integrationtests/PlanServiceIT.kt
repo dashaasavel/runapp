@@ -3,8 +3,8 @@ package com.dashaasavel.integrationtests
 import com.dashaasavel.integrationtests.utils.assertGrpcCallThrows
 import com.dashaasavel.runapplib.grpc.core.isNull
 import com.dashaasavel.runapplib.grpc.error.CreatingPlanError
-import com.dashaasavel.userserviceapi.utils.CompetitionRunType
-import com.dashaasavel.userserviceapi.utils.PlanServiceMessageWrappers
+import com.dashaasavel.grpcmessages.utils.CompetitionRunType
+import com.dashaasavel.grpcmessages.utils.PlanServiceMessageWrappers
 import io.grpc.StatusRuntimeException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -12,8 +12,8 @@ import kotlin.test.assertTrue
 
 class PlanServiceIT : BaseServiceTest() {
     @Test
-    fun `create 2 marathon plans (throw exception)`() {
-        val userId = authService.registerAndAuthUser()
+    fun `when create 2 marathon plans then error plan already exists`() {
+        val userId = authService.registerUser()!!
         planService.createAndSaveMarathonPlan(userId).planInfo.identifier
 
         assertGrpcCallThrows<StatusRuntimeException>(CreatingPlanError.PLAN_ALREADY_EXISTS) {
@@ -22,8 +22,8 @@ class PlanServiceIT : BaseServiceTest() {
     }
 
     @Test
-    fun `delete marathon plan (success)`() {
-        val userId = authService.registerAndAuthUser()
+    fun `delete marathon plan`() {
+        val userId = authService.registerUser()!!
         var identifier = planService.createAndSaveMarathonPlan(userId).planInfo.identifier
 
         planService.deletePlan(identifier)
@@ -36,7 +36,7 @@ class PlanServiceIT : BaseServiceTest() {
 
     @Test
     fun `delete plan that does not exist (should not throw)`() {
-        val userId = authService.registerAndAuthUser()
+        val userId = authService.registerUser()!!
         val identifier = PlanServiceMessageWrappers.planIdentifier(userId, CompetitionRunType.MARATHON)
         assertDoesNotThrow {
             planService.deletePlan(identifier)

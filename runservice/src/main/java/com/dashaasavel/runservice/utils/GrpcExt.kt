@@ -3,8 +3,8 @@ package com.dashaasavel.runservice.utils
 import com.dashaasavel.runservice.api.Runservice
 import com.dashaasavel.runservice.plan.PlanInfo
 import com.dashaasavel.runservice.training.Training
-import com.dashaasavel.userserviceapi.utils.CompetitionRunType
-import com.dashaasavel.userserviceapi.utils.PlanServiceMessageWrappers
+import com.dashaasavel.grpcmessages.utils.CompetitionRunType
+import com.dashaasavel.grpcmessages.utils.PlanServiceMessageWrappers
 
 fun Runservice.CompetitionRunType.toLocalEnum() = CompetitionRunType.valueOf(this.name)
 

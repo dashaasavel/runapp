@@ -1,24 +1,16 @@
 package com.dashaasavel.userservice.user
 
-import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
-import com.dashaasavel.userservice.auth.UserRegistrationException
-import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDAO
-import com.dashaasavel.userservice.auth.confirmation.ConfirmationTokenDTO
-import com.dashaasavel.userservice.auth.token.refresh.RefreshTokenDAO
 import com.dashaasavel.userservice.rabbit.UserDeletionSender
 import com.dashaasavel.userservice.rabbit.WelcomeMessageSender
 import com.dashaasavel.userservice.role.Roles
 import com.dashaasavel.userservice.role.RolesDAO
 import com.dashaasavel.userservice.role.UserToRolesDAO
 import org.springframework.transaction.support.TransactionTemplate
-import java.time.LocalDateTime
 
 class UserService(
     private val userDAO: UserDAO,
     private val userToRolesDAO: UserToRolesDAO,
     private val rolesDAO: RolesDAO,
-    private val confirmationTokenDAO: ConfirmationTokenDAO,
-    private val refreshTokenDAO: RefreshTokenDAO,
     private val transactionTemplate: TransactionTemplate,
     private val messageSender: UserDeletionSender,
     private val welcomeMessageSender: WelcomeMessageSender,
@@ -58,8 +50,6 @@ class UserService(
     fun deleteUser(userId: Int) {
         transactionTemplate.executeWithoutResult {
             userToRolesDAO.deleteUserRoles(userId)
-            confirmationTokenDAO.deleteUserTokens(userId)
-            refreshTokenDAO.deleteByUserId(userId)
             val user = userDAO.deleteUser(userId) ?: return@executeWithoutResult
             messageSender.sendUserDeletion(user.firstName!!, user.username!!, userId) // удалить это из транзакции
         }
@@ -69,32 +59,5 @@ class UserService(
         userDAO.getUser(username)?.id?.let {
             deleteUser(it)
         }
-    }
-
-    fun confirmUser(token: String) {
-        val currentTime = LocalDateTime.now()
-        val daoToken = checkAndGetToken(token)
-        if (daoToken.confirmationDate != null) return
-        transactionTemplate.executeWithoutResult {
-            val user = userDAO.updateConfirmed(daoToken.userId!!, true)!!
-            confirmToken(token, currentTime)
-            welcomeMessageSender.sendWelcomeMessage(user.firstName!!, user.username!!) // убрать отсюда!
-        }
-    }
-
-    private fun checkAndGetToken(token: String): ConfirmationTokenDTO {
-        val userId = confirmationTokenDAO.getUserIdByToken(token) ?: throw UserRegistrationException(
-            UserRegistrationError.TOKEN_NOT_FOUND
-        )
-        val lastConfirmationToken = confirmationTokenDAO.getLastConfirmationTokenByUserId(userId)!!
-        val lastToken = lastConfirmationToken.token
-        if (lastToken != token) {
-            throw UserRegistrationException(UserRegistrationError.NEED_TO_CONFIRM_THE_LATEST_TOKEN)
-        }
-        return lastConfirmationToken
-    }
-
-    private fun confirmToken(token: String, confirmedTime: LocalDateTime) {
-        confirmationTokenDAO.setConfirmed(token, confirmedTime)
     }
 }

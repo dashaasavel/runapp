@@ -2,10 +2,9 @@ package com.dashaasavel.userservice.user
 
 import com.dashaasavel.runapplib.grpc.core.reply
 import com.dashaasavel.runapplib.grpc.register.GrpcService
-import com.dashaasavel.userservice.api.Userservice.DeleteUser
+import com.dashaasavel.userservice.api.Userservice
 import com.dashaasavel.userservice.api.Userservice.GetUser
 import com.dashaasavel.userservice.utils.toGrpcUser
-import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
 
 @GrpcService
@@ -32,19 +31,15 @@ class UserServiceGrpc(
         }
     }
 
-    override fun deleteUser(
-        request: DeleteUser.Request,
-        responseObserver: StreamObserver<Empty>
+    override fun saveUser(
+        request: Userservice.SaveUser.Request,
+        responseObserver: StreamObserver<Userservice.SaveUser.Response>?
     ) {
-        responseObserver.reply {
-            if (request.hasUserId()) {
-                val userId = request.userId
-                userService.deleteUser(userId)
-            } else if (request.hasUsername()) {
-                val username = request.username
-                userService.deleteUser(username)
-            }
-            Empty.getDefaultInstance()
+        val user = User().apply {
+            this.firstName = request.firstName
+            this.username = request.username
+            this.password = request.password
         }
+        userService.saveUser(user)
     }
 }

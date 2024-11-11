@@ -1,6 +1,6 @@
 package com.dashaasavel.runservice
 
-import com.dashaasavel.userserviceapi.utils.CompetitionRunType
+import com.dashaasavel.grpcmessages.utils.CompetitionRunType
 import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.Test
 

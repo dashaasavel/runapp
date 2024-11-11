@@ -9,7 +9,7 @@ import com.dashaasavel.runservice.training.Training
 import com.dashaasavel.runservice.training.Trainings
 import com.dashaasavel.runservice.training.TrainingsDAO
 import com.dashaasavel.runservice.utils.DateUtils
-import com.dashaasavel.userserviceapi.utils.CompetitionRunType
+import com.dashaasavel.grpcmessages.utils.CompetitionRunType
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.DayOfWeek
 import java.time.LocalDate

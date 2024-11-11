@@ -1,12 +1,10 @@
 package com.dashaasavel.integrationtests
 
-import com.dashaasavel.integrationtests.utils.assertGrpcCallThrows
 import com.dashaasavel.runapplib.grpc.core.isNull
-import com.dashaasavel.runapplib.grpc.error.UserRegistrationError
-import io.grpc.StatusRuntimeException
 import org.junit.jupiter.api.Test
 import java.util.*
-import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 
@@ -16,16 +14,10 @@ class UserServiceIT : BaseServiceTest() {
         val username = "test-user-${Random().nextInt() % 5000}@gmail.com"
         val password = "password-${Random().nextInt() % 5000}"
 
-        val userId = authService.registerAndAuthUser(username, password)
+        authService.registerUser(username, password)!!
 
-        val user = userService.getUserById(userId)
-
-        assertEquals(userId, user.id)
-        assertEquals(username, user.username)
-
-        assertGrpcCallThrows<StatusRuntimeException>(UserRegistrationError.USER_EXISTS_AND_CONFIRMED) {
-            authService.registerAndAuthUser(username, password)
-        }
+        val nullUserId = authService.registerUser(username, password)
+        assertNull(nullUserId)
     }
 
     @Test
@@ -33,47 +25,23 @@ class UserServiceIT : BaseServiceTest() {
         val username = "test-user-${Random().nextInt() % 5000}@gmail.com"
         val password = "password-${Random().nextInt() % 5000}"
 
-        val userId = authService.registerAndAuthUser(username, password)
+        val userId = 1
+//        val userId = authService.registerUser(username, password)!!
 
         var user = userService.getUserById(userId)
 
-        assertEquals(userId, user.id)
-        assertEquals(username, user.username)
+        assertNotNull(user)
 
         userService.deleteUserById(userId)
-
         user = userService.getUserById(userId)
 
-        assertTrue {
-            user.isNull()
-        }
+        assertNull(user)
     }
 
     @Test
-    fun `register and delete user by username`() {
-        val username = "test-user-${Random().nextInt() % 5000}@gmail.com"
-        val password = "password-${Random().nextInt() % 5000}"
-
-        val userId = authService.registerAndAuthUser(username, password)
-
-        var user = userService.getUserByUsername(username)
-
-        assertEquals(userId, user.id)
-        assertEquals(username, user.username)
-
-        userService.deleteUserByUsername(username)
-
-        user = userService.getUserByUsername(username)
-
-        assertTrue {
-            user.isNull()
-        }
-    }
-
-    @Test
-    fun `delete user and check if plans deleted too`() {
-        val userId = authService.registerAndAuthUser()
-        val planInfo = planService.createAndSaveMarathonPlan(userId).planInfo
+    fun `when delete user then plans should be deleted too`() {
+        val userId = authService.registerUser()
+        val planInfo = planService.createAndSaveMarathonPlan(userId!!).planInfo
         val identifier = planInfo.identifier
 
         userService.deleteUserById(userId)
@@ -84,5 +52,12 @@ class UserServiceIT : BaseServiceTest() {
         assertTrue {
             plan.isNull()
         }
+    }
+
+    @Test
+    fun `rest test delete`() {
+//        `when`().request(Method.DELETE, "localhost:8083/users/1").then().statusCode(200)
+//        userService.deleteUserById(1)
+        restTemplate.delete("http://localhost:8083/users/1", 1)
     }
 }

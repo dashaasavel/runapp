@@ -6,7 +6,7 @@ import com.dashaasavel.runapplib.grpc.error.GrpcMetadataUtils
 import com.dashaasavel.runservice.plan.utils.MINIMUM_WEEKS
 import com.dashaasavel.runservice.training.Trainings
 import com.dashaasavel.runservice.training.TrainingsDAO
-import com.dashaasavel.userserviceapi.utils.CompetitionRunType
+import com.dashaasavel.grpcmessages.utils.CompetitionRunType
 import com.mongodb.assertions.Assertions.assertNotNull
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -18,6 +18,7 @@ import org.junit.jupiter.api.assertThrows
 import java.lang.IllegalStateException
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -56,7 +57,7 @@ class PlanServiceTest {
 
     @Test
     fun `when plan with 3,4,5 trainings a week then createPlan method should not throw an exception`() {
-        val marathonDate = LocalDate.now().plusWeeks(MINIMUM_WEEKS.toLong())
+        val marathonDate = LocalDate.now().plusWeeks(MINIMUM_WEEKS.toLong()).with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
 
         val daysOfWeek = mutableListOf(DayOfWeek.MONDAY, DayOfWeek.THURSDAY, DayOfWeek.WEDNESDAY)
 

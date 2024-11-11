@@ -1,7 +1,7 @@
 package com.dashaasavel.runservice.training
 
-import com.dashaasavel.userserviceapi.utils.CompetitionRunType
-import com.dashaasavel.userserviceapi.utils.TrainingType
+import com.dashaasavel.grpcmessages.utils.CompetitionRunType
+import com.dashaasavel.grpcmessages.utils.TrainingType
 import java.time.LocalDate
 
 class Training private constructor(

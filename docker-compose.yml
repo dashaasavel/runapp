@@ -1,6 +1,47 @@
 version: "3"
 
 services:
+  authservice-postgres:
+    container_name: authservice-postgres
+    image: postgres:${POSTGRES_TAG}
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dasha
+    networks:
+      - runapp
+    ports:
+      - '5436:5432'
+
+  authservice:
+    container_name: authservice
+    image: runapp/authservice:${RUNAPP_TAG}
+    build: ./authservice
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5436/postgres
+      RABBIT_PRODUCER_HOST: 'rabbitmq'
+      JAVA_OPTS: '
+                -Dcom.sun.management.jmxremote
+                -Dcom.sun.management.jmxremote.port=11386
+                -Dcom.sun.management.jmxremote.rmi.port=11386
+                -Dcom.sun.management.jmxremote.local.only=false
+                -Dcom.sun.management.jmxremote.authenticate=false
+                -Dcom.sun.management.jmxremote.ssl=false'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8086/test" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    networks:
+      - runapp
+    ports:
+      - '8086:8086'
+      - '8096:8096' #grpc
+      - '11386:11386' # jmx
+      - '15386:15386' #debug
+    depends_on:
+      - authservice-postgres
+
   userservice-postgres:
     container_name: userservice-postgres
     image: postgres:${POSTGRES_TAG}

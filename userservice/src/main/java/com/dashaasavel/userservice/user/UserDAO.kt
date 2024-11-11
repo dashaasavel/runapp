@@ -12,12 +12,12 @@ class UserDAO(
     private val tableName = "users"
 
     fun getUser(userId: Int): User? {
-        val sql = "select id,firstName,username,password,confirmed from $tableName where id=?"
+        val sql = "select id,firstName,username,password from $tableName where id=?"
         return jdbcTemplate.query(sql, UserResultSetExtractor, userId)
     }
 
     fun getUser(username: String): User? {
-        val sql = "select id,firstName,username,password,confirmed from $tableName where username=?"
+        val sql = "select id,firstName,username,password from $tableName where username=?"
         return jdbcTemplate.query(sql, UserResultSetExtractor, username)
     }
 
@@ -27,7 +27,7 @@ class UserDAO(
     }
 
     fun insertUser(dto: User): Int {
-        val query = "insert into $tableName(firstName,username, password, confirmed) values(?, ?, ?, ?)"
+        val query = "insert into $tableName(firstName,username, password) values(?, ?, ?)"
         val keyHolder = GeneratedKeyHolder()
 
         jdbcTemplate.update({
@@ -35,7 +35,6 @@ class UserDAO(
             ps.setString(1, dto.firstName)
             ps.setString(2, dto.username)
             ps.setString(3, dto.password)
-            ps.setBoolean(4, dto.confirmed!!)
             ps
         }, keyHolder)
 
@@ -45,10 +44,5 @@ class UserDAO(
     fun isUserExists(username: String): Boolean {
         val query = "select 1 from $tableName where username=?"
         return jdbcTemplate.query(query, ExistsRowExtractor, username)!!
-    }
-
-    fun updateConfirmed(userId: Int, confirmed: Boolean): User? {
-        val query = "update $tableName set confirmed=? where id=? returning *"
-        return jdbcTemplate.query(query, UserResultSetExtractor, confirmed, userId)
     }
 }

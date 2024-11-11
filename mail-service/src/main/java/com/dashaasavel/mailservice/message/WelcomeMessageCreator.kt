@@ -1,6 +1,6 @@
 package com.dashaasavel.mailservice.message
 
-import com.dashaasavel.userserviceapi.utils.RabbitMQQueues
+import com.dashaasavel.grpcmessages.utils.RabbitMQQueues
 import org.springframework.boot.autoconfigure.mail.MailProperties
 import org.springframework.mail.javamail.JavaMailSender
 

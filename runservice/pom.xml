@@ -14,7 +14,7 @@
         <!-- LOCAL -->
         <dependency>
             <groupId>com.dashaasavel</groupId>
-            <artifactId>userservice-api</artifactId>
+            <artifactId>grpc-messages</artifactId>
         </dependency>
         <dependency>
             <groupId>com.dashaasavel</groupId>

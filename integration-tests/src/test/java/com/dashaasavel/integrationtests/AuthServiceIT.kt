@@ -21,6 +21,9 @@ class AuthServiceIT : BaseServiceTest() {
     @Autowired
     private lateinit var userServiceBlockingStub: UserServiceBlockingStub
 
+    @Autowired
+    private lateinit var userRestTemplate: UserRestTemplate
+
     @Test
     fun `call with no jwt token should throw an exception`() {
         val request = getUserRequest()
@@ -54,7 +57,7 @@ class AuthServiceIT : BaseServiceTest() {
         val username = "test-user-${Random().nextInt() % 5000}gmail.com"
         val password = "password-${Random().nextInt() % 5000}"
         assertGrpcCallThrows<StatusRuntimeException>(UserRegistrationError.INVALID_EMAIL) {
-            authService.registerAndAuthUser(username, password)
+            authService.registerUser(username, password)
         }
     }
 

@@ -1,36 +1,16 @@
 package com.dashaasavel.integrationtests.facades
 
-import com.dashaasavel.userservice.api.UserServiceGrpc
-import com.dashaasavel.userservice.api.Userservice
+import com.dashaasavel.integrationtests.UserRestTemplate
+import com.dashaasavel.openapi.model.User
 
 class UserServiceFacade(
-    private val userServiceBlockingStub: UserServiceGrpc.UserServiceBlockingStub,
+    private val restTemplate: UserRestTemplate
 ) {
-    fun getUserById(userId: Int): Userservice.User {
-        val request = Userservice.GetUser.Request.newBuilder().apply {
-            this.userId = userId
-        }.build()
-        return userServiceBlockingStub.getUser(request).user
-    }
-
-    fun getUserByUsername(username: String): Userservice.User {
-        val request = Userservice.GetUser.Request.newBuilder().apply {
-            this.username = username
-        }.build()
-        return userServiceBlockingStub.getUser(request).user
+    fun getUserById(userId: Int): User? {
+        return restTemplate.getUser(userId)
     }
 
     fun deleteUserById(userId: Int) {
-        val request = Userservice.DeleteUser.Request.newBuilder().apply {
-            this.userId = userId
-        }.build()
-        userServiceBlockingStub.deleteUser(request)
-    }
-
-    fun deleteUserByUsername(username: String) {
-        val request = Userservice.DeleteUser.Request.newBuilder().apply {
-            this.username = username
-        }.build()
-        userServiceBlockingStub.deleteUser(request)
+        restTemplate.deleteUser(userId)
     }
 }

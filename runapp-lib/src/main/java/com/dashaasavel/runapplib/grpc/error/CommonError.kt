@@ -11,6 +11,9 @@ enum class UserRegistrationError : CommonError {
     USER_EXISTS_AND_CONFIRMED {
         override fun getName(): String = this.name
     },
+    USER_EXISTS {
+        override fun getName(): String = this.name
+    },
     NEED_TO_CONFIRM_ACCOUNT {
         override fun getName(): String = this.name
     },

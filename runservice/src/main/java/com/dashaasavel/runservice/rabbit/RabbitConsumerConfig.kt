@@ -1,7 +1,7 @@
 package com.dashaasavel.runservice.rabbit
 
 import com.dashaasavel.runservice.plan.PlanService
-import com.dashaasavel.userserviceapi.utils.RabbitMQQueues
+import com.dashaasavel.grpcmessages.utils.RabbitMQQueues
 import org.springframework.amqp.core.*
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
 import org.springframework.amqp.rabbit.connection.ConnectionFactory

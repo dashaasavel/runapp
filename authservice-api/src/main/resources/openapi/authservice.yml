@@ -1,0 +1,110 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Sample API
+  description: A sample API to illustrate OpenAPI concepts
+paths:
+  /register:
+    post:
+      description: Register new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/RegistrationRequest'
+
+      responses:
+        '200':
+          description: Success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/RegistrationResponse'
+        '409':
+          description: CONFLICT
+  /auth:
+    post:
+      description: Auth user
+      operationId: authUser
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /refresh:
+    post:
+      description: Refresh user token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/RefreshAccessTokenRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/RefreshAccessTokenResponse'
+
+
+components:
+  schemas:
+    UserCredentials:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    RegistrationRequest:
+      type: object
+      properties:
+        userCredentials:
+          $ref: '#/components/schemas/UserCredentials'
+        first_name:
+          type: string
+
+    RegistrationResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+
+    AuthRequest:
+      type: object
+      properties:
+        userCredentials:
+          $ref: '#/components/schemas/UserCredentials'
+    AuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+
+    RefreshAccessTokenRequest:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+
+    RefreshAccessTokenResponse:
+      type: object
+      properties:
+        assess_token:
+          type: string

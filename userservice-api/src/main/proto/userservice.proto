@@ -2,11 +2,9 @@ syntax = "proto2";
 
 package com.dashaasavel.userservice.api;
 
-import "google/protobuf/empty.proto";
-
 service UserService {
   rpc GetUser(GetUser.Request) returns (GetUser.Response);
-  rpc DeleteUser(DeleteUser.Request) returns (google.protobuf.Empty);
+  rpc SaveUser(SaveUser.Request) returns (SaveUser.Response);
 }
 
 message GetUser {
@@ -22,20 +20,19 @@ message GetUser {
   }
 }
 
-message DeleteUser {
+message SaveUser {
   message Request {
-    oneof userIdentifier {
-      int32 userId = 1;
-      string username = 2;
-    }
+    optional string firstName = 1;
+    optional string username = 2;
+    optional string password = 3;
+  }
+  message Response {
+    optional int32 userId = 1;
   }
 }
-
 message User {
   optional int32 id = 1;
   optional string username = 2;
-  optional bool confirmed = 3;
-  repeated string roles = 4;
 }
 
 enum UserServiceError {

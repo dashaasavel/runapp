@@ -7,6 +7,5 @@ class User {
     var firstName: String? = null
     var username: String? = null
     var password: String? = null
-    var confirmed: Boolean? = null
     var roles: List<Roles>? = null
 }

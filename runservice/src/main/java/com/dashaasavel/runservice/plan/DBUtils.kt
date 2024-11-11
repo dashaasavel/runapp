@@ -1,6 +1,6 @@
 package com.dashaasavel.runservice.plan
 
-import com.dashaasavel.userserviceapi.utils.CompetitionRunType
+import com.dashaasavel.grpcmessages.utils.CompetitionRunType
 import org.springframework.jdbc.core.ResultSetExtractor
 import java.sql.ResultSet
 import java.time.DayOfWeek

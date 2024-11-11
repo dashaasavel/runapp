@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+server:
+  port: 8084
+  forward-headers-strategy: framework # добавление заголовка к запросам о том, что запрос был спроксирован

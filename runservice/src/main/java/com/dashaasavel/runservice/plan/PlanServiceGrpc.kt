@@ -6,7 +6,7 @@ import com.dashaasavel.runservice.api.Runservice
 import com.dashaasavel.runservice.api.Runservice.CreatePlan.Response
 import com.dashaasavel.runservice.utils.toGrpc
 import com.dashaasavel.runservice.utils.toLocalEnum
-import com.dashaasavel.userserviceapi.utils.DateUtils.convertToDayOfWeek
+import com.dashaasavel.grpcmessages.utils.DateUtils.convertToDayOfWeek
 import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
 import java.time.LocalDate

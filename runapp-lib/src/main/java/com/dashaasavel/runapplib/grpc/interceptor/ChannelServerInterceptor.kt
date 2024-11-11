@@ -15,10 +15,10 @@ class ChannelServerInterceptor(
         headers: Metadata,
         next: ServerCallHandler<ReqT, RespT>
     ): ServerCall.Listener<ReqT> {
-        val channel = headers.get(GrpcMetadataUtils.CHANNEL_METADATA_KEY)
-        if (!permittedGrpcChannels.list.contains(channel)) {
-            call.close(Status.PERMISSION_DENIED, GrpcMetadataUtils.invalidChannelMetadata(channel))
-        }
+//        val channel = headers.get(GrpcMetadataUtils.CHANNEL_METADATA_KEY)
+//        if (!permittedGrpcChannels.list.contains(channel)) {
+//            call.close(Status.PERMISSION_DENIED, GrpcMetadataUtils.invalidChannelMetadata(channel))
+//        }
         return next.startCall(object : ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {}, headers)
     }
 }

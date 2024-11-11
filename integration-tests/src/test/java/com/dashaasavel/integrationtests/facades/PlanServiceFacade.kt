@@ -3,8 +3,8 @@ package com.dashaasavel.integrationtests.facades
 import com.dashaasavel.runapplib.grpc.core.isNull
 import com.dashaasavel.runservice.api.PlanServiceGrpc
 import com.dashaasavel.runservice.api.Runservice
-import com.dashaasavel.userserviceapi.utils.CompetitionRunType
-import com.dashaasavel.userserviceapi.utils.PlanServiceMessageWrappers
+import com.dashaasavel.grpcmessages.utils.CompetitionRunType
+import com.dashaasavel.grpcmessages.utils.PlanServiceMessageWrappers
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters

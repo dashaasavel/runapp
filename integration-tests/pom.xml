@@ -20,6 +20,14 @@
 			<groupId>com.dashaasavel</groupId>
 			<artifactId>userservice-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.dashaasavel</groupId>
+			<artifactId>authservice-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.dashaasavel</groupId>
+			<artifactId>grpc-messages</artifactId>
+		</dependency>
 
 		<!-- SPRING CORE -->
 		<dependency>
@@ -58,7 +66,13 @@
 			<artifactId>kotlin-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>5.5.0</version>
+			<scope>test</scope>
+		</dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
