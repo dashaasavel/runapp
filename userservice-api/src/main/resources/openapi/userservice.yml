@@ -48,7 +48,3 @@ components:
           type: string
         confirmed: # хз надо ли это, но ладно
           type: boolean
-        roles: # хз надо ли это, но ладно
-          type: array
-          items:
-            type: string

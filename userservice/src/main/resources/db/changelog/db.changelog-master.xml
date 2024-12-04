@@ -5,53 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet author="dashaasavel" id="1">
+    <changeSet id="1" author="dashaasavel">
         <sqlFile dbms="postgresql"
                  encoding="UTF-8"
                  endDelimiter="\nGO"
                  path="classpath:db/changes/1_create_table_users.sql"
-                 relativeToChangelogFile="false"
-                 splitStatements="true"
-                 stripComments="true"/>
-
-        <sqlFile dbms="postgresql"
-                 encoding="UTF-8"
-                 endDelimiter="\nGO"
-                 path="classpath:db/changes/1_create_table_conf_tokens.sql"
-                 relativeToChangelogFile="false"
-                 splitStatements="true"
-                 stripComments="true"/>
-
-        <sqlFile dbms="postgresql"
-                 encoding="UTF-8"
-                 endDelimiter="\nGO"
-                 path="classpath:db/changes/1_create_table_roles.sql"
-                 relativeToChangelogFile="false"
-                 splitStatements="true"
-                 stripComments="true"/>
-
-        <sqlFile dbms="postgresql"
-                 encoding="UTF-8"
-                 endDelimiter="\nGO"
-                 path="classpath:db/changes/1_create_table_users_to_roles.sql"
-                 relativeToChangelogFile="false"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-    <changeSet id="2" author="dashaasavel">
-        <sqlFile dbms="postgresql"
-                 encoding="UTF-8"
-                 endDelimiter="\nGO"
-                 path="classpath:db/changes/2_insert_roles.sql"
-                 relativeToChangelogFile="false"
-                 splitStatements="true"
-                 stripComments="true"/>
-    </changeSet>
-    <changeSet id="3" author="dashaasavel">
-        <sqlFile dbms="postgresql"
-                 encoding="UTF-8"
-                 endDelimiter="\nGO"
-                 path="classpath:db/changes/3_create_refresh_tokens_table.sql"
                  relativeToChangelogFile="false"
                  splitStatements="true"
                  stripComments="true"/>

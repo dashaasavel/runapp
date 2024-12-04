@@ -1,8 +1,6 @@
 package com.dashaasavel.userservice.user
 
 import com.dashaasavel.userservice.rabbit.RabbitMessageSender
-import com.dashaasavel.userservice.role.RolesDAO
-import com.dashaasavel.userservice.role.UserToRolesDAO
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
@@ -18,14 +16,8 @@ class UserConfig(
     fun userDAO() = UserDAO(jdbcTemplate)
 
     @Bean
-    fun userToRolesDAO() = UserToRolesDAO(jdbcTemplate)
-
-    @Bean
-    fun rolesDAO() = RolesDAO(jdbcTemplate)
-
-    @Bean
     fun userService() =
-        UserService(userDAO(), userToRolesDAO(), rolesDAO(), transactionTemplate, messageSender, messageSender)
+        UserService(userDAO(), transactionTemplate, messageSender, messageSender)
 
     @Bean
     fun userGrpcService() = UserServiceGrpc(userService())

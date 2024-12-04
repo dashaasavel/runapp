@@ -1,6 +1,7 @@
 package com.dashaasavel.integrationtests.facades
 
 import com.dashaasavel.integrationtests.AuthRestTemplate
+import com.dashaasavel.integrationtests.TokenPair
 import java.util.*
 
 class AuthServiceFacade(
@@ -18,5 +19,9 @@ class AuthServiceFacade(
 
     fun refreshAccessToken(refreshToken: String): String? {
         return authRestTemplate.refresh(refreshToken)
+    }
+
+    fun authUser(username: String, password: String): TokenPair? {
+        return authRestTemplate.auth(username, password)
     }
 }

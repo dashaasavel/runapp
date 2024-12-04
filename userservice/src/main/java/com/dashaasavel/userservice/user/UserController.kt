@@ -19,7 +19,6 @@ class UserController(
         val respUser = User().apply {
             this.userId = user.id
             this.username = user.username
-            this.roles = user.roles?.map { it.name }
         }
         return ResponseEntity.ok().body(respUser)
     }

@@ -32,7 +32,9 @@ message SaveUser {
 }
 message User {
   optional int32 id = 1;
-  optional string username = 2;
+  optional string firstName = 2;
+  optional string username = 3;
+  optional string password = 4;
 }
 
 enum UserServiceError {

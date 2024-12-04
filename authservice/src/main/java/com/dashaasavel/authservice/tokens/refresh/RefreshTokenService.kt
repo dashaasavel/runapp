@@ -9,7 +9,7 @@ class RefreshTokenService(
     private val refreshTokenProperties: RefreshTokenProperties
 ) {
     fun findByToken(token: String): RefreshToken? {
-        return dao.findByToken(token)
+        return dao.findToken(token)
     }
 
     fun createRefreshToken(userId: Int, username: String): String {

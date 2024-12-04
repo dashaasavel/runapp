@@ -17,7 +17,9 @@ class UserServiceFacade(
         }
         return User().apply {
             this.id = responseUser.id // ыыыы
+            this.firstName = responseUser.firstName
             this.username = responseUser.username
+            this.password = responseUser.password
         }
     }
 

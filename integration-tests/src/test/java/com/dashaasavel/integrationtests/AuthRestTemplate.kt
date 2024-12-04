@@ -18,7 +18,7 @@ class AuthRestTemplate(
         headers.contentType = MediaType.APPLICATION_JSON
         val httpRequest = HttpEntity(body, headers)
         val response =
-            restTemplate.postForEntity(hostAndPort + "refresh/", httpRequest, RefreshAccessTokenResponse::class.java)
+            restTemplate.postForEntity(hostAndPort + "refresh", httpRequest, RefreshAccessTokenResponse::class.java)
         return response?.body?.assessToken
     }
 
@@ -32,7 +32,7 @@ class AuthRestTemplate(
         headers.contentType = MediaType.APPLICATION_JSON
         val httpRequest = HttpEntity(body, headers)
         val response =
-            restTemplate.postForEntity(hostAndPort + "auth/", httpRequest, AuthResponse::class.java)
+            restTemplate.postForEntity(hostAndPort + "auth", httpRequest, AuthResponse::class.java)
 
         val responseBody = response.body?: return null
         return TokenPair(responseBody.accessToken, responseBody.refreshToken)
@@ -49,7 +49,7 @@ class AuthRestTemplate(
         headers.contentType = MediaType.APPLICATION_JSON
         val httpRequest = HttpEntity(body, headers)
         val response =
-            restTemplate.postForEntity(hostAndPort + "register/", httpRequest, RegistrationResponse::class.java)
+            restTemplate.postForEntity(hostAndPort + "register", httpRequest, RegistrationResponse::class.java)
         return response.body?.userId
     }
 }

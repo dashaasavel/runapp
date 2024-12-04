@@ -14,17 +14,17 @@ class RefreshTokenDAO(
         jdbcTemplate.update(sql, refreshToken.userId, refreshToken.username, refreshToken.token, refreshToken.expDate)
     }
 
-    fun findByToken(token: String): RefreshToken? {
-        val sql = "select (id, userId, username, token, expDate) from $tableName where token=?"
+    fun findToken(token: String): RefreshToken? {
+        val sql = "select id, userId, username, token, expDate from $tableName where token=?"
         return jdbcTemplate.query(sql, RefreshTokenResultSetExtractor, token)
     }
 
-    fun deleteByToken(token: String) {
+    fun deleteToken(token: String) {
         val sql = "delete from $tableName where token=?"
         jdbcTemplate.update(sql, token)
     }
 
-    fun deleteByUserId(userId: Int) {
+    fun deleteTokenByUserId(userId: Int) {
         val sql = "delete from $tableName where userId=?"
         jdbcTemplate.update(sql, userId)
     }

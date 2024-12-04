@@ -39,7 +39,6 @@ class AuthService(
             throw UserRegistrationException(
                 UserRegistrationError.USER_EXISTS
             )
-
         }
         if (EmailValidator.getInstance(true).isValid(username)) {
             val encodedPassword = encoder.encode(password)

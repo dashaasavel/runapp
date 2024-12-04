@@ -19,6 +19,7 @@ services:
     build: ./authservice
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5436/postgres
+      REMOTEGRPC_USER_SERVICE_HOST_AND_PORT: 'userservice:8093'
       RABBIT_PRODUCER_HOST: 'rabbitmq'
       JAVA_OPTS: '
                 -Dcom.sun.management.jmxremote
