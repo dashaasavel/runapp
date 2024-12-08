@@ -23,10 +23,6 @@ class UserServiceFacade(
         }
     }
 
-    fun doesUserExists(username: String): Boolean {
-        return getUser(username) != null
-    }
-
     fun saveUser(firstName: String, username: String, password: String): Int {
         val request = Userservice.SaveUser.Request.newBuilder().apply {
             this.firstName = firstName

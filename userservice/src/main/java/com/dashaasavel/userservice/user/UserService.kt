@@ -1,7 +1,9 @@
 package com.dashaasavel.userservice.user
 
+import com.dashaasavel.userservice.UserAlreadyExistsException
 import com.dashaasavel.userservice.rabbit.UserDeletionSender
 import com.dashaasavel.userservice.rabbit.WelcomeMessageSender
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.transaction.support.TransactionTemplate
 
 class UserService(
@@ -14,16 +16,16 @@ class UserService(
      * @return userId
      */
     fun saveUser(user: User): Int {
-        return transactionTemplate.execute {
-            userDAO.insertUser(user)
-        }!!
+        try {
+            return userDAO.insertUser(user)
+        } catch (e: DuplicateKeyException) {
+            throw UserAlreadyExistsException()
+        }
     }
 
     fun getUser(id: Int): User? {
         return userDAO.getUser(id)
     }
-
-    fun isUserExists(username: String) = userDAO.isUserExists(username)
 
     fun getUser(username: String): User? {
         return userDAO.getUser(username)

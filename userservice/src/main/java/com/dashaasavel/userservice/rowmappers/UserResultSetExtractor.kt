@@ -21,17 +21,3 @@ object UserResultSetExtractor : ResultSetExtractor<User> {
         } else null
     }
 }
-
-object ExistsRowExtractor : ResultSetExtractor<Boolean> {
-    override fun extractData(rs: ResultSet): Boolean {
-        return rs.next()
-    }
-}
-
-object IntIdResultSetExtractor : ResultSetExtractor<Int> {
-    override fun extractData(rs: ResultSet): Int? {
-        return if (rs.next()) {
-            rs.getInt("id")
-        } else null
-    }
-}

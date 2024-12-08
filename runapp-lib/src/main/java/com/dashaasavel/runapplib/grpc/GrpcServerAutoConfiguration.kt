@@ -3,9 +3,6 @@ package com.dashaasavel.runapplib.grpc
 import com.dashaasavel.runapplib.grpc.core.GrpcExecutorProperties
 import com.dashaasavel.runapplib.grpc.core.GrpcServer
 import com.dashaasavel.runapplib.grpc.core.GrpcServerProperties
-import com.dashaasavel.runapplib.grpc.core.PermittedChannels
-import com.dashaasavel.runapplib.auth.AuthorizationServerInterceptor
-import com.dashaasavel.runapplib.grpc.interceptor.ChannelServerInterceptor
 import com.dashaasavel.runapplib.grpc.interceptor.LogServerInterceptor
 import com.dashaasavel.runapplib.grpc.register.GrpcServiceBeanPostProcessor
 import io.grpc.ServerInterceptor
@@ -17,14 +14,11 @@ import org.springframework.context.annotation.Configuration
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.jvm.optionals.getOrNull
 
 @Configuration
 @ConditionalOnProperty("grpc.server.port")
 class GrpcServerAutoConfiguration(
     private val interceptors: List<ServerInterceptor>,
-    private val permittedGrpcChannels: Optional<PermittedChannels>,
-    private val authorizationServerInterceptor: Optional<AuthorizationServerInterceptor>
 ) {
     @Bean
     fun grpcServiceBeanPostProcessor() = GrpcServiceBeanPostProcessor(mutableHandlerRegistry())
@@ -47,9 +41,6 @@ class GrpcServerAutoConfiguration(
     fun grpcServer(): GrpcServer {
         val allInterceptors = mutableListOf<ServerInterceptor>(LogServerInterceptor())
         allInterceptors += interceptors
-        permittedGrpcChannels.ifPresent {
-            allInterceptors += ChannelServerInterceptor(it)
-        }
-        return GrpcServer(grpcServerProperties(), allInterceptors, authorizationServerInterceptor.getOrNull(), mutableHandlerRegistry(), threadPoolExecutor())
+        return GrpcServer(grpcServerProperties(), allInterceptors, mutableHandlerRegistry(), threadPoolExecutor())
     }
 }

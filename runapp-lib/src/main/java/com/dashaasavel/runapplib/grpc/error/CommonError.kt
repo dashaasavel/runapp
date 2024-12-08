@@ -1,86 +1,49 @@
 package com.dashaasavel.runapplib.grpc.error
 
-/**
- * Маркерный интерфейс для ошибок, которые будут переданы клиенту при grpc-вызове
- */
+import org.springframework.http.HttpStatus
+
 interface CommonError {
     fun getName(): String
+    fun getStatus(): HttpStatus
 }
 
-enum class UserRegistrationError : CommonError {
-    USER_EXISTS_AND_CONFIRMED {
+enum class UserServiceError : CommonError {
+    USER_ALREADY_EXISTS {
         override fun getName(): String = this.name
-    },
-    USER_EXISTS {
-        override fun getName(): String = this.name
-    },
-    NEED_TO_CONFIRM_ACCOUNT {
-        override fun getName(): String = this.name
-    },
-    NEW_TOKEN_WAS_SENT {
-        override fun getName(): String = this.name
-    },
-    NEED_TO_CONFIRM_THE_LATEST_TOKEN {
-        override fun getName(): String = this.name
-    },
-    INVALID_EMAIL {
-        override fun getName(): String = this.name
-    },
-    TOKEN_NOT_FOUND {
-        override fun getName(): String = this.name
-    }
-}
-
-enum class AuthError : CommonError {
-    USER_DOES_NOT_EXIST {
-        override fun getName(): String = this.name
-    },
-    INCORRECT_PASSWORD {
-        override fun getName(): String = this.name
-    },
-    REFRESH_TOKEN_NOT_FOUND {
-        override fun getName(): String = this.name
-    },
-    REFRESH_TOKEN_EXPIRED {
-        override fun getName(): String = this.name
-    },
-    AUTH_TOKEN_IS_MISSING {
-        override fun getName(): String = this.name
-    },
-    UNKNOWN_AUTHORIZATION_TYPE {
-        override fun getName(): String = this.name
-    },
-    TOKEN_IS_OUT_OF_DATE {
-        override fun getName(): String = this.name
-    },
-    UNKNOWN_ERROR {
-        override fun getName(): String = this.name
+        override fun getStatus(): HttpStatus = HttpStatus.CONFLICT
     }
 }
 
 enum class CreatingPlanError : CommonError {
     MORE_TIME_IS_NEEDED {
         override fun getName(): String = this.name
+        override fun getStatus(): HttpStatus = HttpStatus.BAD_REQUEST
     },
     COMPETITION_TYPE_NOT_SUPPORTED_NOW {
         override fun getName(): String = this.name
+        override fun getStatus(): HttpStatus = HttpStatus.BAD_REQUEST
     },
     NOT_SUPPORTED_COUNT_TIMES_A_WEEK {
         override fun getName(): String = this.name
+        override fun getStatus(): HttpStatus = HttpStatus.BAD_REQUEST
     },
     PLAN_ALREADY_EXISTS {
         override fun getName(): String = this.name
+        override fun getStatus(): HttpStatus = HttpStatus.BAD_REQUEST
     },
     USER_DOES_NOT_EXIST {
         override fun getName(): String = this.name
+        override fun getStatus(): HttpStatus = HttpStatus.BAD_REQUEST
     }
 }
 
 enum class ChannelError : CommonError {
     CHANNEL_CANNOT_BE_NULL {
         override fun getName(): String = this.name
+        override fun getStatus(): HttpStatus = HttpStatus.BAD_REQUEST
     },
     CHANNEL_IS_NOT_PERMITTED {
         override fun getName(): String = this.name
+        override fun getStatus(): HttpStatus = HttpStatus.BAD_REQUEST
     }
 }

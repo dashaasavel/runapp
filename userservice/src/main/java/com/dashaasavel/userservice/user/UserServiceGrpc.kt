@@ -33,13 +33,19 @@ class UserServiceGrpc(
 
     override fun saveUser(
         request: Userservice.SaveUser.Request,
-        responseObserver: StreamObserver<Userservice.SaveUser.Response>?
+        responseObserver: StreamObserver<Userservice.SaveUser.Response>
     ) {
-        val user = User().apply {
-            this.firstName = request.firstName
-            this.username = request.username
-            this.password = request.password
+        responseObserver.reply {
+            val user = User().apply {
+                this.firstName = request.firstName
+                this.username = request.username
+                this.password = request.password
+            }
+            val userId = userService.saveUser(user)
+
+            Userservice.SaveUser.Response.newBuilder().apply {
+                this.userId = userId
+            }.build()
         }
-        userService.saveUser(user)
     }
 }

@@ -1,9 +1,6 @@
 package com.dashaasavel.runapplib.grpc.error;
 
-import com.dashaasavel.runapplib.auth.AuthConstants;
-import io.grpc.ClientInterceptor;
 import io.grpc.Metadata;
-import io.grpc.stub.MetadataUtils;
 
 import javax.annotation.Nullable;
 
@@ -24,18 +21,5 @@ public class GrpcMetadataUtils {
         Metadata metadata = new Metadata();
         metadata.put(ERROR_METADATA_KEY, error.getName());
         return metadata;
-    }
-
-    public static Metadata invalidClientAuthData(CommonError error) {
-        Metadata metadata = new Metadata();
-        metadata.put(AuthConstants.AUTH_ERROR, error.getName());
-        return metadata;
-    }
-
-
-    public static ClientInterceptor clientChannelAttachingInterceptor(String channelName) {
-        Metadata headers = new Metadata();
-        headers.put(CHANNEL_METADATA_KEY, channelName);
-        return MetadataUtils.newAttachHeadersInterceptor(headers);
     }
 }

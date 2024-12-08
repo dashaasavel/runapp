@@ -1,11 +1,12 @@
 package com.dashaasavel.userservice.user
 
-import com.dashaasavel.userservice.rowmappers.ExistsRowExtractor
-import org.springframework.jdbc.core.JdbcTemplate
 import com.dashaasavel.userservice.rowmappers.UserResultSetExtractor
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.stereotype.Repository
 import java.sql.Statement
 
+@Repository
 class UserDAO(
     private val jdbcTemplate: JdbcTemplate
 ) {
@@ -27,7 +28,7 @@ class UserDAO(
     }
 
     fun insertUser(dto: User): Int {
-        val query = "insert into $tableName(firstName,username, password) values(?, ?, ?)"
+        val query = "insert into $tableName(firstName, username, password) values(?, ?, ?)"
         val keyHolder = GeneratedKeyHolder()
 
         jdbcTemplate.update({
@@ -39,10 +40,5 @@ class UserDAO(
         }, keyHolder)
 
         return keyHolder.keys?.get("id") as Int
-    }
-
-    fun isUserExists(username: String): Boolean {
-        val query = "select 1 from $tableName where username=?"
-        return jdbcTemplate.query(query, ExistsRowExtractor, username)!!
     }
 }
