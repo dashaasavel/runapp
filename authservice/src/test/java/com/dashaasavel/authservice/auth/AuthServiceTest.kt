@@ -47,6 +47,6 @@ class AuthServiceTest {
 
         authService.authUser(user.username, user.password)
 
-        verify(tokensService).createAccessToken(user.id!!, user.username)
+        verify(tokensService).createTokenPair(user.id!!, user.username)
     }
 }
