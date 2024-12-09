@@ -1,6 +1,5 @@
 package com.dashaasavel.userservice.rabbit
 
-import com.dashaasavel.mailservice.message.ConfirmationMessage
 import com.dashaasavel.mailservice.message.GoodByeMessage
 import com.dashaasavel.mailservice.message.UserInfo
 import com.dashaasavel.mailservice.message.WelcomeMessage

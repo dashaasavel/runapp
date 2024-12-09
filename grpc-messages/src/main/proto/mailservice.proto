@@ -13,13 +13,6 @@ message GoodByeMessage {
   optional int32 userId = 2;
 }
 
-message ConfirmationMessage {
-  optional UserInfo userInfo = 1;
-  optional string token = 2;
-  optional int32 minutes = 3;
-  optional string url = 4;
-}
-
 message UserInfo {
   optional string username = 1;
   optional string firstName = 2;

@@ -10,8 +10,6 @@ class MessageCreatorsConfig(
     private val mailSender: JavaMailSender,
     private val mailProperties: MailProperties,
 ) {
-    @Bean
-    fun confirmationTokenMessageCreator() = ConfirmationTokenMessageCreator(mailProperties, mailSender)
 
     @Bean
     fun goodByeMessageCreator() = GoodByeMessageCreator(mailProperties, mailSender)

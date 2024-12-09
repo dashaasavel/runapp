@@ -17,7 +17,9 @@ class UserService(
      */
     fun saveUser(user: User): Int {
         try {
-            return userDAO.insertUser(user)
+            val userId = userDAO.insertUser(user)
+            welcomeMessageSender.sendWelcomeMessage(user.firstName!!, user.username!!)
+            return userId
         } catch (e: DuplicateKeyException) {
             throw UserAlreadyExistsException()
         }
