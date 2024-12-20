@@ -56,11 +56,6 @@
             </dependency>
             <dependency>
                 <groupId>com.dashaasavel</groupId>
-                <artifactId>application</artifactId>
-                <version>${version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.dashaasavel</groupId>
                 <artifactId>authservice</artifactId>
                 <version>${version}</version>
             </dependency>
