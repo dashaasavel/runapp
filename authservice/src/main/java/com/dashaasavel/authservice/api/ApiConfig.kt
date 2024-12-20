@@ -23,6 +23,6 @@ class ApiConfig {
         .build()
 
     @Bean
-    @ConfigurationProperties("remotegrpc.user-service")
+    @ConfigurationProperties("remotegrpc.userservice")
     fun userServiceProperties() = GrpcServiceProperties()
 }

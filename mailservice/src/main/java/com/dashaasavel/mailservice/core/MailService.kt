@@ -10,7 +10,7 @@ class MailService(
     private val mailSender: JavaMailSender,
 ) : InitializingBean {
 
-    private val executor = createCachedThreadPoolWithLimit(10)
+    private val executor = createCachedThreadPoolWithLimit(2)
     fun sendMessage(mimeMessage: MimeMessage) {
         executor.execute {
             try {

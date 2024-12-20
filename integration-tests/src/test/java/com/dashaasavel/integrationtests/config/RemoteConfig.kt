@@ -44,6 +44,6 @@ class RemoteConfig(
     fun planServiceFacade() = PlanServiceFacade(runService())
 
     @Bean
-    @ConfigurationProperties("remotegrpc.run-service")
+    @ConfigurationProperties("remotegrpc.runservice")
     fun runServiceProperties() = GrpcServiceProperties()
 }

@@ -19,7 +19,7 @@
         <module>runservice-api</module>
         <module>grpc-messages</module>
         <module>runapp-lib</module>
-        <module>mail-service</module>
+        <module>mailservice</module>
         <module>api-gateway</module>
         <module>authservice</module>
         <module>authservice-api</module>
@@ -51,7 +51,17 @@
             <!-- internal -->
             <dependency>
                 <groupId>com.dashaasavel</groupId>
-                <artifactId>userservice-api</artifactId>
+                <artifactId>api-gateway</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dashaasavel</groupId>
+                <artifactId>application</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dashaasavel</groupId>
+                <artifactId>authservice</artifactId>
                 <version>${version}</version>
             </dependency>
             <dependency>
@@ -66,10 +76,41 @@
             </dependency>
             <dependency>
                 <groupId>com.dashaasavel</groupId>
+                <artifactId>integration-tests</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dashaasavel</groupId>
+                <artifactId>mailservice</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dashaasavel</groupId>
                 <artifactId>runapp-lib</artifactId>
                 <version>${version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.dashaasavel</groupId>
+                <artifactId>runservice</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dashaasavel</groupId>
+                <artifactId>runservice-api</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dashaasavel</groupId>
+                <artifactId>userservice</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dashaasavel</groupId>
+                <artifactId>userservice-api</artifactId>
+                <version>${version}</version>
+            </dependency>
 
+            <!-- kotlin lib -->
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-jdk8</artifactId>

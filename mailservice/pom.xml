@@ -8,8 +8,8 @@
         <artifactId>runapp</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>mail-service</artifactId>
-    <name>mail-service</name>
+    <artifactId>mailservice</artifactId>
+    <name>mailservice</name>
 
     <dependencies>
         <!-- LOCAL -->
@@ -55,7 +55,7 @@
     </dependencies>
 
     <build>
-        <finalName>mail-service</finalName>
+        <finalName>mailservice</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

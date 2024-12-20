@@ -15,7 +15,7 @@ services:
 
   authservice:
     container_name: authservice
-    image: runapp/authservice:${RUNAPP_TAG}
+    image: dashaasavel/runapp-authservice:${RUNAPP_TAG}
     build: ./authservice
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5436/postgres
@@ -98,7 +98,7 @@ services:
 
   runservice:
     container_name: runservice
-    image: runapp/runservice:${RUNAPP_TAG}
+    image: dashaasavel/runapp-runservice:${RUNAPP_TAG}
     build: ./runservice
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5434/postgres
@@ -149,7 +149,7 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    image: runapp/rabbitmq:${RABBITMQ_TAG}
+    image: dashaasavel/runapp-rabbitmq:${RABBITMQ_TAG}
     build: ./rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: user
@@ -160,10 +160,10 @@ services:
       - '5672:5672'   # amqp
       - '15672:15672' # http
 
-  mail-service:
-    container_name: mail-service
-    image: runapp/mail-service:${RUNAPP_TAG}
-    build: ./mail-service
+  mailservice:
+    container_name: mailservice
+    image: dashaasavel/runapp-mailservice:${RUNAPP_TAG}
+    build: ./mailservice
     environment:
       RABBIT_CONSUMER_HOST: 'rabbitmq'
       JAVA_OPTS: '

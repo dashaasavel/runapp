@@ -20,11 +20,11 @@ public class GatewayConfig {
 //                        .filters(f -> f.filter(authFilter()))
 //                        .uri("lb://cars-service"))
 //
-//                .route("user-service", r -> r.path("/users/**")
+//                .route("userservice", r -> r.path("/users/**")
 //                        .filters(f -> f.filter(authFilter()))
 //                        .uri("lb://cars-service"))
 //
-//                .route("run-service", r -> r.path("/plans/**")
+//                .route("runservice", r -> r.path("/plans/**")
 //                        .filters(f -> f.filter(authFilter()))
 //                        .uri("lb://cars-service"))
 //

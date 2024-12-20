@@ -12,7 +12,7 @@
   ],
   "queues": [
     {
-      "name": "user-deleted-queue-mail-service",
+      "name": "user-deleted-queue-mailservice",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -21,7 +21,7 @@
       }
     },
     {
-      "name": "user-deleted-queue-run-service",
+      "name": "user-deleted-queue-runservice",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -30,7 +30,7 @@
       }
     },
     {
-      "name": "user-unconfirmed-queue-mail-service",
+      "name": "user-unconfirmed-queue-mailservice",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -39,7 +39,7 @@
       }
     },
     {
-      "name": "user-created-queue-mail-service",
+      "name": "user-created-queue-mailservice",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -90,7 +90,7 @@
     {
       "source": "user.deleted",
       "vhost": "/",
-      "destination": "user-deleted-queue-run-service",
+      "destination": "user-deleted-queue-runservice",
       "destination_type": "queue",
       "routing_key": "user.event.deleted",
       "arguments": {}
@@ -98,7 +98,7 @@
     {
       "source": "user.deleted",
       "vhost": "/",
-      "destination": "user-deleted-queue-mail-service",
+      "destination": "user-deleted-queue-mailservice",
       "destination_type": "queue",
       "routing_key": "user.event.deleted",
       "arguments": {}
@@ -106,7 +106,7 @@
     {
       "source": "user.unconfirmed",
       "vhost": "/",
-      "destination": "user-unconfirmed-queue-mail-service",
+      "destination": "user-unconfirmed-queue-mailservice",
       "destination_type": "queue",
       "routing_key": "user.event.unconfirmed",
       "arguments": {}
@@ -114,7 +114,7 @@
     {
       "source": "user.created",
       "vhost": "/",
-      "destination": "user-created-queue-mail-service",
+      "destination": "user-created-queue-mailservice",
       "destination_type": "queue",
       "routing_key": "user.event.created",
       "arguments": {}
